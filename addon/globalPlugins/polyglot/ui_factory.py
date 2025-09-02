@@ -1,9 +1,11 @@
 # -*- coding: utf-8 -*-
 
 from abc import ABC, abstractmethod
-from typing import Callable, Any, Dict, OrderedDict, Tuple
+from typing import Any, Callable, Dict, OrderedDict, Tuple
+
 import wx
 from configobj.validate import is_boolean
+
 
 class ControlHandlerBase(ABC):
     @property

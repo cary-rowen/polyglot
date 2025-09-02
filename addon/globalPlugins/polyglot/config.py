@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
 
 import config as nvda_config
-from .configspec import config_spec
-from . import engine_manager
-from logHandler import log
 from configobj import ConfigObj
-from . import ui_factory
+from logHandler import log
+
+from . import engine_manager, ui_factory
+from .configspec import config_spec
 
 CONF_SECTION = 'modernTranslate'
 

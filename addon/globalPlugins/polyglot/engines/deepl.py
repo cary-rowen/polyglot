@@ -1,11 +1,13 @@
 # -*- coding: utf-8 -*-
 
+import json
+from typing import Any, Dict
+
+import addonHandler
+from logHandler import log
+
 from ..engine import BaseHttpEngine
 from ..exceptions import ApiResponseError, AuthenticationError
-import addonHandler
-import json
-from logHandler import log
-from typing import Dict, Any
 
 addonHandler.initTranslation()
 

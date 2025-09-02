@@ -1,10 +1,12 @@
 # -*- coding: utf-8 -*-
 
-import os
-import json
-import globalVars
 import hashlib
+import json
+import os
+
+import globalVars
 from logHandler import log
+
 
 class TranslationCache:
     """Provides a simple, persistent cache for translation results. Implemented as a singleton."""

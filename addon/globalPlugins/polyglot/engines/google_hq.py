@@ -1,12 +1,14 @@
 # -*- coding: utf-8 -*-
 
-import addonHandler
 import html
 import json
+
+import addonHandler
+from logHandler import log
+
+from .. import languages
 from ..engine import BaseHttpEngine
 from ..exceptions import ApiResponseError, AuthenticationError
-from .. import languages
-from logHandler import log
 
 addonHandler.initTranslation()
 

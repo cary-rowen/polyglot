@@ -1,11 +1,13 @@
 # -*- coding: utf-8 -*-
 
-import pkgutil
 import importlib
 import inspect
+import pkgutil
+
 from logHandler import log
-from .engine import TranslationEngine
+
 from . import engines
+from .engine import TranslationEngine
 
 _engine_instances = None
 

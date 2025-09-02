@@ -1,16 +1,16 @@
 # -*- coding: utf-8 -*-
 
+from collections import OrderedDict
+from typing import Any, Dict
+
 import addonHandler
 import wx
 from gui import guiHelper
 from gui.settingsDialogs import SettingsPanel
-from . import config
-from . import engine_manager
-from .cache import TranslationCache
-from . import ui_factory
-from collections import OrderedDict
 from logHandler import log
-from typing import Dict, Any
+
+from . import config, engine_manager, ui_factory
+from .cache import TranslationCache
 
 addonHandler.initTranslation()
 

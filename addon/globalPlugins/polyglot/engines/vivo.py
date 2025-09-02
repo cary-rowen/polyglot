@@ -1,14 +1,16 @@
 # -*- coding: utf-8 -*-
 
-from ..engine import BaseHttpEngine
-from .. import languages
-from ..exceptions import EngineError, ApiResponseError, AuthenticationError, NetworkConnectionError
-from .import _vivo_auth as vivo_auth
-import urllib.parse
 import json
+import urllib.parse
 import uuid
+
 import addonHandler
 from logHandler import log
+
+from .. import languages
+from ..engine import BaseHttpEngine
+from ..exceptions import ApiResponseError, AuthenticationError, EngineError, NetworkConnectionError
+from . import _vivo_auth as vivo_auth
 
 addonHandler.initTranslation()
 

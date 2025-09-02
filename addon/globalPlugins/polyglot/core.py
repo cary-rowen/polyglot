@@ -1,16 +1,17 @@
 # -*- coding: utf-8 -*-
 
-import ui
+import threading
+
 import api
 import queueHandler
-from . import config
-from .exceptions import EngineError
+import ui
 from logHandler import log
-import threading
-from . import engine_manager
-from .engine import EngineError
+
+from . import config, engine_manager
 from .cache import TranslationCache
-from logHandler import log
+from .engine import EngineError
+from .exceptions import EngineError
+
 
 class TranslationTask(threading.Thread):
     def __init__(self, engine_id, text, lang_from, lang_to, cache, on_complete, is_manual, engine_config):

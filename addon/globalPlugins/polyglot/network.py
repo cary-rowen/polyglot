@@ -2,10 +2,12 @@
 
 import functools
 import time
-import requests
-from .exceptions import NetworkConnectionError, ApiResponseError, AuthenticationError
-from logHandler import log
+
 import addonHandler
+import requests
+from logHandler import log
+
+from .exceptions import ApiResponseError, AuthenticationError, NetworkConnectionError
 
 addonHandler.initTranslation()
 

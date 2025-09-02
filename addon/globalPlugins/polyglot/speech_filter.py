@@ -1,9 +1,11 @@
 # -*- coding: utf-8 -*-
 
-from speech.extensions import filter_speechSequence
 import ui
+from speech.extensions import filter_speechSequence
+
 from . import config
 from .core import manager as translation_manager
+
 
 class SpeechFilter:
     def __init__(self):

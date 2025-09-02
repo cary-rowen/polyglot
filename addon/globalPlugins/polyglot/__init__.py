@@ -1,21 +1,21 @@
 # -*- coding: utf-8 -*-
 
-import globalVars
-import globalPluginHandler
-import ui
-import api
 import addonHandler
-import wx
+import api
+import globalPluginHandler
+import globalVars
 import gui
-import tones
 import textInfos
-from scriptHandler import script
+import tones
+import ui
+import wx
 from keyboardHandler import KeyboardInputGesture
-from . import settings
-from . import config
-from .speech_filter import speech_filter_instance
-from .core import manager as translation_manager
 from logHandler import log
+from scriptHandler import script
+
+from . import config, settings
+from .core import manager as translation_manager
+from .speech_filter import speech_filter_instance
 
 addonHandler.initTranslation()
 

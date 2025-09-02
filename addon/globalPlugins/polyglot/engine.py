@@ -1,11 +1,13 @@
 # -*- coding: utf-8 -*-
 
-from abc import ABC, abstractmethod
 import json
-from .exceptions import EngineError
-from logHandler import log
+from abc import ABC, abstractmethod
+from typing import Any, Dict, OrderedDict
+
 import addonHandler
-from typing import Dict, Any, OrderedDict
+from logHandler import log
+
+from .exceptions import EngineError
 
 addonHandler.initTranslation()
 
@@ -188,8 +190,8 @@ class BaseHttpEngine(TranslationEngine):
         pass
 
     def translate(self, text: str, lang_from: str, lang_to: str, config: dict) -> dict:
-        from .network import send_request
         from .exceptions import ResponseParsingError
+        from .network import send_request
         try:
             params = self._build_request_params(text, lang_from, lang_to, config)
             log.debug(f"Engine '{self.id}' built request params: {params.get('method')} {params.get('url')}")

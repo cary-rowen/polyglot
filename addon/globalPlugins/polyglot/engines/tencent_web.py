@@ -1,10 +1,12 @@
 # -*- coding: utf-8 -*-
 
 import json
+
+import addonHandler
+
+from .. import languages
 from ..engine import BaseHttpEngine
 from ..exceptions import ApiResponseError
-from .. import languages
-import addonHandler
 
 addonHandler.initTranslation()
 
