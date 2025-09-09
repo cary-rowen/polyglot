@@ -5,11 +5,9 @@ import urllib.parse
 import urllib.request
 
 import addonHandler
-from logHandler import log
 
-from .. import languages
+from ...common import languages
 from ..engine import BaseHttpEngine
-from ..exceptions import EngineError
 
 addonHandler.initTranslation()
 

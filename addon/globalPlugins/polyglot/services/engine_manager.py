@@ -9,34 +9,33 @@ from logHandler import log
 from . import engines
 from .engine import TranslationEngine
 
-_engine_instances = None
+_engine_instances: list[TranslationEngine] | None = None
 
 
-def _scan_and_load_engines():
+def _scan_and_load_engines() -> None:
 	global _engine_instances
 	log.debug("First-time scan: Loading translation engines...")
 	_engine_instances = []
-	for finder, name, ispkg in pkgutil.iter_modules(engines.__path__, engines.__name__ + "."):
+	for _, name, _ in pkgutil.iter_modules(engines.__path__, engines.__name__ + "."):
 		try:
 			module = importlib.import_module(name)
-			for member_name, member_obj in inspect.getmembers(module):
+			for _, member_obj in inspect.getmembers(module):
 				if (
 					inspect.isclass(member_obj)
 					and issubclass(member_obj, TranslationEngine)
 					and member_obj is not TranslationEngine
 					and not inspect.isabstract(member_obj)
 				):
-					instance = member_obj()
+					instance: TranslationEngine = member_obj()
 					_engine_instances.append(instance)
 					log.debug(f"Successfully loaded engine: {instance.name} (ID: {instance.id})")
-		except Exception as e:
+		except Exception:
 			log.error(f"Failed to load engine module '{name}'", exc_info=True)
 	if not _engine_instances:
 		log.warning(
-			"ModernTranslate: No translation engines were loaded successfully. "
-			"This may be due to errors in the engine modules or an issue with the add-on installation. "
-			"Translation functionality will not be available."
+			"""No translation engines were loaded successfully. This may be due to errors in the engine modules or an issue with the add-on installation. Translation functionality will not be available."""
 		)
+	assert _engine_instances is not None
 	_engine_instances.sort(key=lambda e: e.name)
 
 
@@ -44,6 +43,7 @@ def get_all_engines() -> list[TranslationEngine]:
 	global _engine_instances
 	if _engine_instances is None:
 		_scan_and_load_engines()
+	assert _engine_instances is not None
 	return _engine_instances
 
 

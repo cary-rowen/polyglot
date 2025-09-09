@@ -2,12 +2,13 @@
 
 import json
 from abc import ABC, abstractmethod
-from typing import Any, Dict, OrderedDict
+from typing import Any
 
 import addonHandler
 from logHandler import log
 
-from .exceptions import EngineError
+from ..common.exceptions import EngineError, ResponseParsingError
+from ..common.network import send_request
 
 addonHandler.initTranslation()
 
@@ -47,18 +48,18 @@ class TranslationEngine(ABC):
 		return self.supports_language_detection
 
 	@abstractmethod
-	def get_config_spec(self) -> list[dict]:
+	def get_config_spec(self) -> list[dict[str, Any]]:
 		pass
 
 	@abstractmethod
-	def get_supported_languages(self) -> dict:
+	def get_supported_languages(self) -> dict[str, str]:
 		pass
 
 	@abstractmethod
-	def translate(self, text: str, lang_from: str, lang_to: str, config: dict) -> dict:
+	def translate(self, text: str, lang_from: str, lang_to: str, config: dict[str, Any]) -> dict[str, Any]:
 		pass
 
-	def get_ui_states(self, all_configs: Dict[str, Any]) -> Dict[str, Any]:
+	def get_ui_states(self, all_configs: dict[str, Any]) -> dict[str, Any]:
 		return {}
 
 
@@ -75,7 +76,7 @@ class BaseHttpEngine(TranslationEngine):
 		forcing all concrete HTTP engines to implement it explicitly.
 		"""
 		raise NotImplementedError(
-			f"Translation engine '{self.id}' must explicitly implement the 'auto_detect_code' property in a subclass (return None if not supported)."
+			f"""Translation engine '{self.id}' must explicitly implement the 'auto_detect_code' property in a subclass (return None if not supported)."""
 		)
 
 	@property
@@ -85,11 +86,11 @@ class BaseHttpEngine(TranslationEngine):
 		- If the engine supports language detection, it automatically uses its auto_detect_code.
 		- If not, the subclass is forced to override this property and provide a specific language.
 		"""
-		if self.supports_language_detection:
-			return self.auto_detect_code
+		auto_code = self.auto_detect_code
+		if self.supports_language_detection and auto_code is not None:
+			return auto_code
 		raise NotImplementedError(
-			f"Translation engine '{self.id}' does not support auto language detection, "
-			"and must therefore explicitly override the 'default_source_language' property in a subclass."
+			f"""Translation engine '{self.id}' does not support auto language detection, and must therefore explicitly override the 'default_source_language' property in a subclass."""
 		)
 
 	@property
@@ -102,19 +103,19 @@ class BaseHttpEngine(TranslationEngine):
 			f"Translation engine '{self.id}' must explicitly implement the 'default_target_language' property."
 		)
 
-	def get_config_spec(self) -> list[dict]:
+	def get_config_spec(self) -> list[dict[str, Any]]:
 		all_langs = self.get_supported_languages()
 		auto_code = self.auto_detect_code
 
 		from_choices = all_langs.copy()
 		if not self.supports_language_detection and auto_code:
-			from_choices.pop(auto_code, None)
+			_unused = from_choices.pop(auto_code, None)
 
 		to_choices = all_langs.copy()
 		if auto_code is not None:
-			to_choices.pop(auto_code, None)
+			_unused = to_choices.pop(auto_code, None)
 
-		spec = [
+		spec: list[dict[str, Any]] = [
 			{
 				"id": "langFrom",
 				"label": _("Source language:"),
@@ -178,17 +179,17 @@ class BaseHttpEngine(TranslationEngine):
 		return spec
 
 	def _get_filtered_choices(
-		self, all_langs: dict, exclude_code: str = None, remove_auto: bool = False
-	) -> dict:
+		self, all_langs: dict[str, str], exclude_code: str | None = None, remove_auto: bool = False
+	) -> dict[str, str]:
 		"""A helper function to create a filtered dictionary of language options based on rules."""
 		choices = all_langs.copy()
 		if remove_auto and self.auto_detect_code is not None:
-			choices.pop(self.auto_detect_code, None)
+			_unused = choices.pop(self.auto_detect_code, None)
 		if exclude_code:
-			choices.pop(exclude_code, None)
+			_unused = choices.pop(exclude_code, None)
 		return choices
 
-	def get_ui_states(self, all_configs: Dict[str, Any]) -> Dict[str, Dict[str, Any]]:
+	def get_ui_states(self, all_configs: dict[str, Any]) -> dict[str, dict[str, Any]]:
 		states = super().get_ui_states(all_configs)
 		all_langs = self.get_supported_languages()
 		auto_code = self.auto_detect_code
@@ -201,7 +202,7 @@ class BaseHttpEngine(TranslationEngine):
 		valid_from_langs = self._get_filtered_choices(all_langs, exclude_code=selected_to)
 		# Special handling for the source list: only remove "auto-detect" if the engine does not support it.
 		if not self.supports_language_detection and auto_code:
-			valid_from_langs.pop(auto_code, None)
+			_unused = valid_from_langs.pop(auto_code, None)
 		states["langFrom"] = {"choices": valid_from_langs}
 		states["langTo"] = {"choices": valid_to_langs}
 		# --- Logic for auto-swap related controls ---
@@ -217,22 +218,23 @@ class BaseHttpEngine(TranslationEngine):
 		return states
 
 	@abstractmethod
-	def _build_request_params(self, text: str, lang_from: str, lang_to: str, config: dict) -> dict:
+	def _build_request_params(
+		self, text: str, lang_from: str, lang_to: str, config: dict[str, Any]
+	) -> dict[str, Any]:
 		pass
 
 	@abstractmethod
-	def _parse_response(self, response_body: str) -> dict:
+	def _parse_response(self, response_body: str) -> dict[str, Any]:
 		pass
 
-	def translate(self, text: str, lang_from: str, lang_to: str, config: dict) -> dict:
-		from .exceptions import ResponseParsingError
-		from .network import send_request
-
+	def translate(self, text: str, lang_from: str, lang_to: str, config: dict[str, Any]) -> dict[str, Any]:
 		try:
 			params = self._build_request_params(text, lang_from, lang_to, config)
 			log.debug(f"Engine '{self.id}' built request params: {params.get('method')} {params.get('url')}")
 			proxy_mode = config.get("proxyMode", "system")
-			proxies_dict = None  # Default is None, which makes requests use system proxy settings.
+			proxies_dict: dict[str, str | None] | None = (
+				None  # Default is None, which makes requests use system proxy settings.
+			)
 			if proxy_mode == "none":
 				proxies_dict = {"http": None, "https": None}
 			timeout_int = int(config.get("timeout", "15"))

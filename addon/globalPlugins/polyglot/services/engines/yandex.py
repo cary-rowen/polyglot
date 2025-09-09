@@ -6,9 +6,9 @@ import uuid
 
 import addonHandler
 
-from .. import languages
+from ...common import languages
 from ..engine import BaseHttpEngine
-from ..exceptions import ApiResponseError
+from ...common.exceptions import ApiResponseError
 
 addonHandler.initTranslation()
 

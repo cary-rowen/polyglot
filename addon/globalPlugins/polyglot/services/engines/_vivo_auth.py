@@ -14,8 +14,8 @@ import urllib.parse
 
 from logHandler import log
 
-from .. import network
-from ..exceptions import (
+from ...common import network
+from ...common.exceptions import (
 	AuthenticationError,
 	NetworkConnectionError,
 	ResponseParsingError,

@@ -1,118 +1,55 @@
 # -*- coding: utf-8 -*-
 
-import threading
+from collections.abc import Callable
+from typing import Any
 
 import api
 import queueHandler
 import ui
 from logHandler import log
 
-from . import config, engine_manager
-from .cache import TranslationCache
-from .engine import EngineError
-from .exceptions import EngineError
+from ..common import config
+from ..common.cache import TranslationCache
+from ..common.exceptions import EngineError
+from ..services import engine_manager
+from .task import TranslationTask
 
-
-class TranslationTask(threading.Thread):
-	def __init__(self, engine_id, text, lang_from, lang_to, cache, on_complete, is_manual, engine_config):
-		super().__init__(daemon=True)
-		self.engine_id = engine_id
-		self.text = text
-		self.lang_from = lang_from
-		self.lang_to = lang_to
-		self.cache = cache
-		self.on_complete = on_complete
-		self.is_manual = is_manual
-		self.engine_config = engine_config
-		self._is_cancelled = False
-		self._lock = threading.Lock()
-		log.debug(f"TranslationTask created for engine '{self.engine_id}', is_manual={self.is_manual}.")
-
-	def cancel(self):
-		with self._lock:
-			log.info(f"Cancelling translation task for text: '{self.text[:50]}...'")
-			self._is_cancelled = True
-
-	def is_cancelled(self):
-		with self._lock:
-			return self._is_cancelled
-
-	def run(self):
-		result = {"translation": None, "error": None}
-		try:
-			if self.is_cancelled():
-				return
-			engine = engine_manager.get_engine_by_id(self.engine_id)
-			engine_config = self.engine_config
-			auto_detect_code = engine.auto_detect_code
-			first_result = engine.translate(self.text, self.lang_from, self.lang_to, engine_config)
-			if self.is_cancelled():
-				return
-			lang_detected = first_result.get("lang_detected")
-			result.update(first_result)
-			should_swap = (
-				self.is_manual
-				and engine_config.get("enableAutoSwap")
-				and self.lang_from == auto_detect_code
-				and lang_detected is not None
-				and lang_detected == self.lang_to
-			)
-			final_target_lang = self.lang_to
-			if should_swap:
-				swap_lang = engine_config.get("swapLanguage")
-				if swap_lang and swap_lang != self.lang_to:
-					final_target_lang = swap_lang
-					second_result = engine.translate(self.text, lang_detected, swap_lang, engine_config)
-					if self.is_cancelled():
-						return
-					result.update(second_result)
-			final_translation = result.get("translation")
-			if final_translation:
-				source_lang_for_cache = lang_detected or self.lang_from
-				if source_lang_for_cache != auto_detect_code:
-					specific_key = self.cache.build_key(source_lang_for_cache, final_target_lang, self.text)
-					self.cache.set(specific_key, final_translation)
-				if self.lang_from == auto_detect_code:
-					auto_key = self.cache.build_key(auto_detect_code, self.lang_to, self.text)
-					self.cache.set(auto_key, final_translation)
-		except EngineError as e:
-			result["error"] = e
-		except Exception as e:
-			log.error("An unexpected error occurred inside TranslationTask.run.", exc_info=True)
-			result["error"] = e
-		if not self.is_cancelled():
-			self.on_complete(result)
+OnSuccessCallback = Callable[[str], None] | None
 
 
 class TranslationManager:
-	_instance = None
+	# Annotations for instance variables defined and managed by this class
+	cache: TranslationCache
+	last_translation: str | None
+	consecutive_failures: int
+	_current_task: TranslationTask | None
+	auto_translate_enabled: bool
 
-	def __new__(cls, *args, **kwargs):
-		if not cls._instance:
-			cls._instance = super().__new__(cls)
-		return cls._instance
-
-	def __init__(self):
-		if hasattr(self, "_initialized"):
-			return
+	def __init__(self) -> None:
+		super().__init__()
 		self.cache = TranslationCache()
 		self.last_translation = None
 		self.consecutive_failures = 0
 		self._current_task = None
 		self.auto_translate_enabled = False
-		self._initialized = True
 
-	def clear_cache(self):
+	def clear_cache(self) -> None:
 		log.info("Clearing cache via TranslationManager.")
 		self.cache.clear()
 
-	def toggle_auto_translate(self):
+	def toggle_auto_translate(self) -> bool:
 		self.reset_consecutive_failures()
 		self.auto_translate_enabled = not self.auto_translate_enabled
 		log.info(f"Runtime auto-translate toggled to: {self.auto_translate_enabled}")
 		return self.auto_translate_enabled
 
-	def swap_languages(self):
+	def swap_languages(self) -> tuple[bool, str]:
+		"""
+		Swaps the source and target languages in the configuration.
+
+		Returns:
+			A tuple containing a boolean for success and a user-facing message.
+		"""
 		conf = config.get_config()
 		engine_id = conf["engine"]
 		try:
@@ -120,7 +57,7 @@ class TranslationManager:
 		except (ValueError, NotImplementedError):
 			return (False, _("Invalid engine configuration."))
 		if engine_id not in conf["engines"]:
-			return (False, _("The current engine has no swappable languages."))
+			conf["engines"][engine_id] = {}
 		engine_conf = conf["engines"][engine_id]
 		current_from = engine_conf.get("langFrom", current_engine.default_source_language)
 		current_to = engine_conf.get("langTo", current_engine.default_target_language)
@@ -138,7 +75,7 @@ class TranslationManager:
 		)
 		return (True, message)
 
-	def get_current_language_announcement(self):
+	def get_current_language_announcement(self) -> str:
 		"""
 		Gets a formatted string of the current source and target languages for announcement.
 		"""
@@ -156,17 +93,24 @@ class TranslationManager:
 			)
 			return _("Languages not configured or current engine is invalid")
 
-	def terminate_all_tasks(self):
+	def terminate_all_tasks(self) -> None:
 		if self._current_task and self._current_task.is_alive():
 			log.info("Terminating active translation task.")
 			self._current_task.cancel()
 		self._current_task = None
 
-	def reset_consecutive_failures(self):
+	def reset_consecutive_failures(self) -> None:
 		log.debug("Consecutive failure count has been reset manually.")
 		self.consecutive_failures = 0
 
-	def request_translation(self, text, is_manual=True, show_status=True, allow_copy=True, on_success=None):
+	def request_translation(
+		self,
+		text: str | None,
+		is_manual: bool = True,
+		show_status: bool = True,
+		allow_copy: bool = True,
+		on_success: OnSuccessCallback = None,
+	) -> None:
 		if not text or not text.strip():
 			if is_manual:
 				ui.message(_("Nothing to translate"))
@@ -186,7 +130,10 @@ class TranslationManager:
 					)
 				)
 			return
+		if engine_id not in conf["engines"]:
+			conf["engines"][engine_id] = {}
 		engine_config = conf["engines"][engine_id].dict()
+
 		try:
 			lang_from = engine_config.get("langFrom", current_engine.default_source_language)
 			lang_to = engine_config.get("langTo", current_engine.default_target_language)
@@ -213,9 +160,12 @@ class TranslationManager:
 				on_success=on_success,
 			)
 			return
-		callback = lambda result: self._on_translation_complete(
-			result, is_manual=is_manual, allow_copy=allow_copy, on_success=on_success
-		)
+
+		def callback(result: dict[str, Any]) -> None:
+			self._on_translation_complete(
+				result, is_manual=is_manual, allow_copy=allow_copy, on_success=on_success
+			)
+
 		task = TranslationTask(
 			engine_id=engine_id,
 			text=text,
@@ -229,8 +179,10 @@ class TranslationManager:
 		self._current_task = task
 		task.start()
 
-	def _on_translation_complete(self, result, is_manual, allow_copy, on_success):
-		def task():
+	def _on_translation_complete(
+		self, result: dict[str, Any], is_manual: bool, allow_copy: bool, on_success: OnSuccessCallback
+	) -> None:
+		def task() -> None:
 			error = result.get("error")
 			if error:
 				prefix = _("Translation failed: ")
@@ -264,6 +216,3 @@ class TranslationManager:
 					api.copyToClip(translation)
 
 		queueHandler.queueFunction(queueHandler.eventQueue, task)
-
-
-manager = TranslationManager()

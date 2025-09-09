@@ -43,6 +43,8 @@ ALL_LANGUAGES = {
 	"it": _("Italian"),
 	"ar": _("Arabic"),
 	"ara": _("Arabic"),  # Baidu
+	"acu": _("Achuar"),
+	"am": _("Amharic"),
 	# --- Other European Languages ---
 	"nl": _("Dutch"),
 	"sv": _("Swedish"),
@@ -152,7 +154,7 @@ ALL_LANGUAGES = {
 }
 
 
-def get_language_dict_for_codes(codes: list[str]) -> dict:
+def get_language_dict_for_codes(codes: list[str]) -> dict[str, str]:
 	"""
 	Builds a language dictionary for a specific engine.
 	If a code is not found in the central repository, it logs an error
@@ -160,7 +162,7 @@ def get_language_dict_for_codes(codes: list[str]) -> dict:
 	@param codes: A list of language codes supported by the engine.
 	@return: A dictionary mapping the supported codes to their display names.
 	"""
-	lang_dict = {}
+	lang_dict: dict[str, str] = {}
 	for code in codes:
 		if code in ALL_LANGUAGES:
 			lang_dict[code] = ALL_LANGUAGES[code]

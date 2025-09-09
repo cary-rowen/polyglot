@@ -1,29 +1,37 @@
 # -*- coding: utf-8 -*-
 
+from typing import Any
+
 import ui
 from speech.extensions import filter_speechSequence
 
-from . import config
-from .core import manager as translation_manager
+from .manager import TranslationManager
 
 
 class SpeechFilter:
-	def __init__(self):
+	# Annotate instance variables at the class level
+	manager: TranslationManager
+	last_spoken_text: str
+	_is_speaking_translation: bool
+
+	def __init__(self, manager: TranslationManager) -> None:
+		super().__init__()
+		self.manager = manager
 		self.last_spoken_text = ""
 		self._is_speaking_translation = False
 
-	def register(self):
+	def register(self) -> None:
 		filter_speechSequence.register(self.on_speech_sequence)
 
-	def unregister(self):
-		filter_speechSequence.unregister(self.on_speech_sequence)
+	def unregister(self) -> None:
+		_unused = filter_speechSequence.unregister(self.on_speech_sequence)
 
-	def on_speech_sequence(self, sequence):
+	def on_speech_sequence(self, sequence: list[Any]) -> list[Any]:
 		# Extract and save the text for the "Translate last spoken text" command.
 		text_to_save = " ".join([s for s in sequence if isinstance(s, str) and s.strip()])
 		if text_to_save:
 			self.last_spoken_text = text_to_save
-		if not translation_manager.auto_translate_enabled:
+		if not self.manager.auto_translate_enabled:
 			return sequence
 		# To prevent translation loops, skip if the speech is already a translation result.
 		if self._is_speaking_translation:
@@ -31,7 +39,7 @@ class SpeechFilter:
 			return sequence
 		# Trigger auto-translation if there is text.
 		if text_to_save:
-			translation_manager.request_translation(
+			self.manager.request_translation(
 				text_to_save,
 				is_manual=False,
 				show_status=False,
@@ -41,7 +49,7 @@ class SpeechFilter:
 		# Block the original speech sequence; it will be replaced by the translation.
 		return []
 
-	def _handle_auto_translation_result(self, translation: str):
+	def _handle_auto_translation_result(self, translation: str) -> None:
 		"""
 		Callback for a successful auto-translation.
 		Called by the TranslationManager on the main thread.
@@ -50,6 +58,3 @@ class SpeechFilter:
 		self._is_speaking_translation = True
 		# 2. Speak the translation.
 		ui.message(translation)
-
-
-speech_filter_instance = SpeechFilter()

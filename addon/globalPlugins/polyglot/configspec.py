@@ -2,7 +2,7 @@
 
 from configobj import ConfigObj
 
-config_spec = ConfigObj(
+config_spec: ConfigObj = ConfigObj(
 	[
 		# Global settings
 		'engine = string(default="google")',

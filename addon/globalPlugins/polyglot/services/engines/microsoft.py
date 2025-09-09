@@ -7,9 +7,9 @@ import urllib.parse
 import addonHandler
 from logHandler import log
 
-from .. import languages
+from ...common import languages
 from ..engine import BaseHttpEngine
-from ..exceptions import ApiResponseError, AuthenticationError, EngineError
+from ...common.exceptions import ApiResponseError, AuthenticationError, EngineError
 
 try:
 	import requests

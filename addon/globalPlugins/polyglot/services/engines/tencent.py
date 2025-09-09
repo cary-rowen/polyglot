@@ -9,9 +9,9 @@ from datetime import datetime
 import addonHandler
 from logHandler import log
 
-from .. import languages
+from ...common import languages
 from ..engine import BaseHttpEngine
-from ..exceptions import ApiResponseError, AuthenticationError
+from ...common.exceptions import ApiResponseError, AuthenticationError
 
 addonHandler.initTranslation()
 

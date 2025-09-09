@@ -11,11 +11,13 @@ class EngineError(Exception):
 	Catching this exception can handle all known engine-related issues.
 	"""
 
-	def __init__(self, message):
+	message: str
+
+	def __init__(self, message: str) -> None:
 		self.message = message
 		super().__init__(self.message)
 
-	def __str__(self):
+	def __str__(self) -> str:
 		return str(self.message)
 
 

@@ -2,6 +2,10 @@
 
 import functools
 import time
+from collections.abc import Callable
+
+# Best practice: Import advanced typing tools for creating robust decorators and `cast`.
+from typing import Any, ParamSpec, TypeVar, cast
 
 import addonHandler
 import requests
@@ -11,19 +15,25 @@ from .exceptions import ApiResponseError, AuthenticationError, NetworkConnection
 
 addonHandler.initTranslation()
 
+# Best practice: Use ParamSpec and TypeVar to create a generic decorator.
+P = ParamSpec("P")
+R = TypeVar("R")
 
-def retry_on_network_error(attempts=3, delay=0.5, backoff=1.5):
+
+def retry_on_network_error(
+	attempts: int = 3, delay: float = 0.5, backoff: float = 1.5
+) -> Callable[[Callable[P, R]], Callable[P, R]]:
 	"""
 	A decorator that provides intelligent retry logic for `requests` calls.
 	It handles not only pure network errors (e.g., timeouts) but also recoverable API errors
 	(e.g., 408, 429, and 5xx HTTP status codes).
 	"""
 
-	def decorator(func):
+	def decorator(func: Callable[P, R]) -> Callable[P, R]:
 		@functools.wraps(func)
-		def wrapper(*args, **kwargs):
+		def wrapper(*args: P.args, **kwargs: P.kwargs) -> R:
 			current_delay = delay
-			last_exception = None
+			last_exception: Exception | None = None
 			for attempt in range(attempts):
 				try:
 					return func(*args, **kwargs)
@@ -55,6 +65,7 @@ def retry_on_network_error(attempts=3, delay=0.5, backoff=1.5):
 				time.sleep(current_delay)
 				current_delay *= backoff
 			# After all retries fail, wrap the last caught exception into our own user-friendly exception type.
+			assert last_exception is not None
 			if isinstance(last_exception, requests.exceptions.HTTPError):
 				raise ApiResponseError(
 					_(
@@ -77,19 +88,29 @@ def retry_on_network_error(attempts=3, delay=0.5, backoff=1.5):
 
 @retry_on_network_error()
 def send_request(
-	method: str, url: str, headers: dict = None, data: bytes = None, timeout: int = 15, proxies: dict = None
+	method: str,
+	url: str,
+	headers: dict[str, str] | None = None,
+	data: bytes | None = None,
+	timeout: int = 15,
+	proxies: dict[str, str | None] | None = None,
 ) -> str:
 	"""
 	Sends an HTTP(S) request using the `requests` library.
 	This function is protected by the `@retry_on_network_error` decorator
 	and is only responsible for a single request attempt and handling non-retryable business errors.
 	"""
-	headers = headers or {}
-	if "User-Agent" not in headers:
-		headers["User-Agent"] = "Mozilla/5.0"
+	final_headers = headers.copy() if headers else {}
+	if "User-Agent" not in final_headers:
+		final_headers["User-Agent"] = "Mozilla/5.0"
 	try:
 		response = requests.request(
-			method=method, url=url, headers=headers, data=data, timeout=timeout, proxies=proxies
+			method=method,
+			url=url,
+			headers=final_headers,
+			data=data,
+			timeout=timeout,
+			proxies=cast(Any, proxies),
 		)
 		# Let requests raise an HTTPError for any 4xx or 5xx response.
 		# Our decorator will then catch this exception and decide whether to retry.

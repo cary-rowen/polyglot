@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from collections import OrderedDict
-from typing import Any, Dict
+from typing import Any
 
 import addonHandler
 import wx
@@ -9,8 +9,10 @@ from gui import guiHelper
 from gui.settingsDialogs import SettingsPanel
 from logHandler import log
 
-from . import config, engine_manager, ui_factory
-from .cache import TranslationCache
+from ..common.cache import TranslationCache
+from ..common import config
+from ..services import engine_manager
+from . import factory as ui_factory
 
 addonHandler.initTranslation()
 
@@ -18,17 +20,29 @@ addonHandler.initTranslation()
 class TranslationSettingsPanel(SettingsPanel):
 	title = _("Polyglot")
 
+	# Annotate instance variables with their known types
+	engines: "OrderedDict[str, Any]"  # Forward reference because TranslationEngine is not imported
+	cache: TranslationCache
+	ui_model: dict[str, Any]
+	dynamic_controls: dict[str, dict[str, Any]]
+	engine_panels_cache: dict[str, wx.Panel]
+	# Allow these instance variables to be None, matching their initial assignment.
+	active_engine_panel: wx.Panel | None
+	_engine_switch_timer: wx.CallLater | None
+
 	def __init__(self, parent):
 		self.engines = OrderedDict((e.id, e) for e in engine_manager.get_all_engines())
+		# TranslationCache is a singleton, so getting an instance here is safe
+		# and will access the same cache used by the manager.
 		self.cache = TranslationCache()
-		self.ui_model: Dict[str, Any] = {}
+		self.ui_model = {}
 
-		self.dynamic_controls: Dict[str, Dict[str, Any]] = {}
-		self.engine_panels_cache: Dict[str, wx.Panel] = {}
-		self.active_engine_panel: wx.Panel = None
+		self.dynamic_controls = {}
+		self.engine_panels_cache = {}
+		self.active_engine_panel = None
 
 		# --- DEBOUNCING STRATEGY: Timer for smooth engine switching ---
-		self._engine_switch_timer: wx.CallLater = None
+		self._engine_switch_timer = None
 
 		super().__init__(parent)
 		self.Bind(wx.EVT_WINDOW_DESTROY, self._on_destroy)
@@ -37,12 +51,12 @@ class TranslationSettingsPanel(SettingsPanel):
 		sHelper = guiHelper.BoxSizerHelper(self, sizer=sizer)
 
 		self.engine_choice = sHelper.addLabeledControl(_("Translation &engine:"), wx.Choice)
-		sHelper.addItem(wx.StaticLine(self, style=wx.LI_HORIZONTAL))
+		_unused = sHelper.addItem(wx.StaticLine(self, style=wx.LI_HORIZONTAL))
 
 		self.engine_panel_container_sizer = wx.BoxSizer(wx.VERTICAL)
-		sHelper.addItem(self.engine_panel_container_sizer, proportion=1, flag=wx.EXPAND)
+		_unused = sHelper.addItem(self.engine_panel_container_sizer, proportion=1, flag=wx.EXPAND)
 
-		sHelper.addItem(wx.StaticLine(self, style=wx.LI_HORIZONTAL))
+		_unused = sHelper.addItem(wx.StaticLine(self, style=wx.LI_HORIZONTAL))
 
 		common_box = wx.StaticBox(self, label=_("Common Settings"))
 		common_sizer = wx.StaticBoxSizer(common_box, wx.VERTICAL)
@@ -52,7 +66,7 @@ class TranslationSettingsPanel(SettingsPanel):
 			wx.CheckBox(self, label=_("Copy manual translation results to clipboard"))
 		)
 		self.clear_cache_button = common_sHelper.addItem(wx.Button(self, label=_("Clear Cache")))
-		sHelper.addItem(common_sizer, flag=wx.EXPAND)
+		_unused = sHelper.addItem(common_sizer, flag=wx.EXPAND)
 
 		self.engine_choice.Bind(wx.EVT_CHOICE, self.on_engine_changed)
 		self.copy_result_checkbox.Bind(wx.EVT_CHECKBOX, self.on_any_control_changed)
@@ -60,7 +74,7 @@ class TranslationSettingsPanel(SettingsPanel):
 
 		self._populate_initial_state()
 
-	def _on_destroy(self, event):
+	def _on_destroy(self, event: wx.Event) -> None:
 		"""Ensure the timer is stopped when the panel is destroyed."""
 		if self._engine_switch_timer and self._engine_switch_timer.IsRunning():
 			self._engine_switch_timer.Stop()
@@ -79,10 +93,10 @@ class TranslationSettingsPanel(SettingsPanel):
 			if engine_id not in conf["engines"]:
 				conf["engines"][engine_id] = {}
 			engine_conf = conf["engines"][engine_id]
-			for cid, info in controls.items():
+			for _unused, info in controls.items():
 				info["handler"].save_to_config(info["control"], engine_conf, info["spec"])
 
-	def on_engine_changed(self, event):
+	def on_engine_changed(self, event: wx.Event) -> None:
 		"""Debounce the engine switch event to avoid stutter on rapid changes."""
 		# If a switch is already scheduled, cancel it.
 		if self._engine_switch_timer and self._engine_switch_timer.IsRunning():
@@ -99,7 +113,7 @@ class TranslationSettingsPanel(SettingsPanel):
 		finally:
 			self.Thaw()
 
-	def on_any_control_changed(self, event=None):
+	def on_any_control_changed(self, event: wx.Event | None = None):
 		if event:
 			event.Skip()
 
@@ -111,7 +125,7 @@ class TranslationSettingsPanel(SettingsPanel):
 		try:
 			ui_states = engine.get_ui_states(self.ui_model)
 			self._apply_ui_states(ui_states)
-		except Exception as e:
+		except Exception:
 			log.error(f"Error executing get_ui_states for engine '{engine.id}'.", exc_info=True)
 
 	def _populate_initial_state(self):
@@ -152,7 +166,7 @@ class TranslationSettingsPanel(SettingsPanel):
 		self.on_any_control_changed()
 		self.Layout()
 
-	def _create_engine_panel(self, engine_id):
+	def _create_engine_panel(self, engine_id: str) -> wx.Panel:
 		"""Create and populate the settings panel for a specific engine ONCE."""
 		panel = wx.Panel(self)
 		engine = self.engines.get(engine_id)
@@ -203,7 +217,7 @@ class TranslationSettingsPanel(SettingsPanel):
 		panel.SetSizer(container_sizer)
 		return panel
 
-	def _apply_ui_states(self, ui_states: Dict[str, Dict[str, Any]]):
+	def _apply_ui_states(self, ui_states: dict[str, dict[str, Any]]):
 		engine_id = self._get_selected_engine_id()
 		if not engine_id or engine_id not in self.dynamic_controls:
 			return
@@ -248,7 +262,7 @@ class TranslationSettingsPanel(SettingsPanel):
 			return None
 		return self.engines.get(engine_id)
 
-	def on_clear_cache(self, event):
+	def on_clear_cache(self, event: wx.Event):
 		self.cache.clear()
 		self._update_cache_button()
 		wx.CallAfter(self.clear_cache_button.SetFocus)

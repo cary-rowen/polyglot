@@ -7,9 +7,9 @@ import uuid
 import addonHandler
 from logHandler import log
 
-from .. import languages
+from ...common import languages
 from ..engine import BaseHttpEngine
-from ..exceptions import ApiResponseError, AuthenticationError, EngineError, NetworkConnectionError
+from ...common.exceptions import ApiResponseError, AuthenticationError, EngineError, NetworkConnectionError
 from . import _vivo_auth as vivo_auth
 
 addonHandler.initTranslation()
