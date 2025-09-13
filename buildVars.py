@@ -1,6 +1,7 @@
 # Build customizations
 # Change this file instead of sconstruct or manifest files, whenever possible.
 
+import os
 from site_scons.site_tools.NVDATool.typings import AddonInfo, BrailleTables, SymbolDictionaries
 
 # Since some strings in `addon_info` are translatable,
@@ -57,7 +58,13 @@ addon_info = AddonInfo(
 # pythonSources = ["addon/globalPlugins/*.py"]
 # For more information on SCons Glob expressions please take a look at:
 # https://scons.org/doc/production/HTML/scons-user/apd.html
-pythonSources: list[str] = ["addon/globalPlugins/polyglot/*.py", "addon/globalPlugins/polyglot/engines/*.py"]
+pythonSources = [
+	os.path.join(dirpath, filename)
+	for dirpath, dirnames, filenames in os.walk("addon")
+		for filename in filenames
+		if os.path.splitext(filename)[1] == ".py"
+]
+
 
 # Files that contain strings for translation. Usually your python sources
 i18nSources: list[str] = pythonSources + ["buildVars.py"]
