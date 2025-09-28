@@ -117,26 +117,35 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
 		self.is_layer_active = True
 		tones.beep(100, 10)
 
-	@script(description=_("Translate selection"))
-	def script_translateSelection(self, gesture: KeyboardInputGesture) -> None:
-		log.info("Script 'translateSelection' triggered.")
+	def _get_selected_text(self) -> str | None:
+		"""Gets selected text, handling errors. Returns text or None."""
 		try:
 			info = api.getCaretObject().makeTextInfo(textInfos.POSITION_SELECTION)
 			if not info or info.isCollapsed:
 				ui.message(_("Nothing selected"))
-				return
-			text = info.text
+				return None
+			return info.text
 		except NotImplementedError:
 			log.warning("Failed to get selected text from the current object.", exc_info=True)
 			ui.message(_("Cannot get selected text from the current object"))
-			return
-		self.manager.request_translation(text, is_manual=True, show_status=True)
+			return None
 
-	@script(description=_("Translate clipboard"))
-	def script_translateClipboard(self, gesture: KeyboardInputGesture) -> None:
-		log.info("Script 'translateClipboard' triggered.")
-		text = api.getClipData()
-		self.manager.request_translation(text, is_manual=True, show_status=True)
+	def _execute_translation(self, text: str, reverse: bool, show_status: bool) -> None:
+		"""The single execution engine for all translation requests."""
+		if not reverse:
+			self.manager.request_translation(text, is_manual=True, show_status=show_status)
+		else:
+			new_from, new_to, error_message = self.manager.get_reverse_languages()
+			if error_message:
+				ui.message(error_message)
+				return
+			self.manager.request_translation(
+				text,
+				is_manual=True,
+				show_status=show_status,
+				lang_from=new_from,
+				lang_to=new_to,
+			)
 
 	@script(description=_("Swap source and target languages"))
 	def script_swapLanguages(self, gesture: KeyboardInputGesture) -> None:
@@ -177,18 +186,48 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
 		new_state = self.manager.toggle_auto_translate()
 		ui.message(_("Auto-translation enabled") if new_state else _("Auto-translation disabled"))
 
-	@script(description=_("Translate last spoken text"))
-	def script_translateLastSpoken(self, gesture: KeyboardInputGesture) -> None:
-		last_spoken = self.speech_filter.last_spoken_text
-		if last_spoken:
-			self.manager.request_translation(last_spoken, is_manual=True, show_status=False)
-		else:
-			ui.message(_("No last spoken text"))
-
 	@script(description=_("Clear cache"))
 	def script_clearCache(self, gesture: KeyboardInputGesture) -> None:
 		self.manager.clear_cache()
 		ui.message(_("Cache cleared"))
+
+	@script(description=_("Translate selection"))
+	def script_translateSelection(self, gesture: KeyboardInputGesture) -> None:
+		if text := self._get_selected_text():
+			self._execute_translation(text, reverse=False, show_status=True)
+
+	@script(description=_("Translate selection (reversed direction)"))
+	def script_translateReverseSelection(self, gesture: KeyboardInputGesture) -> None:
+		if text := self._get_selected_text():
+			self._execute_translation(text, reverse=True, show_status=True)
+
+	@script(description=_("Translate clipboard"))
+	def script_translateClipboard(self, gesture: KeyboardInputGesture) -> None:
+		if not (text := api.getClipData()):
+			ui.message(_("Clipboard is empty"))
+			return
+		self._execute_translation(text, reverse=False, show_status=True)
+
+	@script(description=_("Translate clipboard (reversed direction)"))
+	def script_translateReverseClipboard(self, gesture: KeyboardInputGesture) -> None:
+		if not (text := api.getClipData()):
+			ui.message(_("Clipboard is empty"))
+			return
+		self._execute_translation(text, reverse=True, show_status=True)
+
+	@script(description=_("Translate last spoken text"))
+	def script_translateLastSpoken(self, gesture: KeyboardInputGesture) -> None:
+		if not (text := self.speech_filter.last_spoken_text):
+			ui.message(_("No last spoken text"))
+			return
+		self._execute_translation(text, reverse=False, show_status=True)
+
+	@script(description=_("Translate last spoken text (reversed direction)"))
+	def script_translateReverseLastSpoken(self, gesture: KeyboardInputGesture) -> None:
+		if not (text := self.speech_filter.last_spoken_text):
+			ui.message(_("No last spoken text"))
+			return
+		self._execute_translation(text, reverse=True, show_status=True)
 
 	@script(description=_("Show command layer help"))
 	def script_layerHelp(self, gesture: KeyboardInputGesture) -> None:
@@ -207,11 +246,14 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
 	__gestures = {"kb:NVDA+Shift+T": "layer_entry"}
 	__layer_gestures = {
 		"kb:t": "translateSelection",
+		"kb:shift+t": "translateReverseSelection",
 		"kb:b": "translateClipboard",
+		"kb:shift+b": "translateReverseClipboard",
+		"kb:l": "translateLastSpoken",
+		"kb:shift+l": "translateReverseLastSpoken",
 		"kb:s": "swapLanguages",
 		"kb:a": "announceLanguages",
 		"kb:c": "copyLastResult",
-		"kb:l": "translateLastSpoken",
 		"kb:v": "toggleAutoTranslate",
 		"kb:o": "openSettings",
 		"kb:x": "clearCache",

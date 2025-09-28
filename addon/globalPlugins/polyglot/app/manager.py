@@ -13,6 +13,8 @@ from ..common.cache import TranslationCache
 from ..common.exceptions import EngineError
 from ..services import engine_manager
 from .task import TranslationTask
+from ..common import cues
+from ..common.cues import CueType
 
 OnSuccessCallback = Callable[[str], None] | None
 
@@ -97,11 +99,53 @@ class TranslationManager:
 		if self._current_task and self._current_task.is_alive():
 			log.info("Terminating active translation task.")
 			self._current_task.cancel()
+		cues.stop_periodic_cue()
 		self._current_task = None
 
 	def reset_consecutive_failures(self) -> None:
 		log.debug("Consecutive failure count has been reset manually.")
 		self.consecutive_failures = 0
+
+	def get_current_languages(self) -> tuple[str | None, str | None]:
+		"""
+		Gets the currently configured source and target languages.
+
+		Returns:
+			A tuple of (lang_from, lang_to), or (None, None) on error.
+		"""
+		conf = config.get_config()
+		engine_id = conf["engine"]
+		engine_conf = conf["engines"].get(engine_id, {})
+		try:
+			current_engine = engine_manager.get_engine_by_id(engine_id)
+			lang_from = engine_conf.get("langFrom", current_engine.default_source_language)
+			lang_to = engine_conf.get("langTo", current_engine.default_target_language)
+			return (lang_from, lang_to)
+		except (ValueError, NotImplementedError):
+			log.warning(f"Could not get current languages. Engine '{engine_id}' may be invalid.")
+			return (None, None)
+
+	def get_reverse_languages(self) -> tuple[str | None, str | None, str | None]:
+		"""
+		Checks if languages can be reversed and returns them if possible.
+
+		Returns:
+			A tuple of (new_lang_from, new_lang_to, error_message).
+			On success, error_message will be None.
+			On failure, the languages will be None.
+		"""
+		source_lang, target_lang = self.get_current_languages()
+		if not source_lang or not target_lang:
+			return None, None, _("Languages not configured, cannot reverse.")
+		conf = config.get_config()  # Manager 内部使用自己的 config 是完全合理的
+		engine_id = conf["engine"]
+		try:
+			current_engine = engine_manager.get_engine_by_id(engine_id)
+			if source_lang == current_engine.auto_detect_code:
+				return None, None, _("Reverse failed: 'Auto-detect' cannot be the target language.")
+			return target_lang, source_lang, None
+		except (ValueError, NotImplementedError):
+			return None, None, _("Current translation engine is invalid.")
 
 	def request_translation(
 		self,
@@ -110,6 +154,8 @@ class TranslationManager:
 		show_status: bool = True,
 		allow_copy: bool = True,
 		on_success: OnSuccessCallback = None,
+		lang_from: str | None = None,
+		lang_to: str | None = None,
 	) -> None:
 		if not text or not text.strip():
 			if is_manual:
@@ -133,10 +179,11 @@ class TranslationManager:
 		if engine_id not in conf["engines"]:
 			conf["engines"][engine_id] = {}
 		engine_config = conf["engines"][engine_id].dict()
-
 		try:
-			lang_from = engine_config.get("langFrom", current_engine.default_source_language)
-			lang_to = engine_config.get("langTo", current_engine.default_target_language)
+			if lang_from is None:
+				lang_from = engine_config.get("langFrom", current_engine.default_source_language)
+			if lang_to is None:
+				lang_to = engine_config.get("langTo", current_engine.default_target_language)
 		except NotImplementedError:
 			log.error(
 				f"Engine '{engine_id}' is missing required default language implementations.", exc_info=True
@@ -145,10 +192,11 @@ class TranslationManager:
 				ui.message(_("Error: Engine '{engine}' is not configured.").format(engine=engine_id))
 			return
 		if is_manual and show_status:
-			ui.message(_("Translating..."))
+			cues.sound.play(CueType.START)
 		if self._current_task and self._current_task.is_alive():
 			log.info("A new translation request is overriding the previous one. Cancelling.")
 			self._current_task.cancel()
+			cues.stop_periodic_cue()
 		cache_key = self.cache.build_key(lang_from, lang_to, text)
 		cached_result = self.cache.get(cache_key)
 		if cached_result:
@@ -160,6 +208,12 @@ class TranslationManager:
 				on_success=on_success,
 			)
 			return
+		if is_manual and show_status:
+			cues.sound.start_periodic(
+				CueType.WAITING,
+				interval_ms=1200,
+				delay_ms=600,
+			)
 
 		def callback(result: dict[str, Any]) -> None:
 			self._on_translation_complete(
@@ -182,6 +236,8 @@ class TranslationManager:
 	def _on_translation_complete(
 		self, result: dict[str, Any], is_manual: bool, allow_copy: bool, on_success: OnSuccessCallback
 	) -> None:
+		cues.stop_periodic_cue()
+
 		def task() -> None:
 			error = result.get("error")
 			if error:
