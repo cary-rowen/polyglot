@@ -160,9 +160,9 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
 				settings.TranslationSettingsPanel,
 			)
 
-	@script(description=_("Announce current languages"))
-	def script_announceLanguages(self, gesture: "inputCore.InputGesture") -> None:
-		announcement = self.manager.get_current_language_announcement()
+	@script(description=_("Announce current engine and languages"))
+	def script_announceEngineLanguagesInfo(self, gesture: "inputCore.InputGesture") -> None:
+		announcement = self.manager.get_current_engine_and_language_info()
 		ui.message(announcement)
 
 	@script(description=_("Copy last translation to clipboard"))
@@ -252,7 +252,7 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
 		"kb:l": "translateLastSpoken",
 		"kb:shift+l": "translateReverseLastSpoken",
 		"kb:s": "swapLanguages",
-		"kb:a": "announceLanguages",
+		"kb:a": "announceEngineLanguagesInfo",
 		"kb:c": "copyLastResult",
 		"kb:v": "toggleAutoTranslate",
 		"kb:o": "openSettings",

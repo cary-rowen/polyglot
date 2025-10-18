@@ -11,6 +11,7 @@ from logHandler import log
 from ..common import config
 from ..common.cache import TranslationCache
 from ..common.exceptions import EngineError
+from ..common import languages
 from ..services import engine_manager
 from .task import TranslationTask
 from ..common import cues
@@ -77,18 +78,20 @@ class TranslationManager:
 		)
 		return (True, message)
 
-	def get_current_language_announcement(self) -> str:
+	def get_current_engine_and_language_info(self) -> str:
 		"""
-		Gets a formatted string of the current source and target languages for announcement.
+		Gets a formatted string of the current engine and languages for announcement,
 		"""
 		conf = config.get_config()
 		engine_id = conf["engine"]
 		engine_conf = conf["engines"].get(engine_id, {})
 		try:
 			current_engine = engine_manager.get_engine_by_id(engine_id)
-			lang_from = engine_conf.get("langFrom", current_engine.default_source_language)
-			lang_to = engine_conf.get("langTo", current_engine.default_target_language)
-			return _("From {source} to {target}").format(source=lang_from, target=lang_to)
+			lang_from_code = engine_conf.get("langFrom", current_engine.default_source_language)
+			lang_to_code = engine_conf.get("langTo", current_engine.default_target_language)
+			lang_from_desc = languages.ALL_LANGUAGES.get(lang_from_code, lang_from_code)
+			lang_to_desc = languages.ALL_LANGUAGES.get(lang_to_code, lang_to_code)
+			return _(f"{current_engine.name}, from {lang_from_desc} to {lang_to_desc}")
 		except (ValueError, NotImplementedError):
 			log.warning(
 				f"Could not get language announcement. Engine '{engine_id}' may be invalid or not fully implemented."
