@@ -85,7 +85,7 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
 				)
 		super().terminate()
 
-	def getScript(self, gesture: KeyboardInputGesture) -> None:
+	def getScript(self, gesture: "inputCore.InputGesture") -> None:
 		if not self.is_layer_active:
 			return super().getScript(gesture)
 		script = super().getScript(gesture)
@@ -105,11 +105,11 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
 		self.clearGestureBindings()
 		self.bindGestures(self.__gestures)
 
-	def script_layer_error(self, gesture: KeyboardInputGesture) -> None:
+	def script_layer_error(self, gesture: "inputCore.InputGesture") -> None:
 		tones.beep(120, 100)
 
 	@script(description=_("Enter translation command layer"))
-	def script_layer_entry(self, gesture: KeyboardInputGesture) -> None:
+	def script_layer_entry(self, gesture: "inputCore.InputGesture") -> None:
 		if self.is_layer_active:
 			self.script_layer_error(gesture)
 			return
@@ -148,7 +148,7 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
 			)
 
 	@script(description=_("Swap source and target languages"))
-	def script_swapLanguages(self, gesture: KeyboardInputGesture) -> None:
+	def script_swapLanguages(self, gesture: "inputCore.InputGesture") -> None:
 		log.info("Script 'swapLanguages' triggered.")
 		success, message = self.manager.swap_languages()
 		ui.message(message)
@@ -161,12 +161,12 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
 			)
 
 	@script(description=_("Announce current languages"))
-	def script_announceLanguages(self, gesture: KeyboardInputGesture) -> None:
+	def script_announceLanguages(self, gesture: "inputCore.InputGesture") -> None:
 		announcement = self.manager.get_current_language_announcement()
 		ui.message(announcement)
 
 	@script(description=_("Copy last translation to clipboard"))
-	def script_copyLastResult(self, gesture: KeyboardInputGesture) -> None:
+	def script_copyLastResult(self, gesture: "inputCore.InputGesture") -> None:
 		last_result = self.manager.last_translation
 		if last_result:
 			_unused = api.copyToClip(last_result, notify=True)
@@ -174,7 +174,7 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
 			ui.message(_("No translation result to copy"))
 
 	@script(description=_("Open settings"))
-	def script_openSettings(self, gesture: KeyboardInputGesture) -> None:
+	def script_openSettings(self, gesture: "inputCore.InputGesture") -> None:
 		wx.CallAfter(
 			gui.mainFrame.popupSettingsDialog,
 			gui.settingsDialogs.NVDASettingsDialog,
@@ -182,55 +182,55 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
 		)
 
 	@script(description=_("Toggle auto-translation"))
-	def script_toggleAutoTranslate(self, gesture: KeyboardInputGesture) -> None:
+	def script_toggleAutoTranslate(self, gesture: "inputCore.InputGesture") -> None:
 		new_state = self.manager.toggle_auto_translate()
 		ui.message(_("Auto-translation enabled") if new_state else _("Auto-translation disabled"))
 
 	@script(description=_("Clear cache"))
-	def script_clearCache(self, gesture: KeyboardInputGesture) -> None:
+	def script_clearCache(self, gesture: "inputCore.InputGesture") -> None:
 		self.manager.clear_cache()
 		ui.message(_("Cache cleared"))
 
 	@script(description=_("Translate selection"))
-	def script_translateSelection(self, gesture: KeyboardInputGesture) -> None:
+	def script_translateSelection(self, gesture: "inputCore.InputGesture") -> None:
 		if text := self._get_selected_text():
 			self._execute_translation(text, reverse=False, show_status=True)
 
 	@script(description=_("Translate selection (reversed direction)"))
-	def script_translateReverseSelection(self, gesture: KeyboardInputGesture) -> None:
+	def script_translateReverseSelection(self, gesture: "inputCore.InputGesture") -> None:
 		if text := self._get_selected_text():
 			self._execute_translation(text, reverse=True, show_status=True)
 
 	@script(description=_("Translate clipboard"))
-	def script_translateClipboard(self, gesture: KeyboardInputGesture) -> None:
+	def script_translateClipboard(self, gesture: "inputCore.InputGesture") -> None:
 		if not (text := api.getClipData()):
 			ui.message(_("Clipboard is empty"))
 			return
 		self._execute_translation(text, reverse=False, show_status=True)
 
 	@script(description=_("Translate clipboard (reversed direction)"))
-	def script_translateReverseClipboard(self, gesture: KeyboardInputGesture) -> None:
+	def script_translateReverseClipboard(self, gesture: "inputCore.InputGesture") -> None:
 		if not (text := api.getClipData()):
 			ui.message(_("Clipboard is empty"))
 			return
 		self._execute_translation(text, reverse=True, show_status=True)
 
 	@script(description=_("Translate last spoken text"))
-	def script_translateLastSpoken(self, gesture: KeyboardInputGesture) -> None:
+	def script_translateLastSpoken(self, gesture: "inputCore.InputGesture") -> None:
 		if not (text := self.speech_filter.last_spoken_text):
 			ui.message(_("No last spoken text"))
 			return
 		self._execute_translation(text, reverse=False, show_status=True)
 
 	@script(description=_("Translate last spoken text (reversed direction)"))
-	def script_translateReverseLastSpoken(self, gesture: KeyboardInputGesture) -> None:
+	def script_translateReverseLastSpoken(self, gesture: "inputCore.InputGesture") -> None:
 		if not (text := self.speech_filter.last_spoken_text):
 			ui.message(_("No last spoken text"))
 			return
 		self._execute_translation(text, reverse=True, show_status=True)
 
 	@script(description=_("Show command layer help"))
-	def script_layerHelp(self, gesture: KeyboardInputGesture) -> None:
+	def script_layerHelp(self, gesture: "inputCore.InputGesture") -> None:
 		ui.message(self._generate_layer_help_text())
 
 	def _generate_layer_help_text(self) -> str:
