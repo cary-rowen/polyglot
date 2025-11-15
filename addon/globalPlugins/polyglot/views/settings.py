@@ -111,6 +111,7 @@ class TranslationSettingsPanel(SettingsPanel):
 		try:
 			self._switch_engine_panel()
 		finally:
+			self._sendLayoutUpdatedEvent()
 			self.Thaw()
 
 	def on_any_control_changed(self, event: wx.Event | None = None):
