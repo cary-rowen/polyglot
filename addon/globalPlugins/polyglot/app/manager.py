@@ -81,6 +81,8 @@ class TranslationManager:
 	def cycle_language(self, target: str, forward: bool) -> tuple[bool, str]:
 		"""
 		Cycles the source or target language for the current engine.
+		The other side's language is excluded from the candidate list
+		to prevent source and target from being set to the same language.
 
 		Args:
 			target: "source" or "target", indicating which language to cycle.
@@ -103,11 +105,16 @@ class TranslationManager:
 		if target == "source":
 			config_key = "langFrom"
 			default_val = current_engine.default_source_language
-			lang_codes = list(all_langs.keys())
+			other_code = engine_conf.get("langTo", current_engine.default_target_language)
+			lang_codes = [code for code in all_langs.keys() if code != other_code]
 		else:
 			config_key = "langTo"
 			default_val = current_engine.default_target_language
-			lang_codes = [code for code in all_langs.keys() if code != auto_code]
+			other_code = engine_conf.get("langFrom", current_engine.default_source_language)
+			exclude = {auto_code} if auto_code else set()
+			if other_code != auto_code:
+				exclude.add(other_code)
+			lang_codes = [code for code in all_langs.keys() if code not in exclude]
 		if not lang_codes:
 			return (False, _("No languages available for cycling."))
 		current_code = engine_conf.get(config_key, default_val)
