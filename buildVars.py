@@ -24,7 +24,7 @@ addon_info = AddonInfo(
 	# Translators: Long description to be shown for this add-on on add-on information from add-on store
 	addon_description=_("""This is A translation add-on. Supports multiple engines."""),
 	# version
-	addon_version="0.3.5",
+	addon_version="0.4.0",
 	# Brief changelog for this version
 	# Translators: what's new content for the add-on version to be shown in the add-on store
 	addon_changelog=_("""First version."""),
