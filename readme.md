@@ -53,7 +53,13 @@ The Command Layer is the heart of Polyglot, providing an extremely fast way to p
 | `Shift+B` | Translate clipboard text in reverse. |
 | `L` | Translate the last text spoken by NVDA. |
 | `Shift+L` | Translate the last spoken text in reverse. |
-| `S` | Swap the source and target languages. |
+| `S` | Cycle to the next source language. |
+| `Shift+S` | Cycle to the previous source language. |
+| `G` | Cycle to the next target language. |
+| `Shift+G` | Cycle to the previous target language. |
+| `E` | Cycle to the next translation engine. |
+| `Shift+E` | Cycle to the previous translation engine. |
+| `W` | Swap the source and target languages. |
 | `A` | Announce the current engine and language pair. |
 | `C` | Copy the last translation result to the clipboard. |
 | `V` | Toggle auto-translation mode on or off. |
@@ -73,6 +79,7 @@ Some engines work without a key, while others require API credentials. You can c
 | **Yandex Translate** | No key required. |
 | **DeepL** | [DeepL API](https://www.deepl.com/pro-api) |
 | **Baidu Translate** | [Baidu AI Cloud](https://cloud.baidu.com/product/mt) |
+| **Caiyun Translate** | [Caiyun Open Platform](https://docs.caiyunapp.com/lingocloud-api/index.html) |
 | **Niutrans** | [Niutrans Open Platform](https://niutrans.com/trans-service#price) |
 | **Tencent Translate** | [Tencent Cloud API](https://console.cloud.tencent.com/) |
 | **VIVO Translate** | Requires an [NVDACN](https://www.nvdacn.com) account |
