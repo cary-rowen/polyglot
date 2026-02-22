@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 
 import json
+import random
+import time
 from abc import ABC, abstractmethod
 from typing import Any
 
@@ -77,6 +79,14 @@ class BaseHttpEngine(TranslationEngine):
 		Returns 0 or less if there is no limit.
 		"""
 		return 0
+
+	@property
+	def request_delay_range(self) -> tuple[float, float] | None:
+		"""
+		Defines a range of random delay (in seconds) between chunked requests.
+		Returns (min, max) or None to disable. Default is a gentle range.
+		"""
+		return (0.4, 1.2)
 
 	@property
 	@abstractmethod
@@ -244,7 +254,8 @@ class BaseHttpEngine(TranslationEngine):
 		
 		chunks = split_text(text, limit)
 		total_chunks = len(chunks)
-		
+		delay_range = self.request_delay_range
+
 		translated_chunks = []
 		detected_lang = None
 		for i, chunk in enumerate(chunks):
@@ -252,6 +263,9 @@ class BaseHttpEngine(TranslationEngine):
 				translated_chunks.append(chunk)
 				continue
 				
+			if i > 0 and delay_range:
+				time.sleep(random.uniform(*delay_range))
+
 			leading_ws = len(chunk) - len(chunk.lstrip())
 			trailing_ws = len(chunk) - len(chunk.rstrip())
 			
