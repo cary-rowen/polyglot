@@ -66,7 +66,7 @@ class TranslationTask(threading.Thread):
 			engine = engine_manager.get_engine_by_id(self.engine_id)
 			engine_config = self.engine_config
 			auto_detect_code = engine.auto_detect_code
-			first_result = engine.translate(self.text, self.lang_from, self.lang_to, engine_config)
+			first_result = engine.translate(self.text, self.lang_from, self.lang_to, engine_config, is_cancelled=self.is_cancelled)
 			if self.is_cancelled():
 				return
 			lang_detected = first_result.get("lang_detected")
@@ -84,7 +84,7 @@ class TranslationTask(threading.Thread):
 				if swap_lang and swap_lang != self.lang_to:
 					final_target_lang = swap_lang
 					assert lang_detected is not None
-					second_result = engine.translate(self.text, lang_detected, swap_lang, engine_config)
+					second_result = engine.translate(self.text, lang_detected, swap_lang, engine_config, is_cancelled=self.is_cancelled)
 					if self.is_cancelled():
 						return
 					result.update(second_result)

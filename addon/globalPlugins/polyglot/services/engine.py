@@ -5,6 +5,7 @@ import random
 import time
 from abc import ABC, abstractmethod
 from typing import Any
+from collections.abc import Callable
 
 import addonHandler
 from logHandler import log
@@ -60,7 +61,7 @@ class TranslationEngine(ABC):
 		pass
 
 	@abstractmethod
-	def translate(self, text: str, lang_from: str, lang_to: str, config: dict[str, Any]) -> dict[str, Any]:
+	def translate(self, text: str, lang_from: str, lang_to: str, config: dict[str, Any], is_cancelled: Callable[[], bool] | None = None) -> dict[str, Any]:
 		pass
 
 	def get_ui_states(self, all_configs: dict[str, Any]) -> dict[str, Any]:
@@ -247,7 +248,7 @@ class BaseHttpEngine(TranslationEngine):
 	def _parse_response(self, response_body: str) -> dict[str, Any]:
 		pass
 
-	def translate(self, text: str, lang_from: str, lang_to: str, config: dict[str, Any]) -> dict[str, Any]:
+	def translate(self, text: str, lang_from: str, lang_to: str, config: dict[str, Any], is_cancelled: Callable[[], bool] | None = None) -> dict[str, Any]:
 		limit = self.max_request_length
 		if limit <= 0 or len(text) <= limit:
 			return self._translate_chunk(text, lang_from, lang_to, config)
@@ -259,6 +260,10 @@ class BaseHttpEngine(TranslationEngine):
 		translated_chunks = []
 		detected_lang = None
 		for i, chunk in enumerate(chunks):
+			if is_cancelled and is_cancelled():
+				log.debug("Chunked translation cancelled mid-way.")
+				break
+				
 			if not chunk.strip():
 				translated_chunks.append(chunk)
 				continue
