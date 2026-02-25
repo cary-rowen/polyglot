@@ -288,7 +288,7 @@ class BaseHttpEngine(TranslationEngine):
 			translatedChunks.append(leadingStr + translatedText + trailingStr)
 			
 			if totalChunks > 1:
-				Beep.playProgress(i + 1, totalChunks)
+				Beep.reportProgress(i + 1, totalChunks)
 
 			if detectedLang is None and "langDetected" in res:
 				detectedLang = res["langDetected"]

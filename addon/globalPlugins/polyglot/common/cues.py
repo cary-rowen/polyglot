@@ -13,8 +13,10 @@ import threading
 from collections.abc import Callable
 
 import addonHandler
+import config
 import globalVars
 import nvwave
+import queueHandler
 import tones
 import ui
 
@@ -132,6 +134,44 @@ class Beep:
 		def cueFunction():
 			Beep.play(eventName)
 		_startPeriodicCueInternal(cueFunction, intervalMs, delayMs)
+
+	_lastBeepPct: int = -100
+	_lastSpeechPct: int = -100
+
+	@classmethod
+	def reportProgress(cls, current: int, total: int) -> None:
+		"""Reports progress respecting NVDA's progressBarOutputMode setting.
+
+		Beep feedback runs on any thread.
+		Speech feedback is scheduled to the main thread via queueHandler.
+		"""
+		if total <= 1:
+			return
+		current = max(0, min(current, total))
+		pct = int(current / total * 100)
+		pbConf = config.conf["presentation"]["progressBarUpdates"]
+		mode = pbConf["progressBarOutputMode"]
+		if mode == "off":
+			return
+		if mode in ("beep", "both"):
+			if abs(pct - cls._lastBeepPct) >= pbConf["beepPercentageInterval"]:
+				freq = int(pbConf["beepMinHZ"] * 2 ** (pct / 25.0))
+				tones.beep(freq, 40)
+				cls._lastBeepPct = pct
+		if mode in ("speak", "both"):
+			if abs(pct - cls._lastSpeechPct) >= pbConf["speechPercentageInterval"]:
+				cls._lastSpeechPct = pct
+				queueHandler.queueFunction(
+					queueHandler.eventQueue,
+					Speech.message,
+					_("%d percent") % pct,
+				)
+
+	@classmethod
+	def resetProgress(cls) -> None:
+		"""Resets progress tracking. Call before starting a new tracked task."""
+		cls._lastBeepPct = -100
+		cls._lastSpeechPct = -100
 
 	@staticmethod
 	def playProgress(current: int, total: int) -> None:
