@@ -68,9 +68,10 @@ class TranslationEngine(ABC):
 		return {}
 
 
-class BaseHttpEngine(TranslationEngine):
+class ChunkedTranslationMixin(TranslationEngine):
 	"""
-	Provides a common framework and rules for HTTP-based engines.
+	Provides automatic text chunking and sequential translation capabilities.
+	Subclasses must implement `_translateChunk` to handle the actual translation of each chunk.
 	"""
 
 	@property
@@ -88,6 +89,68 @@ class BaseHttpEngine(TranslationEngine):
 		Returns (min, max) or None to disable. Default is a gentle range.
 		"""
 		return (0.4, 1.2)
+
+	@abstractmethod
+	def _translateChunk(self, text: str, langFrom: str, langTo: str, config: dict[str, Any]) -> dict[str, Any]:
+		pass
+
+	def translate(self, text: str, langFrom: str, langTo: str, config: dict[str, Any], isCancelled: Callable[[], bool] | None = None) -> dict[str, Any]:
+		limit = self.maxRequestLength
+		if limit <= 0 or len(text) <= limit:
+			return self._translateChunk(text, langFrom, langTo, config)
+		
+		chunks = splitText(text, limit)
+		totalChunks = len(chunks)
+		delayRange = self.requestDelayRange
+
+		translatedChunks = []
+		detectedLang = None
+		for i, chunk in enumerate(chunks):
+			if isCancelled and isCancelled():
+				log.debug("Chunked translation cancelled mid-way.")
+				break
+				
+			if not chunk.strip():
+				translatedChunks.append(chunk)
+				continue
+				
+			if i > 0 and delayRange:
+				time.sleep(random.uniform(*delayRange))
+
+			leadingWs = len(chunk) - len(chunk.lstrip())
+			trailingWs = len(chunk) - len(chunk.rstrip())
+			
+			leadingStr = chunk[:leadingWs] if leadingWs > 0 else ""
+			trailingStr = chunk[-trailingWs:] if trailingWs > 0 else ""
+			
+			strippedChunk = chunk.strip()
+			if not strippedChunk:
+				translatedChunks.append(chunk)
+				continue
+
+			res = self._translateChunk(strippedChunk, langFrom, langTo, config)
+			translatedText = res.get("translation", "").strip()
+			
+			translatedChunks.append(leadingStr + translatedText + trailingStr)
+			
+			if totalChunks > 1:
+				Beep.reportProgress(i + 1, totalChunks)
+
+			if detectedLang is None and "langDetected" in res:
+				detectedLang = res["langDetected"]
+		
+		return {
+			"translation": "".join(translatedChunks),
+			"langDetected": detectedLang
+		}
+
+
+class BaseHttpEngine(ChunkedTranslationMixin):
+	"""
+	Provides a common framework and rules for HTTP-based engines.
+	"""
+
+
 
 	@property
 	@abstractmethod
@@ -248,55 +311,6 @@ class BaseHttpEngine(TranslationEngine):
 	def _parseResponse(self, responseBody: str) -> dict[str, Any]:
 		pass
 
-	def translate(self, text: str, langFrom: str, langTo: str, config: dict[str, Any], isCancelled: Callable[[], bool] | None = None) -> dict[str, Any]:
-		limit = self.maxRequestLength
-		if limit <= 0 or len(text) <= limit:
-			return self._translateChunk(text, langFrom, langTo, config)
-		
-		chunks = splitText(text, limit)
-		totalChunks = len(chunks)
-		delayRange = self.requestDelayRange
-
-		translatedChunks = []
-		detectedLang = None
-		for i, chunk in enumerate(chunks):
-			if isCancelled and isCancelled():
-				log.debug("Chunked translation cancelled mid-way.")
-				break
-				
-			if not chunk.strip():
-				translatedChunks.append(chunk)
-				continue
-				
-			if i > 0 and delayRange:
-				time.sleep(random.uniform(*delayRange))
-
-			leadingWs = len(chunk) - len(chunk.lstrip())
-			trailingWs = len(chunk) - len(chunk.rstrip())
-			
-			leadingStr = chunk[:leadingWs] if leadingWs > 0 else ""
-			trailingStr = chunk[-trailingWs:] if trailingWs > 0 else ""
-			
-			strippedChunk = chunk.strip()
-			if not strippedChunk:
-				translatedChunks.append(chunk)
-				continue
-
-			res = self._translateChunk(strippedChunk, langFrom, langTo, config)
-			translatedText = res.get("translation", "").strip()
-			
-			translatedChunks.append(leadingStr + translatedText + trailingStr)
-			
-			if totalChunks > 1:
-				Beep.reportProgress(i + 1, totalChunks)
-
-			if detectedLang is None and "langDetected" in res:
-				detectedLang = res["langDetected"]
-		
-		return {
-			"translation": "".join(translatedChunks),
-			"langDetected": detectedLang
-		}
 
 	def _translateChunk(self, text: str, langFrom: str, langTo: str, config: dict[str, Any]) -> dict[str, Any]:
 		try:
