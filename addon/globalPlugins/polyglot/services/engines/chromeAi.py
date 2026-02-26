@@ -197,7 +197,7 @@ class ChromeAiEngine(ChunkedTranslationMixin):
 				try {{
 					if (!globalThis._aiLanguageDetector) {{
 						const detAvail = await LanguageDetector.availability();
-						if (detAvail === 'no') {{
+						if (detAvail === 'no' || detAvail === 'unavailable') {{
 							return JSON.stringify({{code: 'DETECTOR_ERR_UNAVAILABLE'}});
 						}}
 						globalThis._aiLanguageDetector = await LanguageDetector.create();
@@ -223,7 +223,7 @@ class ChromeAiEngine(ChunkedTranslationMixin):
 				if (!globalThis._aiTranslators[key]) {{
 					const options = {{ sourceLanguage: sourceLang, targetLanguage: targetLang }};
 					const avail = await Translator.availability(options);
-					if (avail === 'no') {{
+					if (avail === 'no' || avail === 'unavailable') {{
 						return JSON.stringify({{code: 'MODEL_STATE_NO', detectedLang: detectedLang, pair: key}});
 					}}
 					if (avail === 'downloadable') {{
