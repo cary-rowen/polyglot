@@ -142,7 +142,7 @@ class GoogleHQTranslateEngine(BaseHttpEngine):
 		spec = super().getConfigSpec()
 		spec.extend(
 			[
-				{"id": "apiKey", "label": _("Mirror Token"), "type": "password", "default": ""},
+				{"id": "apiKey", "label": _("API Key"), "type": "password", "default": "3a64ad20-724b-41dc-ba23-cf64185dbfa3"},
 				{
 					"id": "customUrl",
 					"label": _("Endpoint URL"),
@@ -154,19 +154,29 @@ class GoogleHQTranslateEngine(BaseHttpEngine):
 		return spec
 
 	def _buildRequestParams(self, text: str, langFrom: str, langTo: str, config: dict) -> dict:
-		mirrorToken = config.get("apiKey", "3a64ad20-724b-41dc-ba23-cf64185dbfa3").strip()
-		if not mirrorToken:
-			raise AuthenticationError(_("Mirror Token for Google Translate (HQ) is not configured."))
+		apiKey = config.get("apiKey", "3a64ad20-724b-41dc-ba23-cf64185dbfa3").strip()
+		if not apiKey:
+			raise AuthenticationError(_("API Key for Google Translate (HQ) is not configured."))
 		url = config.get("customUrl", "https://translate.googleapis.mirror.nvdadr.com/polyglotGoogle").strip()
 		bodyData = [[[text], langFrom, langTo], "wt_lib"]
-		headers = {
-			"Content-Type": "application/json+protobuf",
-			"User-Agent": "NVDAPolyglot/1.0",
-			"X-Mirror-Token": mirrorToken,
-		}
+
+		if "mirror.nvdadr.com" in url:
+			headers = {
+				"Content-Type": "application/json+protobuf",
+				"User-Agent": "NVDAPolyglot/1.0",
+				"X-Mirror-Token": apiKey,
+			}
+			finalUrl = url
+		else:
+			headers = {
+				"Content-Type": "application/json+protobuf",
+				"User-Agent": "Mozilla/5.0",
+			}
+			finalUrl = f"{url}?key={apiKey}"
+
 		return {
 			"method": "POST",
-			"url": url,
+			"url": finalUrl,
 			"headers": headers,
 			"data": json.dumps(bodyData).encode("utf-8"),
 		}
