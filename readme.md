@@ -1,113 +1,151 @@
-# Polyglot - Multilingual Translation Add-on for NVDA
+# Polyglot for NVDA
 
-Polyglot is a translation add-on for the [NVDA screen reader](https://www.nvaccess.org/), designed to provide a seamless, real-time translation experience. It features a flexible and extensible engine-based architecture that integrates with several major translation services.
+Polyglot is an NVDA global add-on focused on fast, flexible multilingual translation. It can translate selected text, clipboard content, and the last text spoken by NVDA, and it can also intercept spoken content for live auto-translation.
 
-## About the Add-on
+The add-on is built around a dynamic engine architecture. Translation engines declare their own capabilities and configuration schema, and the settings UI is generated from that schema at runtime. That keeps the core plugin small while making it straightforward to add new services.
 
-Polyglot brings the world closer by breaking down language barriers directly within NVDA. Whether you are browsing foreign websites, reading documents in other languages, or chatting with friends from around the globe, Polyglot provides instant translation of selected text, clipboard content, and the last text spoken by NVDA.
+## What It Does
 
-The core highlight of its architecture is the **dynamic engine system**. Developers can easily integrate new translation services, and the settings interface is automatically generated based on the capabilities of the selected engine, providing an intuitive user experience.
-
-The development environment and build process for this add-on follow standard community templates, ensuring code consistency and making it easier for future contributions.
+- Translates selected text, clipboard text, and the last spoken NVDA utterance.
+- Provides a translation command layer on `NVDA+Shift+T` for quick keyboard-driven actions.
+- Supports live auto-translation of spoken NVDA content.
+- Includes a smart speech filter to avoid translating roles, states, and formatting noise.
+- Persists a translation cache to reduce repeated requests.
+- Can copy manual translation results to the clipboard automatically.
+- Lets you switch engines and languages without leaving the keyboard.
+- Exposes a dedicated interactive translation dialog for longer or iterative translation work.
 
 ## Installation
 
-We always recommend installing this add-on directly from the built-in NVDA Add-on Store. Alternatively, you can:
+The preferred installation path is the NVDA Add-on Store. You can also install manually:
 
-1.  Download the latest version of the add-on from the [Releases page](https://github.com/cary-rowen/polyglot/releases).
-2.  Open the downloaded `.nvda-addon` file.
-3.  Choose "Yes" in the NVDA installation confirmation dialog.
-4.  Restart NVDA when prompted.
+1. Download the latest `.nvda-addon` package from the [Releases page](https://github.com/cary-rowen/polyglot/releases).
+2. Open the downloaded file.
+3. Confirm installation in NVDA.
+4. Restart NVDA when prompted.
 
-## Features
+## Quick Start
 
-* **Multiple Translation Sources**: Support for translating:
-    *   Selected text.
-    *   Clipboard content.
-    *   The last text spoken by NVDA.
-* **Efficient Command Layer**: A dedicated keyboard layer (`NVDA+Shift+T`) allows you to execute various translation commands quickly with a single key press.
-* **Auto-Translation**: Automatically translates any text spoken by NVDA, perfect for immersive reading.
-* **Extensible Engine Architecture**: Supports multiple translation services. Developers can easily add new engines without modifying the core code.
-* **Dynamic Settings UI**: The settings panel automatically adapts to the currently selected engine, showing only relevant configuration options.
-* **Clipboard Integration**: Supports automatically copying translation results to the clipboard.
-* **Translation Cache**: Caches results so that repeated text does not require a new translation request, effectively reducing API usage.
+1. Open `NVDA menu -> Preferences -> Settings -> Polyglot`.
+2. Choose a translation engine.
+3. Configure any required credentials for that engine.
+4. Set source and target languages.
+5. Optionally enable clipboard copy and the smart speech filter.
+6. Press `NVDA+Shift+T`, then use one of the command-layer keys below.
 
-## Usage and Configuration
+## Command Layer
 
-Before using the translation features, you must configure at least one translation engine. All settings are located at: **NVDA Menu -> Preferences -> Settings... -> Polyglot**.
-
-### The Command Layer
-
-The Command Layer is the heart of Polyglot, providing an extremely fast way to perform translation tasks.
-
-1.  **Enter the Layer**: Press `NVDA+Shift+T`. You will hear a short, low-pitched beep indicating the layer is active.
-2.  **Execute a Command**: Press any key from the list below. The layer will automatically exit after the command is executed.
-
-**Command Layer Shortcuts:**
+Press `NVDA+Shift+T` to enter the command layer. A short beep confirms that the layer is active. Most commands execute once and exit the layer. Language and engine switching commands stay inside the layer so you can continue cycling.
 
 | Key | Action |
-| :--- | :--- |
+| --- | --- |
 | `T` | Translate the current selection. |
-| `Shift+T` | Translate the selection in reverse (Target -> Source). |
-| `B` | Translate text from the clipboard. |
+| `Shift+T` | Translate the current selection in reverse. |
+| `B` | Translate clipboard text. |
 | `Shift+B` | Translate clipboard text in reverse. |
 | `L` | Translate the last text spoken by NVDA. |
-| `Shift+L` | Translate the last spoken text in reverse. |
-| `S` | Cycle to the next source language. |
-| `Shift+S` | Cycle to the previous source language. |
-| `G` | Cycle to the next target language. |
-| `Shift+G` | Cycle to the previous target language. |
-| `E` | Cycle to the next translation engine. |
-| `Shift+E` | Cycle to the previous translation engine. |
-| `W` | Swap the source and target languages. |
+| `Shift+L` | Translate the last text spoken by NVDA in reverse. |
+| `S` | Next source language. |
+| `Shift+S` | Previous source language. |
+| `G` | Next target language. |
+| `Shift+G` | Previous target language. |
+| `E` | Next engine. |
+| `Shift+E` | Previous engine. |
+| `W` | Swap source and target languages. |
 | `A` | Announce the current engine and language pair. |
-| `C` | Copy the last translation result to the clipboard. |
-| `V` | Toggle auto-translation mode on or off. |
-| `O` | Open the Polyglot settings panel. |
+| `C` | Copy the last translation result. |
+| `V` | Toggle auto-translation. |
+| `I` | Open the interactive translation dialog. |
+| `O` | Open Polyglot settings. |
 | `X` | Clear the translation cache. |
-| `H` | Announce this list of layer shortcuts. |
+| `H` | Show command-layer help. |
 
-### Supported Engines and Configuration
+## Interactive Translation Dialog
 
-Some engines work without a key, while others require API credentials. You can configure them in the settings panel.
+The interactive dialog is designed for longer text and iterative translation work.
 
-| Engine | Where to get credentials |
-| --- | --- |
-| **Google Translate (key-free)** | No key required. |
-| **Microsoft Translator (key-free)**| No key required. |
-| **Lingva Translate** | No key required. |
-| **Yandex Translate** | No key required. |
-| **DeepL** | [DeepL API](https://www.deepl.com/pro-api) |
-| **Baidu Translate** | [Baidu AI Cloud](https://cloud.baidu.com/product/mt) |
-| **Caiyun Translate** | [Caiyun Open Platform](https://docs.caiyunapp.com/lingocloud-api/index.html) |
-| **Niutrans** | [Niutrans Open Platform](https://niutrans.com/trans-service#price) |
-| **Tencent Translate** | [Tencent Cloud API](https://console.cloud.tencent.com/) |
-| **VIVO Translate** | Requires an [NVDACN](https://www.nvdacn.com) account |
-| **Ollama** | Your self-hosted Ollama server URL. |
-| **OpenRouter** | [OpenRouter.ai](https://openrouter.ai/keys) |
+- Open it from the command layer with `I`.
+- Select engine, source language, and target language without leaving the dialog.
+- For LLM-style engines, adjust model and prompt template directly in the dialog.
+- Press `Ctrl+Enter` in the source text box to translate.
+- Copy the result or clear both panes without reopening the window.
 
-## Development and Contribution
+## Settings Guide
 
-For details about the NVDA add-on development ecosystem, please refer to the [NVDA Add-on Development Guide](https://github.com/nvdaaddons/DevGuide/wiki/NVDA-Add-on-Development-Guide) and join the discussion on the [NVDA Add-ons mailing list](https://nvda-addons.groups.io/g/nvda-addons).
+### Common Settings
 
-### Contributing
+- `Copy manual translation results to clipboard`: Copies manual translation output after a successful request.
+- `Enable smart speech filter`: When translating spoken NVDA output, skips non-content speech such as roles, states, location, and formatting details where possible.
+- `Clear Cache`: Clears the persistent translation cache and shows the current item count in the button label.
 
-Contributions of all forms are welcome! Whether it's adding a new engine, fixing bugs, improving documentation, or refining translations, your help is greatly appreciated.
+### Shared Engine Settings
 
-*   **Bug Reports & Feature Requests**: Please open an issue on the [GitHub repository](https://github.com/cary-rowen/polyglot/issues) and provide as much detail as possible.
-*   **Pull Requests**: Fork the repository, create a new branch, and submit a PR with your changes.
+Most engines inherit a common set of settings:
 
-### Adding a New Translation Engine
+- `Source language` and `Target language`
+- `Proxy mode`: use system proxy settings or disable proxy usage
+- `Request timeout`
 
-Thanks to the add-on's architecture, adding a new engine is simple:
+If an engine reports detected source language, Polyglot also exposes:
 
-1.  **Create a New Engine File**: Add a new Python file in the `polyglot/services/engines/` directory.
-2.  **Implement the `TranslationEngine` Interface**: Your new class must inherit from `BaseHttpEngine` and implement all its abstract methods.
+- `Auto-swap if detected source matches target`: useful when the source language is set to auto-detect
+- `Swap to language`: the alternative target used during auto-swap
 
-You can refer to existing engine files (e.g., `google.py`) as a practical example.
+### Auto-Translation Behavior
 
-### Building the Add-on
+- Auto-translation acts on spoken NVDA content captured by the speech pipeline.
+- The add-on suppresses its own spoken messages to avoid translation loops.
+- If auto-translation fails three times in a row, it is turned off automatically.
+- The smart speech filter mainly affects spoken-content translation, not standard manual text translation.
 
-This project uses the standard [NVDA Add-on Scons Template](https://github.com/nvaccess/AddonTemplate) for development and packaging. For information on how to build and distribute the add-on package, please refer to the template documentation.
+### LLM and Polyglot-Specific Options
 
-This project is licensed under the GNU General Public License v2.0. See the `COPYING.txt` file for more details.
+Some engines expose additional controls:
+
+- `Ollama 1` and `Ollama 2` provide two separate saved profiles for different local or remote Ollama setups.
+- `OpenRouter` exposes API URL, API key, model preset, custom model name, prompt template, and custom prompts.
+- `Ollama` engines expose API URL, model name, optional API key, prompt template, and custom prompts.
+- `Google Translate (Polyglot)` exposes a configurable endpoint URL and API key field.
+- `Google Translate (key-free)` offers an optional mirror-server toggle.
+
+## Engine Overview
+
+The repository currently includes the following engines:
+
+| Engine | Credentials | Notes |
+| --- | --- | --- |
+| `Baidu Translate` | Baidu app ID and secret | Standard vendor API integration. |
+| `Caiyun` | Caiyun token | Standard vendor API integration. |
+| `DeepL` | DeepL API key | Standard vendor API integration. |
+| `Google Translate (key-free)` | None | Supports an optional mirror endpoint toggle. |
+| `Google Translate (Polyglot)` | Configurable API key and endpoint | Ships with default endpoint values in code; availability depends on service status. |
+| `Lingva Translate` | None | Public Lingva endpoint, no language-detection reporting in responses. |
+| `Microsoft Translator (key-free)` | None | Fetches a temporary token automatically. |
+| `Niutrans` | Niutrans API key | Standard vendor API integration. |
+| `Ollama 1` | Ollama URL, model name, optional key | First saved Ollama profile. |
+| `Ollama 2` | Ollama URL, model name, optional key | Second saved Ollama profile. |
+| `OpenRouter` | OpenRouter API key | Supports model presets and editable prompt templates. |
+| `Tencent Translate` | Tencent secret ID and secret key | Standard vendor API integration. |
+| `Tencent Translate (Polyglot)` | NVDACN username and password | Polyglot-backed Tencent route. |
+| `VIVO Translate` | NVDACN username and password | Limited language set, no auto-detect source language. |
+| `Volcengine (Polyglot)` | NVDACN username and password | Polyglot-backed Volcengine route. |
+| `Yandex Translate` | None | Public-style endpoint, no detected-language reporting. |
+
+## Contributing
+
+Contributions are welcome across code, documentation, localization, testing, and engine integrations.
+
+- Issues: [GitHub Issues](https://github.com/cary-rowen/polyglot/issues)
+- Releases: [GitHub Releases](https://github.com/cary-rowen/polyglot/releases)
+
+When adding a new engine:
+
+1. Create a module under `addon/globalPlugins/polyglot/services/engines/`.
+2. Implement `TranslationEngine` or, for HTTP engines, extend `BaseHttpEngine`.
+3. Return a config spec from `getConfigSpec()` if the engine needs settings.
+4. Use supported control types from `views/factory.py`: `choice`, `text`, `password`, `checkbox`, and `spinctrl`.
+5. Verify the engine appears correctly in the dynamic settings panel and command-layer.
+
+## License
+
+This project is licensed under the GNU General Public License v2. See [COPYING.txt](COPYING.txt).
