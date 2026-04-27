@@ -1471,6 +1471,86 @@ msgstr "这是一个翻译插件，支持多种引擎。"
 msgid "First version."
 msgstr "初版发布。"
 
+#: addon\globalPlugins\polyglot\services\engines\chromeAi.py:29
+msgid "Chrome AI (Offline)"
+msgstr "Chrome AI（离线）"
+
+#: addon\globalPlugins\polyglot\services\engines\chromeAi.py:105
+msgid ""
+"Enable Chrome AI offline engine (requires Chrome 138+, resources released on "
+"NVDA exit)"
+msgstr "启用 Chrome AI 离线引擎（需要 Chrome 138+，资源将在 NVDA 退出时释放）"
+
+#: addon\globalPlugins\polyglot\services\engines\chromeAi.py:186
+msgid ""
+"Chrome AI offline engine is disabled. Please enable it in the Polyglot "
+"settings panel to use."
+msgstr "Chrome AI 离线引擎已禁用。请在 Polyglot 设置面板中启用后再使用。"
+
+#. Translators: {model} is a model name like "Translation model" or "Language detection model".
+#: addon\globalPlugins\polyglot\services\engines\chromeAi.py:225
+#, python-brace-format
+msgid "{model} downloading..."
+msgstr "{model}正在下载..."
+
+#: addon\globalPlugins\polyglot\services\engines\chromeAi.py:230
+msgid "Download complete."
+msgstr "下载完成。"
+
+#: addon\globalPlugins\polyglot\services\engines\chromeAi.py:282
+msgid "Language detection model"
+msgstr "语言检测模型"
+
+#: addon\globalPlugins\polyglot\services\engines\chromeAi.py:357
+msgid "Translation model"
+msgstr "翻译模型"
+
+#: addon\globalPlugins\polyglot\services\engines\chromeAi.py:362
+msgid "Unexpected Chrome AI error: "
+msgstr "意外的 Chrome AI 错误："
+
+#: addon\globalPlugins\polyglot\services\engines\chromeAi.py:387
+msgid ""
+"Chrome's Translator API is not available. Please update Chrome to version "
+"138 or later and ensure the TranslationAPI flag is enabled in chrome://flags."
+msgstr ""
+"Chrome 的 Translator API 不可用。请将 Chrome 更新到 138 或更高版本，并确认已在 "
+"chrome://flags 中启用 TranslationAPI 标志。"
+
+#: addon\globalPlugins\polyglot\services\engines\chromeAi.py:392
+msgid ""
+"Chrome's LanguageDetector API is not available. Please update Chrome and "
+"enable the TranslationAPI flag."
+msgstr "Chrome 的 LanguageDetector API 不可用。请更新 Chrome 并启用 TranslationAPI 标志。"
+
+#: addon\globalPlugins\polyglot\services\engines\chromeAi.py:397
+msgid "Language detection is not supported in this Chrome installation."
+msgstr "当前 Chrome 安装不支持语言检测。"
+
+#: addon\globalPlugins\polyglot\services\engines\chromeAi.py:403
+#, python-brace-format
+msgid ""
+"Could not confidently detect the source language. Please select a source "
+"language instead of Auto-detect. (confidence: {confidence})"
+msgstr "无法可靠检测源语言。请手动选择源语言，而不是使用自动检测。（置信度：{confidence}）"
+
+#: addon\globalPlugins\polyglot\services\engines\chromeAi.py:408
+msgid "Language detection error: "
+msgstr "语言检测错误："
+
+#: addon\globalPlugins\polyglot\services\engines\chromeAi.py:412
+#, python-brace-format
+msgid "Language pair {pair} is not supported by Chrome's offline models."
+msgstr "Chrome 离线模型不支持语言对 {pair}。"
+
+#: addon\globalPlugins\polyglot\services\engines\chromeAi.py:416
+msgid "Chrome AI error: "
+msgstr "Chrome AI 错误："
+
+#: addon\globalPlugins\polyglot\services\engines\chromeAi.py:418
+msgid "Unexpected response from Chrome AI."
+msgstr "Chrome AI 返回了意外响应。"
+
 #~ msgid "The current engine has no swappable languages."
 #~ msgstr "当前引擎无可交换的语言。"
 
