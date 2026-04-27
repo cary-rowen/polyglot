@@ -9,6 +9,7 @@ evaluateSync call uses a unique, atomically-incremented message ID.
 
 import json
 import os
+from pathlib import Path
 import subprocess
 import threading
 import time
@@ -26,7 +27,7 @@ import websocket
 
 USER_DATA_DIR = os.path.join(globalVars.appArgs.configPath, "polyglot_chrome_ai")
 DEVTOOLS_ACTIVE_PORT_FILE = os.path.join(USER_DATA_DIR, "DevToolsActivePort")
-PAGE_URL = "about:blank"
+PAGE_FILE = os.path.join(USER_DATA_DIR, "chrome_ai.html")
 
 
 class CdpError(Exception):
@@ -82,6 +83,7 @@ class CdpBridge:
 		if not chromePath:
 			raise CdpError("Chrome not found. Please install Google Chrome.")
 		os.makedirs(USER_DATA_DIR, exist_ok=True)
+		pageUrl = self._preparePageUrl()
 		try:
 			os.remove(DEVTOOLS_ACTIVE_PORT_FILE)
 		except FileNotFoundError:
@@ -102,13 +104,20 @@ class CdpBridge:
 					"--mute-audio",
 					"--no-first-run",
 					"--no-default-browser-check",
-					PAGE_URL,
+					pageUrl,
 				],
 				stdout=subprocess.DEVNULL,
 				stderr=subprocess.DEVNULL,
 			)
 		except Exception as e:
 			raise CdpError(f"Failed to start Chrome: {e}")
+
+	def _preparePageUrl(self) -> str:
+		"""Creates a local secure-context page and returns its file URL."""
+		html = "<!doctype html><meta charset=\"utf-8\"><title>Polyglot Chrome AI</title>"
+		with open(PAGE_FILE, "w", encoding="utf-8") as pageFile:
+			pageFile.write(html)
+		return Path(PAGE_FILE).resolve().as_uri()
 
 	def _getDebugPort(self) -> int:
 		"""Reads the ephemeral CDP port assigned to the managed Chrome process."""
@@ -137,7 +146,7 @@ class CdpBridge:
 
 	def _createPageTarget(self) -> str | None:
 		"""Creates a page target and returns its WebSocket URL if available."""
-		quotedUrl = urllib.parse.quote(PAGE_URL, safe="")
+		quotedUrl = urllib.parse.quote(self._preparePageUrl(), safe="")
 		try:
 			target = self._readJsonEndpoint(f"/json/new?{quotedUrl}", method="PUT")
 		except Exception:
