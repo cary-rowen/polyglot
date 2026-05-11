@@ -25,6 +25,7 @@ class TranslationSettingsPanel(SettingsPanel):
 	cache: TranslationCache
 	uiModel: dict[str, Any]
 	dynamicControls: dict[str, dict[str, Any]]
+	enginePanelContainer: wx.Panel
 	enginePanelsCache: dict[str, wx.Panel]
 	# Allow these instance variables to be None, matching their initial assignment.
 	activeEnginePanel: wx.Panel | None
@@ -53,12 +54,12 @@ class TranslationSettingsPanel(SettingsPanel):
 		self.engineChoice = sHelper.addLabeledControl(_("Translation &engine:"), wx.Choice)
 		_unused = sHelper.addItem(wx.StaticLine(self, style=wx.LI_HORIZONTAL))
 
+		self.enginePanelContainer = wx.Panel(self)
 		self.enginePanelContainerSizer = wx.BoxSizer(wx.VERTICAL)
-		_unused = sHelper.addItem(self.enginePanelContainerSizer, proportion=1, flag=wx.EXPAND)
+		self.enginePanelContainer.SetSizer(self.enginePanelContainerSizer)
+		_unused = sHelper.addItem(self.enginePanelContainer, proportion=1, flag=wx.EXPAND)
 
 		_unused = sHelper.addItem(wx.StaticLine(self, style=wx.LI_HORIZONTAL))
-		self.engineChoice.Bind(wx.EVT_CHOICE, self.onEngineChanged)
-		self._populateEngineState()
 
 		commonBox = wx.StaticBox(self, label=_("Common Settings"))
 		commonSizer = wx.StaticBoxSizer(commonBox, wx.VERTICAL)
@@ -78,11 +79,12 @@ class TranslationSettingsPanel(SettingsPanel):
 		self.clearCacheButton = commonSHelper.addItem(wx.Button(self, label=_("Clear Cache")))
 		_unused = sHelper.addItem(commonSizer, flag=wx.EXPAND)
 
+		self.engineChoice.Bind(wx.EVT_CHOICE, self.onEngineChanged)
 		self.copyResultCheckbox.Bind(wx.EVT_CHECKBOX, self.onAnyControlChanged)
 		self.enableSmartFilterCheckbox.Bind(wx.EVT_CHECKBOX, self.onAnyControlChanged)
 		self.clearCacheButton.Bind(wx.EVT_BUTTON, self.onClearCache)
 
-		self._populateCommonState()
+		self._populateInitialState()
 
 	def _onDestroy(self, event: wx.Event) -> None:
 		"""Ensure the timer is stopped when the panel is destroyed."""
@@ -140,8 +142,8 @@ class TranslationSettingsPanel(SettingsPanel):
 		except Exception:
 			log.error(f"Error executing getUiStates for engine '{engine.id}'.", exc_info=True)
 
-	def _populateEngineState(self):
-		"""Populate the engine selector and create the initial engine settings panel."""
+	def _populateInitialState(self):
+		"""Populate settings controls and create the initial engine settings panel."""
 		self.Freeze()
 		try:
 			conf = config.getConfig()
@@ -151,15 +153,12 @@ class TranslationSettingsPanel(SettingsPanel):
 			if engineId and engineId in self.engines:
 				self.engineChoice.SetStringSelection(self.engines[engineId].name)
 
+			self.copyResultCheckbox.SetValue(conf.get("copyResult", True))
+			self.enableSmartFilterCheckbox.SetValue(conf.get("enableSmartFilter", True))
+
 			self._switchEnginePanel()
 		finally:
 			self.Thaw()
-
-	def _populateCommonState(self):
-		"""Populate common settings after their controls have been created."""
-		conf = config.getConfig()
-		self.copyResultCheckbox.SetValue(conf.get("copyResult", True))
-		self.enableSmartFilterCheckbox.SetValue(conf.get("enableSmartFilter", True))
 
 	def _switchEnginePanel(self):
 		"""Show the panel for the selected engine, creating it if necessary."""
@@ -181,11 +180,12 @@ class TranslationSettingsPanel(SettingsPanel):
 			self.activeEnginePanel = panel
 
 		self.onAnyControlChanged()
+		self.enginePanelContainer.Layout()
 		self.Layout()
 
 	def _createEnginePanel(self, engineId: str) -> wx.Panel:
 		"""Create and populate the settings panel for a specific engine ONCE."""
-		panel = wx.Panel(self)
+		panel = wx.Panel(self.enginePanelContainer)
 		engine = self.engines.get(engineId)
 		if not engine:
 			return panel
@@ -255,17 +255,10 @@ class TranslationSettingsPanel(SettingsPanel):
 		if not engineId:
 			return
 
-		conf = config.getConfig()
-		copyResultCheckbox = getattr(self, "copyResultCheckbox", None)
-		enableSmartFilterCheckbox = getattr(self, "enableSmartFilterCheckbox", None)
 		self.uiModel = {
 			"engine": engineId,
-			"copyResult": copyResultCheckbox.IsChecked()
-			if copyResultCheckbox
-			else conf.get("copyResult", True),
-			"enableSmartFilter": enableSmartFilterCheckbox.IsChecked()
-			if enableSmartFilterCheckbox
-			else conf.get("enableSmartFilter", True),
+			"copyResult": self.copyResultCheckbox.IsChecked(),
+			"enableSmartFilter": self.enableSmartFilterCheckbox.IsChecked(),
 		}
 
 		if engineId in self.dynamicControls:
