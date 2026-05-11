@@ -84,6 +84,11 @@ class ChromeAiEngine(ChunkedTranslationMixin):
 		return "auto"
 
 	@property
+	def enabledConfigLabel(self) -> str:
+		"""Returns the Chrome AI-specific label for the common enable checkbox."""
+		return _("Enable Chrome AI offline engine (requires Chrome 138+, resources released on NVDA exit)")
+
+	@property
 	def defaultSourceLanguage(self) -> str:
 		return "auto"
 
@@ -100,14 +105,7 @@ class ChromeAiEngine(ChunkedTranslationMixin):
 			_unused = toChoices.pop(autoCode, None)
 		swapChoices = toChoices.copy()
 		return [
-			{
-				"id": "enabled",
-				"label": _(
-					"Enable Chrome AI offline engine (requires Chrome 138+, resources released on NVDA exit)",
-				),
-				"type": "checkbox",
-				"default": True,
-			},
+			self.getEnabledConfigSpec(),
 			{
 				"id": "langFrom",
 				"label": _("Source language:"),
@@ -143,7 +141,6 @@ class ChromeAiEngine(ChunkedTranslationMixin):
 		states: dict[str, Any] = {}
 		allLangs = self.getSupportedLanguages()
 		autoCode = self.autoDetectCode
-		isEnabled = allConfigs.get("enabled", True)
 		selectedFrom = allConfigs.get("langFrom")
 		selectedTo = allConfigs.get("langTo")
 		toChoices = allLangs.copy()
@@ -155,11 +152,11 @@ class ChromeAiEngine(ChunkedTranslationMixin):
 		validToLangs = toChoices.copy()
 		if selectedFrom and selectedFrom != autoCode:
 			_unused = validToLangs.pop(selectedFrom, None)
-		states["langFrom"] = {"visible": isEnabled, "choices": fromChoices}
-		states["langTo"] = {"visible": isEnabled, "choices": validToLangs}
+		states["langFrom"] = {"choices": fromChoices}
+		states["langTo"] = {"choices": validToLangs}
 		isAutoFrom = selectedFrom == autoCode
-		states["enableAutoSwap"] = {"visible": isEnabled and isAutoFrom}
-		isSwapVisible = isEnabled and isAutoFrom and allConfigs.get("enableAutoSwap", False)
+		states["enableAutoSwap"] = {"visible": isAutoFrom}
+		isSwapVisible = isAutoFrom and allConfigs.get("enableAutoSwap", False)
 		states["swapLanguage"] = {"visible": isSwapVisible, "choices": validToLangs.copy()}
 		return states
 
@@ -183,7 +180,7 @@ class ChromeAiEngine(ChunkedTranslationMixin):
 		config: dict[str, Any],
 		isCancelled: Callable[[], bool] | None = None,
 	) -> dict[str, Any]:
-		if not config.get("enabled", True):
+		if not self.isEnabled(config):
 			log.debug("Chrome AI: engine is disabled, refusing translation request.")
 			raise EngineError(
 				_(

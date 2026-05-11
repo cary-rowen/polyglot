@@ -52,6 +52,24 @@ class TranslationEngine(ABC):
 		"""Reports the ability to detect the source language. Defaults to whether language detection is supported."""
 		return self.supportsLanguageDetection
 
+	@property
+	def enabledConfigLabel(self) -> str:
+		"""Returns the label for the common engine enable checkbox."""
+		return _("Enable this engine")
+
+	def getEnabledConfigSpec(self) -> dict[str, Any]:
+		"""Returns the common configuration item that controls whether this engine is usable."""
+		return {
+			"id": "enabled",
+			"label": self.enabledConfigLabel,
+			"type": "checkbox",
+			"default": True,
+		}
+
+	def isEnabled(self, engineConfig: dict[str, Any]) -> bool:
+		"""Returns whether this engine is enabled by its configuration."""
+		return engineConfig.get("enabled", True) is not False
+
 	@abstractmethod
 	def getConfigSpec(self) -> list[dict[str, Any]]:
 		pass
@@ -218,6 +236,7 @@ class BaseHttpEngine(ChunkedTranslationMixin):
 			_unused = toChoices.pop(autoCode, None)
 
 		spec: list[dict[str, Any]] = [
+			self.getEnabledConfigSpec(),
 			{
 				"id": "langFrom",
 				"label": _("Source language:"),

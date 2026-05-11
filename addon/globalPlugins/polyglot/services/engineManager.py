@@ -3,6 +3,7 @@
 import importlib
 import inspect
 import pkgutil
+from typing import Any
 
 from logHandler import log
 
@@ -45,6 +46,38 @@ def getAllEngines() -> list[TranslationEngine]:
 		_scanAndLoadEngines()
 	assert _engineInstances is not None
 	return _engineInstances
+
+
+def _getEngineConfig(engineId: str) -> dict[str, Any]:
+	"""Returns the saved configuration section for the given engine."""
+	from ..common import config
+
+	conf = config.getConfig()
+	return conf["engines"].get(engineId, {})
+
+
+def getEnabledEngines() -> list[TranslationEngine]:
+	"""Returns all loaded engines that are enabled in the current configuration."""
+	return [engine for engine in getAllEngines() if engine.isEnabled(_getEngineConfig(engine.id))]
+
+
+def getNextEnabledEngine(currentId: str, forward: bool = True) -> TranslationEngine | None:
+	"""Returns the next enabled engine after the given engine ID, or None if none are enabled."""
+	allEngines = getAllEngines()
+	if not allEngines:
+		return None
+	engineIds = [engine.id for engine in allEngines]
+	try:
+		currentIndex = engineIds.index(currentId)
+	except ValueError:
+		currentIndex = -1 if forward else 0
+	step = 1 if forward else -1
+	for offset in range(1, len(allEngines) + 1):
+		newIndex = (currentIndex + (step * offset)) % len(allEngines)
+		candidate = allEngines[newIndex]
+		if candidate.isEnabled(_getEngineConfig(candidate.id)):
+			return candidate
+	return None
 
 
 def getEngineById(engineId: str) -> TranslationEngine:

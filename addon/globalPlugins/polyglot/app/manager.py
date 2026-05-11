@@ -148,14 +148,9 @@ class TranslationManager:
 			return (False, _("No translation engines available."))
 		conf = config.getConfig()
 		currentId = conf["engine"]
-		engineIds = [e.id for e in allEngines]
-		try:
-			currentIndex = engineIds.index(currentId)
-		except ValueError:
-			currentIndex = 0
-		step = 1 if forward else -1
-		newIndex = (currentIndex + step) % len(engineIds)
-		newEngine = allEngines[newIndex]
+		newEngine = engineManager.getNextEnabledEngine(currentId, forward=forward)
+		if not newEngine:
+			return (False, _("No enabled translation engines available."))
 		conf["engine"] = newEngine.id
 		return (True, newEngine.name)
 
@@ -273,6 +268,28 @@ class TranslationManager:
 		if engineId not in conf["engines"]:
 			conf["engines"][engineId] = {}
 		engineConfig = conf["engines"][engineId].dict()
+		if not currentEngine.isEnabled(engineConfig):
+			fallbackEngine = engineManager.getNextEnabledEngine(engineId)
+			if not fallbackEngine:
+				log.info(f"Selected engine '{engineId}' is disabled and no enabled fallback engine is available.")
+				error = EngineError(_("No enabled translation engines available."))
+				self._onTranslationComplete(
+					{"translation": None, "error": error},
+					isManual=isManual,
+					allowCopy=allowCopy,
+					onSuccess=onSuccess,
+					onError=onError,
+				)
+				return
+			log.info(f"Selected engine '{engineId}' is disabled; switching to '{fallbackEngine.id}'.")
+			conf["engine"] = fallbackEngine.id
+			engineId = fallbackEngine.id
+			currentEngine = fallbackEngine
+			if engineId not in conf["engines"]:
+				conf["engines"][engineId] = {}
+			engineConfig = conf["engines"][engineId].dict()
+			langFrom = None
+			langTo = None
 		try:
 			if langFrom is None:
 				langFrom = engineConfig.get("langFrom", currentEngine.defaultSourceLanguage)

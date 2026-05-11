@@ -24,7 +24,8 @@ class InteractiveTranslationDialog(DPIScaledDialog):
 			style=wx.DEFAULT_DIALOG_STYLE | wx.RESIZE_BORDER,
 		)
 		self.manager = manager
-		self.allEngines = engineManager.getAllEngines()
+		self.allEngines = engineManager.getEnabledEngines()
+		self.hasEnabledEngines = bool(self.allEngines)
 
 		# Internal state for dynamic choices
 		self._modeIds = []
@@ -38,7 +39,9 @@ class InteractiveTranslationDialog(DPIScaledDialog):
 		self.engineCombo = sHelper.addLabeledControl(
 			_("Translation &engine:"),
 			wx.Choice,
-			choices=[e.name for e in self.allEngines],
+			choices=[e.name for e in self.allEngines]
+			if self.hasEnabledEngines
+			else [_("No enabled translation engines available.")],
 		)
 		self.sourceLangCombo = sHelper.addLabeledControl(_("Source language:"), wx.Choice)
 		self.targetLangCombo = sHelper.addLabeledControl(_("Target language:"), wx.Choice)
@@ -83,6 +86,8 @@ class InteractiveTranslationDialog(DPIScaledDialog):
 		bHelper = guiHelper.ButtonHelper(wx.HORIZONTAL)
 		self.translateBtn = bHelper.addButton(self, label=_("&Translate"))
 		self.translateBtn.SetDefault()
+		if not self.hasEnabledEngines:
+			self.translateBtn.Disable()
 		self.copyBtn = bHelper.addButton(self, label=_("C&opy result"))
 		self.clearBtn = bHelper.addButton(self, label=_("C&lear"))
 		self.closeBtn = bHelper.addButton(self, id=wx.ID_CLOSE, label=_("&Close"))
@@ -98,11 +103,14 @@ class InteractiveTranslationDialog(DPIScaledDialog):
 		conf = config.getConfig()
 		currentEngineId = conf["engine"]
 		engineIndex = 0
-		for i, eng in enumerate(self.allEngines):
-			if eng.id == currentEngineId:
-				engineIndex = i
-				break
-		self.engineCombo.SetSelection(engineIndex)
+		if self.hasEnabledEngines:
+			for i, eng in enumerate(self.allEngines):
+				if eng.id == currentEngineId:
+					engineIndex = i
+					break
+			self.engineCombo.SetSelection(engineIndex)
+		else:
+			self.engineCombo.Disable()
 
 		# Bind events
 		self.Bind(wx.EVT_BUTTON, self.onClose, id=wx.ID_CLOSE)
@@ -114,11 +122,17 @@ class InteractiveTranslationDialog(DPIScaledDialog):
 		self.promptModeCombo.Bind(wx.EVT_CHOICE, self.onPromptModeChanged)
 
 		# Initial UI population
-		self.updateEngineUI(None)
+		if self.hasEnabledEngines:
+			self.updateEngineUI(None)
+		else:
+			self._disableTranslationControls()
 
 		self.Layout()
 		self.Centre()
-		self.sourceTextCtrl.SetFocus()
+		if self.hasEnabledEngines:
+			self.sourceTextCtrl.SetFocus()
+		else:
+			self.resultTextCtrl.SetFocus()
 
 	def onSourceTextChar(self, event):
 		if event.GetKeyCode() == wx.WXK_RETURN and event.ControlDown():
@@ -130,6 +144,8 @@ class InteractiveTranslationDialog(DPIScaledDialog):
 		return self.allEngines[self.engineCombo.GetSelection()]
 
 	def updateEngineUI(self, event):
+		if not self.hasEnabledEngines:
+			return
 		engine = self.getSelectedEngine()
 		conf = config.getConfig()
 		engineConf = conf["engines"].get(engine.id, {})
@@ -202,7 +218,27 @@ class InteractiveTranslationDialog(DPIScaledDialog):
 
 		self.onPromptModeChanged(None)
 
+	def _disableTranslationControls(self):
+		"""Disables translation controls when no engines are enabled."""
+		self._modeIds = []
+		self._modelIds = []
+		self._langCodes = []
+		for control in (
+			self.sourceLangCombo,
+			self.targetLangCombo,
+			self.advancedBox,
+			self.sourceTextCtrl,
+			self.modelCombo,
+			self.promptModeCombo,
+			self.systemPromptCtrl,
+			self.userPromptCtrl,
+		):
+			control.Disable()
+		self.resultTextCtrl.SetValue(_("No enabled translation engines available."))
+
 	def onPromptModeChanged(self, event):
+		if not self.hasEnabledEngines:
+			return
 		engine = self.getSelectedEngine()
 		if not self.promptModeCombo.IsEnabled():
 			self.systemPromptCtrl.SetValue(_("Not applicable"))
@@ -231,6 +267,10 @@ class InteractiveTranslationDialog(DPIScaledDialog):
 			self.userPromptCtrl.Disable()
 
 	def onTranslate(self, event):
+		if not self.hasEnabledEngines:
+			self.resultTextCtrl.SetValue(_("No enabled translation engines available."))
+			self.resultTextCtrl.SetFocus()
+			return
 		text = self.sourceTextCtrl.GetValue().strip()
 		if not text:
 			return
@@ -279,12 +319,14 @@ class InteractiveTranslationDialog(DPIScaledDialog):
 		)
 
 	def onTranslationDone(self, resultText):
-		self.translateBtn.Enable()
+		if self.hasEnabledEngines:
+			self.translateBtn.Enable()
 		self.resultTextCtrl.SetValue(resultText)
 		self.resultTextCtrl.SetFocus()
 
 	def onTranslationError(self, errorMessage: str) -> None:
-		self.translateBtn.Enable()
+		if self.hasEnabledEngines:
+			self.translateBtn.Enable()
 		self.resultTextCtrl.SetValue(errorMessage)
 		self.resultTextCtrl.SetFocus()
 
