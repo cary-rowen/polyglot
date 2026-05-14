@@ -10,6 +10,7 @@ evaluateSync call uses a unique, atomically-incremented message ID.
 import json
 import os
 from pathlib import Path
+import shutil
 import subprocess
 import threading
 import time
@@ -52,6 +53,7 @@ class CdpBridge:
 	_nextMsgId = 0
 	_msgIdLock = threading.Lock()
 	_debugPort: int | None = None
+	_targetId: str | None = None
 
 	@classmethod
 	def getInstance(cls) -> "CdpBridge":
@@ -67,7 +69,7 @@ class CdpBridge:
 			return self._nextMsgId
 
 	def _getChromePath(self) -> str:
-		"""Finds Chrome's executable path from Windows App Paths registration."""
+		"""Finds Chrome's executable path from the registry, common paths, or PATH."""
 		regPaths = [
 			(winreg.HKEY_LOCAL_MACHINE, r"SOFTWARE\Microsoft\Windows\CurrentVersion\App Paths\chrome.exe"),
 			(winreg.HKEY_CURRENT_USER, r"Software\Microsoft\Windows\CurrentVersion\App Paths\chrome.exe"),
@@ -80,6 +82,17 @@ class CdpBridge:
 						return path
 			except FileNotFoundError:
 				continue
+		candidates = [
+			Path(os.environ.get("PROGRAMFILES", "")) / "Google" / "Chrome" / "Application" / "chrome.exe",
+			Path(os.environ.get("PROGRAMFILES(X86)", "")) / "Google" / "Chrome" / "Application" / "chrome.exe",
+			Path(os.environ.get("LOCALAPPDATA", "")) / "Google" / "Chrome" / "Application" / "chrome.exe",
+		]
+		for candidate in candidates:
+			if candidate.exists():
+				return str(candidate)
+		fromPath = shutil.which("chrome.exe") or shutil.which("chrome")
+		if fromPath:
+			return fromPath
 		return ""
 
 	def startBrowser(self) -> None:
@@ -107,7 +120,7 @@ class CdpBridge:
 					"--remote-debugging-port=0",
 					f"--user-data-dir={USER_DATA_DIR}",
 					"--remote-allow-origins=*",
-					"--enable-features=TranslationAPI",
+					"--enable-features=TranslationAPI,LanguageDetectionAPI",
 					"--disable-gpu",
 					"--mute-audio",
 					"--no-first-run",
@@ -161,25 +174,79 @@ class CdpBridge:
 			log.warning("Failed to create Chrome CDP page target.", exc_info=True)
 			return None
 		if isinstance(target, dict):
+			targetId = target.get("id")
+			self._targetId = str(targetId) if targetId else None
 			wsUrl = target.get("webSocketDebuggerUrl")
 			if isinstance(wsUrl, str):
 				return wsUrl
 		return None
 
 	def _getWebSocketUrl(self) -> str:
-		"""Returns a page target WebSocket URL from the managed Chrome process."""
+		"""Creates and returns a page target WebSocket URL from the managed Chrome process."""
 		for _ in range(20):
 			try:
-				data = self._readJsonEndpoint("/json/list")
-				pages = [t for t in data if t.get("type") == "page"]
-				if pages:
-					return pages[0]["webSocketDebuggerUrl"]
 				wsUrl = self._createPageTarget()
 				if wsUrl:
 					return wsUrl
 			except Exception:
-				time.sleep(0.5)
+				log.debug("Chrome CDP page target is not ready yet.", exc_info=True)
+			time.sleep(0.5)
 		raise CdpError("Timeout waiting for Chrome CDP endpoint.")
+
+	def _enableProtocolDomain(self, method: str) -> None:
+		"""Enables a CDP protocol domain on the current WebSocket."""
+		assert self._ws is not None
+		msgId = self._allocateMsgId()
+		self._ws.send(json.dumps({"id": msgId, "method": method}))
+		while True:
+			response = json.loads(self._ws.recv())
+			if response.get("id") != msgId:
+				continue
+			if "error" in response:
+				raise CdpError(f"CDP error: {response['error']}")
+			return
+
+	def _logPageDiagnostics(self) -> None:
+		"""Logs readiness, security context, and Chrome AI API availability for the page target."""
+		assert self._ws is not None
+		expression = """
+		JSON.stringify({
+			readyState: document.readyState,
+			isSecureContext: globalThis.isSecureContext,
+			href: location.href,
+			hasTranslator: typeof Translator !== 'undefined',
+			hasLanguageDetector: typeof LanguageDetector !== 'undefined',
+			userActivation: navigator.userActivation ? {
+				isActive: navigator.userActivation.isActive,
+				hasBeenActive: navigator.userActivation.hasBeenActive,
+			} : null,
+		})
+		"""
+		msgId = self._allocateMsgId()
+		self._ws.send(
+			json.dumps(
+				{
+					"id": msgId,
+					"method": "Runtime.evaluate",
+					"params": {
+						"expression": expression,
+						"awaitPromise": False,
+						"returnByValue": True,
+					},
+				},
+			),
+		)
+		while True:
+			response = json.loads(self._ws.recv())
+			if response.get("id") != msgId:
+				continue
+			resultValue = response.get("result", {}).get("result", {}).get("value", "{}")
+			try:
+				diagnostics = json.loads(resultValue) if isinstance(resultValue, str) else resultValue
+			except (json.JSONDecodeError, TypeError):
+				diagnostics = {"raw": resultValue}
+			log.debug(f"Chrome AI page diagnostics: {diagnostics}")
+			return
 
 	def ensureConnection(self) -> None:
 		"""Ensures that a Runtime-enabled WebSocket connection is ready."""
@@ -191,14 +258,9 @@ class CdpBridge:
 			log.info(f"Connecting to CDP WebSocket: {wsUrl}")
 			try:
 				self._ws = websocket.create_connection(wsUrl, timeout=300)
-				enableId = self._allocateMsgId()
-				self._ws.send(json.dumps({"id": enableId, "method": "Runtime.enable"}))
-				while True:
-					response = json.loads(self._ws.recv())
-					if response.get("id") == enableId:
-						if "error" in response:
-							raise CdpError(f"CDP error: {response['error']}")
-						break
+				self._enableProtocolDomain("Runtime.enable")
+				self._enableProtocolDomain("Page.enable")
+				self._logPageDiagnostics()
 				log.debug("CDP Runtime domain enabled.")
 			except Exception as e:
 				self._ws = None
@@ -268,6 +330,11 @@ class CdpBridge:
 									return {"code": "PARSE_ERR", "raw": resultValue}
 							return {"code": "PARSE_ERR", "raw": str(resultValue)}
 				except websocket.WebSocketTimeoutException:
+					try:
+						self._ws.close()
+					except Exception:
+						pass
+					self._ws = None
 					raise CdpError("Timed out waiting for Chrome AI response.")
 				except CdpError:
 					raise
