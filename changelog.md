@@ -1,4 +1,3 @@
-### 0.8.6
+### 0.8.7
 
-- Trim bundled websocket client files.
 - ChromeAI stability improvements.
