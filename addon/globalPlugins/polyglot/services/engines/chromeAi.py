@@ -565,9 +565,11 @@ class ChromeAiEngine(ChunkedTranslationMixin):
 			raise EngineError(_("Language detection error: ") + result.get("message", ""))
 		elif code == "MODEL_STATE_NO":
 			pair = result.get("pair", "?->?")
-			raise EngineError(
-				_("Language pair {pair} is not supported by Chrome's offline models.").format(pair=pair),
-			)
+			log.info(f"Chrome AI: language pair {pair} is unsupported; returning original text.")
+			return {
+				"translation": text,
+				"langDetected": detectedLang,
+			}
 		elif code == "TRANSLATE_ERR_EXCEPTION":
 			raise EngineError(_("Chrome AI error: ") + result.get("message", _("Unknown error")))
 		else:

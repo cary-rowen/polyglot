@@ -947,14 +947,15 @@ msgid ""
 msgstr "Chrome AI 离线引擎已禁用。如需使用请先在 Polyglot 设置面板中启用。"
 
 #. Translators: {model} is a model name like "Translation model" or "Language detection model".
-#: addon\globalPlugins\polyglot\services\engines\chromeAi.py:227
+#: addon\globalPlugins\polyglot\services\engines\chromeAi.py:242
 #, python-brace-format
-msgid "{model} downloading..."
-msgstr "{model} 下载中。"
+msgid "Preparing {model}..."
+msgstr "正在准备{model}..."
 
-#: addon\globalPlugins\polyglot\services\engines\chromeAi.py:236
-msgid "Download complete."
-msgstr "下载完成。"
+#. Translators: Announced when Chrome has finished preparing an offline model.
+#: addon\globalPlugins\polyglot\services\engines\chromeAi.py:254
+msgid "Model ready."
+msgstr "模型已就绪。"
 
 #: addon\globalPlugins\polyglot\services\engines\chromeAi.py:300
 msgid "Language detection model"
@@ -981,12 +982,18 @@ msgstr ""
 "Chrome 的翻译 API 不可用。请将 Chrome 更新至 138 或更高版本，并确保在 "
 "chrome://flags 中启用 TranslationAPI。"
 
-#: addon\globalPlugins\polyglot\services\engines\chromeAi.py:424
+#: addon\globalPlugins\polyglot\services\engines\chromeAi.py:539
 msgid ""
 "Chrome's LanguageDetector API is not available. Please update Chrome and "
-"enable the TranslationAPI flag."
+"enable the TranslationAPI and LanguageDetectionAPI flags."
 msgstr ""
-"Chrome 的 LanguageDetector API 不可用。请更新 Chrome 并启用 TranslationAPI。"
+"Chrome 的 LanguageDetector API 不可用。请更新 Chrome 并启用 TranslationAPI 和 LanguageDetectionAPI。"
+
+#: addon\globalPlugins\polyglot\services\engines\chromeAi.py:547
+msgid ""
+"Chrome AI requires a secure page context. Please restart NVDA and try the "
+"Chrome AI engine again."
+msgstr "Chrome AI 需要安全页面上下文。请重启 NVDA，然后再次尝试 Chrome AI 引擎。"
 
 #: addon\globalPlugins\polyglot\services\engines\chromeAi.py:430
 msgid "Language detection is not supported in this Chrome installation."
@@ -1573,15 +1580,15 @@ msgstr "这是一个翻译插件，支持多种引擎。"
 #. Translators: what's new content for the add-on version to be shown in the add-on store
 #: buildVars.py:31
 msgid ""
-"### 0.8.3\n"
+"### 0.8.6\n"
 "\n"
-"- Adjust settings panel focus order.\n"
-"- Support enabling and disabling engines individually."
+"- Trim bundled websocket client files.\n"
+"- ChromeAI stability improvements."
 msgstr ""
-"### 0.8.3\n"
+"### 0.8.6\n"
 "\n"
-"- 调整设置面板中的焦点顺序。\n"
-"- 支持单独启用和禁用引擎。"
+"- 精简捆绑的 websocket 客户端文件。\n"
+"- 改进 ChromeAI 稳定性。"
 
 #~ msgid ""
 #~ "### 0.8.1\n"
