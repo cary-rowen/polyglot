@@ -7,7 +7,7 @@ The add-on is built around a dynamic engine architecture. Translation engines de
 ## What It Does
 
 - Translates selected text, clipboard text, and the last spoken NVDA utterance.
-- Provides a translation command layer on `NVDA+Shift+T` for quick keyboard-driven actions.
+- Provides a translation command layer on `NVDA+Alt+Z`; press `H` in the layer to show command layer help.
 - Supports live auto-translation of spoken NVDA content.
 - Includes a smart speech filter to avoid translating roles, states, and formatting noise.
 - Persists a translation cache to reduce repeated requests.
@@ -31,11 +31,11 @@ The preferred installation path is the NVDA Add-on Store. You can also install m
 3. Configure any required credentials for that engine.
 4. Set source and target languages.
 5. Optionally enable clipboard copy and the smart speech filter.
-6. Press `NVDA+Shift+T`, then use one of the command-layer keys below.
+6. Press `NVDA+Alt+Z`, then use one of the command-layer keys below. Press `H` in the layer to show command layer help.
 
 ## Command Layer
 
-Press `NVDA+Shift+T` to enter the command layer. A short beep confirms that the layer is active. Most commands execute once and exit the layer. Language and engine switching commands stay inside the layer so you can continue cycling. Engine switching cycles through enabled engines only.
+Press `NVDA+Alt+Z` to enter the command layer. A short beep confirms that the layer is active. Press `H` in the layer to show command layer help. Most commands execute once and exit the layer. Language and engine switching commands stay inside the layer so you can continue cycling. Engine switching cycles through enabled engines only.
 
 | Key | Action |
 | --- | --- |

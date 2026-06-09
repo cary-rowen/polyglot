@@ -132,7 +132,7 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
 	def script_layerError(self, gesture: "inputCore.InputGesture") -> None:
 		tones.beep(120, 100)
 
-	@script(description=_("Enter translation command layer"))
+	@script(description=_("Enter the translation command layer; press H for command layer help"))
 	def script_layerEntry(self, gesture: "inputCore.InputGesture") -> None:
 		if self.isLayerActive:
 			self.script_layerError(gesture)
@@ -388,7 +388,7 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
 
 		return "".join(htmlParts)
 
-	__gestures = {"kb:NVDA+Shift+T": "layerEntry"}
+	__gestures = {"kb:NVDA+Alt+Z": "layerEntry"}
 	__layerGestures = {
 		"kb:t": "translateSelection",
 		"kb:shift+t": "translateReverseSelection",

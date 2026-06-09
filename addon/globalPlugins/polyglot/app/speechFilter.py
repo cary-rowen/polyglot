@@ -176,7 +176,7 @@ class SpeechFilter:
 		"""Temporarily prevents speech from overwriting ``lastSpokenText``.
 
 		Called when entering the command layer.  Releasing modifier keys
-		(e.g. Shift from NVDA+Shift+T) may trigger IME or keyboard-layout
+		(e.g. Alt from NVDA+Alt+Z) may trigger IME or keyboard-layout
 		switch notifications that would otherwise overwrite the text the
 		user intends to translate.
 		"""
