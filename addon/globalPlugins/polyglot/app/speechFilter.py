@@ -212,11 +212,15 @@ class SpeechFilter:
 		# Save the text unless suppression was requested by the cues module.
 		# Suppressed speech is internal plugin messaging and should also
 		# bypass auto-translate interception to avoid being swallowed.
+		if self._suppressCapture > 0:
+			self._suppressCapture -= 1
+			return sequence
+		if not textToSave:
+			if self._isSpeakingTranslation:
+				self._isSpeakingTranslation = False
+			return sequence
 		if textToSave:
-			if self._suppressCapture > 0:
-				self._suppressCapture -= 1
-				return sequence
-			elif time.monotonic() < self._gracePeriodEnd:
+			if time.monotonic() < self._gracePeriodEnd:
 				# Inside the grace window; pass through without overwriting lastSpokenText.
 				return sequence
 			else:
