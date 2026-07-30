@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: 'nvda-translations@groups.io'\n"
 "POT-Creation-Date: 2026-07-30 09:47+0300\n"
-"PO-Revision-Date: 2026-07-30 10:00+0300\n"
+"PO-Revision-Date: 2026-07-30 10:07+0300\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: uk\n"
@@ -41,7 +41,7 @@ msgstr "Наступна мова оригіналу"
 
 #: addon\globalPlugins\polyglot\__init__.py:193
 msgid "Previous source language"
-msgstr "Попередна мова оригіналу"
+msgstr "Попередня мова оригіналу"
 
 #: addon\globalPlugins\polyglot\__init__.py:199
 msgid "Next target language"
@@ -85,7 +85,7 @@ msgstr "Відкрити налаштування"
 
 #: addon\globalPlugins\polyglot\__init__.py:274
 msgid "Toggle auto-translation"
-msgstr "Перемикає автоматичний переклад"
+msgstr "Перемкнути автоматичний переклад"
 
 #: addon\globalPlugins\polyglot\__init__.py:277
 msgid "Auto-translation enabled"
