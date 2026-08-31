@@ -84,6 +84,20 @@ class OpenRouterModelDefaultsTest(unittest.TestCase):
 		states = self.engine.getUiStates(self.config)
 		self.assertIn("json_structured", states["promptMode"]["choices"])
 
+	def test_autoSwapIsShownOnlyWhenLanguageDetectionIsAvailable(self) -> None:
+		"""Auto-swap controls are hidden unless the effective prompt reports the source language."""
+		self.config.update({"langFrom": "auto", "langTo": "en", "enableAutoSwap": True})
+		for modelName, promptMode, isVisible in (
+			(OpenRouterTranslateEngine.DEFAULT_MODEL, "simple", False),
+			("inception/mercury-2", "simple", False),
+			("inception/mercury-2", "json_structured", True),
+		):
+			with self.subTest(model=modelName, prompt=promptMode):
+				self.config.update({"modelNamePreset": modelName, "promptMode": promptMode})
+				states = self.engine.getUiStates(self.config)
+				self.assertEqual(states["enableAutoSwap"]["visible"], isVisible)
+				self.assertEqual(states["swapLanguage"]["visible"], isVisible)
+
 	def test_storedStructuredPromptFallsBackToSimple(self) -> None:
 		"""A stored structured-JSON selection is downgraded, not sent to a text-only model."""
 		self.config["promptMode"] = "json_structured"

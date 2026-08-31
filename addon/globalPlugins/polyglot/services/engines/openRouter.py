@@ -36,15 +36,25 @@ class OpenRouterTranslateEngine(BaseHttpEngine):
 	# real-time translation first. Translation-specialised models answer faster and cost far less
 	# than the general-purpose models below them, so they are offered first and used by default.
 	PRESET_MODELS = {
-		"tencent/hy-mt2-30b-a3b": "Tencent: Hy-MT2-30B-A3B (Translation specialist, recommended)",
-		"tencent/hy-mt2-7b": "Tencent: Hy-MT2-7B (Translation specialist, fastest)",
-		"inception/mercury-2": "Inception: Mercury 2 (Fast, keeps language detection)",
-		"google/gemini-2.5-flash-lite": "Google: Gemini 2.5 Flash Lite",
-		"openai/gpt-5-mini": "OpenAI: GPT-5 Mini",
-		"anthropic/claude-haiku-4.5": "Anthropic: Claude Haiku 4.5",
-		"openai/gpt-4o-mini": "OpenAI: GPT-4o Mini",
-		"mistralai/mistral-large": "Mistral: Large (High Quality)",
-		"meta-llama/llama-3.1-70b-instruct": "Meta: Llama 3.1 70B (Powerful)",
+		# Translators: An OpenRouter model name shown in the model selection list.
+		"tencent/hy-mt2-30b-a3b": _("Tencent: Hy-MT2-30B-A3B (Translation specialist, recommended)"),
+		# Translators: An OpenRouter model name shown in the model selection list.
+		"tencent/hy-mt2-7b": _("Tencent: Hy-MT2-7B (Translation specialist, fastest)"),
+		# Translators: An OpenRouter model name shown in the model selection list.
+		"inception/mercury-2": _("Inception: Mercury 2 (Fast, keeps language detection)"),
+		# Translators: An OpenRouter model name shown in the model selection list.
+		"google/gemini-2.5-flash-lite": _("Google: Gemini 2.5 Flash Lite"),
+		# Translators: An OpenRouter model name shown in the model selection list.
+		"openai/gpt-5-mini": _("OpenAI: GPT-5 Mini"),
+		# Translators: An OpenRouter model name shown in the model selection list.
+		"anthropic/claude-haiku-4.5": _("Anthropic: Claude Haiku 4.5"),
+		# Translators: An OpenRouter model name shown in the model selection list.
+		"openai/gpt-4o-mini": _("OpenAI: GPT-4o Mini"),
+		# Translators: An OpenRouter model name shown in the model selection list.
+		"mistralai/mistral-large": _("Mistral: Large (High Quality)"),
+		# Translators: An OpenRouter model name shown in the model selection list.
+		"meta-llama/llama-3.1-70b-instruct": _("Meta: Llama 3.1 70B (Powerful)"),
+		# Translators: The option for entering a custom OpenRouter model name.
 		"custom": _("Custom Model"),
 	}
 
@@ -207,14 +217,22 @@ class OpenRouterTranslateEngine(BaseHttpEngine):
 
 	def getUiStates(self, allConfigs: dict[str, Any]) -> dict[str, Any]:
 		states = super().getUiStates(allConfigs)
+		modelName = self._getSelectedModel(allConfigs)
+		promptMode = self._resolvePromptMode(modelName, allConfigs.get("promptMode", "simple"))
+		canReportDetectedLanguage = self._supportsStructuredPrompt(modelName) and promptMode in {
+			"json_structured",
+			"custom",
+		}
 		isCustomModel = allConfigs.get("modelNamePreset") == "custom"
 		isCustomPrompt = allConfigs.get("promptMode") == "custom"
 		states["modelNameCustom"] = {"visible": isCustomModel}
 		states["customSystemPrompt"] = {"visible": isCustomPrompt}
 		states["customUserPrompt"] = {"visible": isCustomPrompt}
+		for controlId in ("enableAutoSwap", "swapLanguage"):
+			states[controlId]["visible"] &= canReportDetectedLanguage
 		# Offer only the prompt templates the selected model can follow. If the structured-JSON
 		# template is dropped while it is selected, the control falls back to the simple template.
-		states["promptMode"] = {"choices": self._getPromptModeChoices(self._getSelectedModel(allConfigs))}
+		states["promptMode"] = {"choices": self._getPromptModeChoices(modelName)}
 		return states
 
 	def _buildRequestParams(
