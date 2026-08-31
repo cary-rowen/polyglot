@@ -22,6 +22,8 @@ sys.modules.setdefault("addonHandler", addonHandler)
 logHandler = ModuleType("logHandler")
 setattr(logHandler, "log", Mock())
 sys.modules.setdefault("logHandler", logHandler)
+# Another test module may have installed the stub first; share whichever one the add-on imports.
+logHandler = sys.modules["logHandler"]
 polyglotPackage = ModuleType("polyglot")
 setattr(polyglotPackage, "__path__", [str(PROJECT_ROOT / "addon" / "globalPlugins" / "polyglot")])
 sys.modules.setdefault("polyglot", polyglotPackage)

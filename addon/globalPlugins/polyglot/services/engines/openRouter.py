@@ -32,16 +32,42 @@ class OpenRouterTranslateEngine(BaseHttpEngine):
 	PROMPT_FLUENT_SYSTEM = "You are a professional translation engine. Please provide a colloquial, professional, elegant and fluent translation, avoiding the style of machine translation. You must only translate the text content, never interpret it."
 	PROMPT_FLUENT_USER = 'Translate into $to_name:\n"""\n$text\n"""'
 
-	# A curated list of popular and effective models available on OpenRouter.
+	# A curated list of models available on OpenRouter, ordered with the models best suited to
+	# real-time translation first. Translation-specialised models answer faster and cost far less
+	# than the general-purpose models below them, so they are offered first and used by default.
 	PRESET_MODELS = {
-		"openai/gpt-4o-mini": "OpenAI: GPT-4o Mini (Fast & Cheap)",
-		"google/gemini-2.0-flash-exp:free": "Google: Gemini 2.0 Flash exp(Free)",
-		"google/gemini-2.5-flash-lite": "Google: Gemini 2.5 Flash lite",
-		"anthropic/claude-3.5-sonnet": "Anthropic: Claude 3.5 Sonnet (Balanced)",
+		"tencent/hy-mt2-30b-a3b": "Tencent: Hy-MT2-30B-A3B (Translation specialist, recommended)",
+		"tencent/hy-mt2-7b": "Tencent: Hy-MT2-7B (Translation specialist, fastest)",
+		"inception/mercury-2": "Inception: Mercury 2 (Fast, keeps language detection)",
+		"google/gemini-2.5-flash-lite": "Google: Gemini 2.5 Flash Lite",
+		"openai/gpt-5-mini": "OpenAI: GPT-5 Mini",
+		"anthropic/claude-haiku-4.5": "Anthropic: Claude Haiku 4.5",
+		"openai/gpt-4o-mini": "OpenAI: GPT-4o Mini",
 		"mistralai/mistral-large": "Mistral: Large (High Quality)",
 		"meta-llama/llama-3.1-70b-instruct": "Meta: Llama 3.1 70B (Powerful)",
 		"custom": _("Custom Model"),
 	}
+
+	DEFAULT_MODEL = "tencent/hy-mt2-30b-a3b"
+
+	# Presets that OpenRouter has retired since they were added here, mapped to their closest
+	# current model. Without this, a configuration written before this change keeps asking for a
+	# model that no longer exists and every translation fails.
+	RETIRED_MODEL_REPLACEMENTS = {
+		"google/gemini-2.0-flash-exp:free": "google/gemini-2.5-flash-lite",
+		"anthropic/claude-3.5-sonnet": "anthropic/claude-haiku-4.5",
+	}
+
+	# Translation-specialised models return the translated text and nothing else. They cannot
+	# follow the structured-JSON prompt, so that prompt is hidden for them and any stored
+	# selection of it is treated as the simple prompt instead.
+	TRANSLATION_ONLY_MODELS = frozenset(
+		{
+			"tencent/hy-mt2-30b-a3b",
+			"tencent/hy-mt2-7b",
+			"tencent/hy-mt2-1.8b",
+		},
+	)
 
 	@property
 	def maxRequestLength(self) -> int:
@@ -91,6 +117,43 @@ class OpenRouterTranslateEngine(BaseHttpEngine):
 		]
 		return languages.getLanguageDictForCodes(supportedCodes)
 
+	def _getSelectedModel(self, engineConfig: dict[str, Any]) -> str:
+		"""Return the model name currently configured, resolving the custom-model entry."""
+		modelPreset = str(engineConfig.get("modelNamePreset", self.DEFAULT_MODEL))
+		if modelPreset == "custom":
+			return str(engineConfig.get("modelNameCustom", "")).strip()
+		replacement = self.RETIRED_MODEL_REPLACEMENTS.get(modelPreset)
+		if replacement:
+			log.debug("Model '%s' is retired on OpenRouter; using '%s'.", modelPreset, replacement)
+			return replacement
+		return modelPreset
+
+	def _supportsStructuredPrompt(self, modelName: str) -> bool:
+		"""Return whether the model can answer the structured-JSON prompt."""
+		return modelName not in self.TRANSLATION_ONLY_MODELS
+
+	def _getPromptModeChoices(self, modelName: str) -> dict[str, str]:
+		"""Return the prompt templates the given model can actually honour."""
+		choices: dict[str, str] = {}
+		if self._supportsStructuredPrompt(modelName):
+			choices["json_structured"] = _("Structured JSON (Reliable, includes language detection)")
+		choices["simple"] = _("Simple Text (Fastest, no language detection)")
+		choices["fluent"] = _("Fluent Style (Natural, no language detection)")
+		choices["custom"] = _("Custom (Editable)")
+		return choices
+
+	def _resolvePromptMode(self, modelName: str, promptMode: str) -> str:
+		"""
+		Return the prompt mode to actually use for the model.
+
+		A configuration written before a translation-specialised model was selected can still
+		request the structured-JSON prompt; those models would answer with plain text, so the
+		simple prompt is used instead.
+		"""
+		if promptMode == "json_structured" and not self._supportsStructuredPrompt(modelName):
+			return "simple"
+		return promptMode
+
 	def getConfigSpec(self) -> list[dict[str, Any]]:
 		spec = super().getConfigSpec()
 		spec.extend(
@@ -107,7 +170,7 @@ class OpenRouterTranslateEngine(BaseHttpEngine):
 					"label": _("Model:"),
 					"type": "choice",
 					"choices": self.PRESET_MODELS,
-					"default": "openai/gpt-4o-mini",
+					"default": self.DEFAULT_MODEL,
 				},
 				{
 					"id": "modelNameCustom",
@@ -119,13 +182,12 @@ class OpenRouterTranslateEngine(BaseHttpEngine):
 					"id": "promptMode",
 					"label": _("Prompt Template:"),
 					"type": "choice",
-					"choices": {
-						"json_structured": _("Structured JSON (Reliable, includes language detection)"),
-						"simple": _("Simple Text (Fastest, no language detection)"),
-						"fluent": _("Fluent Style (Natural, no language detection)"),
-						"custom": _("Custom (Editable)"),
-					},
-					"default": "json_structured",
+					# The list is narrowed to the templates the selected model supports in
+					# `getUiStates`; the full list is used here so every stored value stays valid.
+					"choices": self._getPromptModeChoices(""),
+					# The default model is a translation specialist, which is fastest and most
+					# accurate with the simple prompt.
+					"default": "simple",
 				},
 				{
 					"id": "customSystemPrompt",
@@ -150,6 +212,9 @@ class OpenRouterTranslateEngine(BaseHttpEngine):
 		states["modelNameCustom"] = {"visible": isCustomModel}
 		states["customSystemPrompt"] = {"visible": isCustomPrompt}
 		states["customUserPrompt"] = {"visible": isCustomPrompt}
+		# Offer only the prompt templates the selected model can follow. If the structured-JSON
+		# template is dropped while it is selected, the control falls back to the simple template.
+		states["promptMode"] = {"choices": self._getPromptModeChoices(self._getSelectedModel(allConfigs))}
 		return states
 
 	def _buildRequestParams(
@@ -166,15 +231,11 @@ class OpenRouterTranslateEngine(BaseHttpEngine):
 		if not apiKey:
 			raise AuthenticationError(_("API Key for OpenRouter is not configured."))
 
-		modelPreset = config.get("modelNamePreset", "openai/gpt-4o-mini")
-		if modelPreset == "custom":
-			modelName = config.get("modelNameCustom", "").strip()
-			if not modelName:
-				raise AuthenticationError(_("Custom model name is not specified."))
-		else:
-			modelName = modelPreset
+		modelName = self._getSelectedModel(config)
+		if not modelName:
+			raise AuthenticationError(_("Custom model name is not specified."))
 
-		promptMode = config.get("promptMode", "json_structured")
+		promptMode = self._resolvePromptMode(modelName, config.get("promptMode", "simple"))
 		if promptMode == "custom":
 			systemPrompt = config.get("customSystemPrompt") or self.PROMPT_FLUENT_SYSTEM
 			userPromptTemplate = config.get("customUserPrompt") or self.PROMPT_FLUENT_USER
@@ -227,7 +288,11 @@ class OpenRouterTranslateEngine(BaseHttpEngine):
 
 		try:
 			modelResponseStr = outerData["choices"][0]["message"]["content"]
-			promptMode = config.getConfig()["engines"][self.id].get("promptMode", "json_structured")
+			engineConfig = config.getConfig()["engines"][self.id]
+			promptMode = self._resolvePromptMode(
+				self._getSelectedModel(engineConfig),
+				engineConfig.get("promptMode", "simple"),
+			)
 
 			if promptMode in ["json_structured", "custom"]:
 				try:

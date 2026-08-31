@@ -13,6 +13,7 @@ import requests
 from logHandler import log
 
 from ...common import languages
+from ...common.network import getSession
 from ..engine import BaseHttpEngine
 from ...common.exceptions import ApiResponseError, AuthenticationError, EngineError
 
@@ -90,7 +91,12 @@ class MicrosoftTranslateEngine(BaseHttpEngine):
 		timeoutInt = int(config.get("timeout", "15"))
 
 		try:
-			response = requests.get(url, headers=headers, proxies=proxiesDict, timeout=timeoutInt)
+			response = getSession().get(
+				url,
+				headers=headers,
+				proxies=proxiesDict,
+				timeout=timeoutInt,
+			)
 			response.raise_for_status()
 			token = response.text
 
@@ -119,8 +125,9 @@ class MicrosoftTranslateEngine(BaseHttpEngine):
 			proxiesDict = {"http": None, "https": None} if proxyMode == "none" else None
 			timeoutInt = int(config.get("timeout", "15"))
 
-			# Use requests directly to avoid complexity with our network wrapper for this flow
-			response = requests.post(
+			# Use the shared session directly to avoid complexity with our network wrapper for
+			# this flow, while still reusing the pooled connection.
+			response = getSession().post(
 				url=params["url"],
 				headers=params["headers"],
 				data=params["data"],

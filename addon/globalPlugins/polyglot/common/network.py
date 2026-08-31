@@ -5,8 +5,10 @@
 # See the file COPYING.txt for more details.
 
 import functools
+import threading
 import time
 from collections.abc import Callable
+from http import cookiejar
 
 # Best practice: Import advanced typing tools for creating robust decorators and `cast`.
 from typing import Any, ParamSpec, TypeVar, cast
@@ -14,6 +16,7 @@ from typing import Any, ParamSpec, TypeVar, cast
 import addonHandler
 import requests
 from logHandler import log
+from requests.adapters import HTTPAdapter
 
 from .exceptions import ApiResponseError, AuthenticationError, NetworkConnectionError
 
@@ -22,6 +25,57 @@ addonHandler.initTranslation()
 # Best practice: Use ParamSpec and TypeVar to create a generic decorator.
 P = ParamSpec("P")
 R = TypeVar("R")
+
+# Connection pool sizing. Translations run on short-lived worker threads, so the pool must be
+# large enough to keep one idle connection per host that is in active use.
+_POOL_CONNECTIONS = 8
+_POOL_MAXSIZE = 16
+
+_sessionLock = threading.Lock()
+_session: requests.Session | None = None
+
+
+def getSession() -> requests.Session:
+	"""
+	Return the add-on wide `requests.Session` used for every engine request.
+
+	A single session keeps its underlying HTTPS connections alive, so consecutive
+	translations reuse an established connection instead of paying for DNS resolution,
+	the TCP handshake and the TLS handshake again. That saves roughly 200-400 ms per
+	request, which dominates the response time of fast translation models.
+
+	The session is shared between translation threads: `requests` sessions are safe to
+	use this way as long as their attributes are not mutated after creation, and the
+	underlying urllib3 connection pool is itself thread-safe.
+	"""
+	global _session
+	with _sessionLock:
+		session = _session
+		if session is None:
+			session = requests.Session()
+			# Every request previously ran on a throwaway session, so no cookie ever outlived
+			# a call. Preserve that by refusing all cookies, otherwise a shared session would
+			# start carrying state between unrelated engines and requests.
+			session.cookies.set_policy(cookiejar.DefaultCookiePolicy(allowed_domains=[]))
+			adapter = HTTPAdapter(pool_connections=_POOL_CONNECTIONS, pool_maxsize=_POOL_MAXSIZE)
+			session.mount("https://", adapter)
+			session.mount("http://", adapter)
+			_session = session
+		return session
+
+
+def closeSession() -> None:
+	"""Close the shared session and release every pooled connection."""
+	global _session
+	with _sessionLock:
+		session = _session
+		_session = None
+	if session is None:
+		return
+	try:
+		session.close()
+	except Exception:
+		log.debug("Ignoring an error raised while closing the shared HTTP session.", exc_info=True)
 
 
 def retryOnNetworkError(
@@ -108,7 +162,7 @@ def sendRequest(
 	proxies: dict[str, str | None] | None = None,
 ) -> str:
 	"""
-	Send one HTTP(S) request using `requests`.
+	Send one HTTP(S) request using the shared, connection-pooling `requests` session.
 	This function is protected by the `@retryOnNetworkError` decorator
 	and is only responsible for a single request attempt and handling non-retryable business errors.
 	"""
@@ -116,7 +170,7 @@ def sendRequest(
 	if "User-Agent" not in finalHeaders:
 		finalHeaders["User-Agent"] = "Mozilla/5.0"
 	try:
-		response = requests.request(
+		response = getSession().request(
 			method=method,
 			url=url,
 			headers=finalHeaders,

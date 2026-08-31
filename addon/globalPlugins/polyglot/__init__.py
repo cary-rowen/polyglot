@@ -32,6 +32,7 @@ from .app.manager import TranslationManager
 from .app.speechFilter import SpeechFilter
 from .common import cues
 from .common.config import getConfigSectionName
+from .common.network import closeSession
 from .configspec import configSpec
 from .services import engineManager
 from .services.cdpBridge import CdpBridge
@@ -100,6 +101,7 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
 		"""Unregister Polyglot UI and speech integrations and release resources."""
 		self.manager.terminateAllTasks()
 		self.speechFilter.unregister()
+		closeSession()
 		CdpBridge.getInstance().terminate()
 		modelManagerMenu.closeModelManagerDialog()
 		if not globalVars.appArgs.secure:

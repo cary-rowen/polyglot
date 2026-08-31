@@ -143,6 +143,10 @@ Some engines expose additional controls:
 
 - `Ollama 1` and `Ollama 2` provide two separate saved profiles for different local or remote Ollama setups.
 - `OpenRouter` exposes API URL, API key, model preset, custom model name, prompt template, and custom prompts.
+  The default preset is a translation-specialised model, which answers faster and costs less than a
+  general-purpose model. Such models reply with the translated text only, so only the prompt templates they
+  can follow are offered; pick a general-purpose preset if you need the structured JSON template and its
+  source-language detection.
 - `Ollama` engines expose API URL, model name, optional API key, prompt template, and custom prompts.
 - `Google Translate (Polyglot)` exposes a configurable endpoint URL and API key field.
 - `Google Translate (key-free)` offers an optional mirror-server toggle.
