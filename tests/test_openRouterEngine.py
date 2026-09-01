@@ -68,6 +68,18 @@ class OpenRouterModelDefaultsTest(unittest.TestCase):
 		self.assertIn(defaultModel, OpenRouterTranslateEngine.PRESET_MODELS)
 		self.assertIn(defaultModel, OpenRouterTranslateEngine.TRANSLATION_ONLY_MODELS)
 
+	def test_allTranslationSpecialistsArePresets(self) -> None:
+		"""Every translation-specialised model is available in the model selection list."""
+		self.assertFalse(
+			OpenRouterTranslateEngine.TRANSLATION_ONLY_MODELS.difference(
+				OpenRouterTranslateEngine.PRESET_MODELS,
+			),
+		)
+
+	def test_unsupportedTranslationLanguageIsNotOffered(self) -> None:
+		"""Languages unsupported by the default translation model are not offered."""
+		self.assertNotIn("sv", self.engine.getSupportedLanguages())
+
 	def test_defaultPromptModeSuitsTheDefaultModel(self) -> None:
 		"""The default prompt template is one the default model can follow."""
 		defaultPromptMode = self._getSpecItem("promptMode")["default"]

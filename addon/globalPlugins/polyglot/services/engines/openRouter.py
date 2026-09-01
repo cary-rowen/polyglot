@@ -41,7 +41,13 @@ class OpenRouterTranslateEngine(BaseHttpEngine):
 		# Translators: An OpenRouter model name shown in the model selection list.
 		"tencent/hy-mt2-7b": _("Tencent: Hy-MT2-7B (Translation specialist, fastest)"),
 		# Translators: An OpenRouter model name shown in the model selection list.
+		"tencent/hy-mt2-1.8b": _("Tencent: Hy-MT2-1.8B (Translation specialist, cheapest)"),
+		# Translators: An OpenRouter model name shown in the model selection list.
 		"inception/mercury-2": _("Inception: Mercury 2 (Fast, keeps language detection)"),
+		# Translators: An OpenRouter model name shown in the model selection list.
+		"google/gemini-3.5-flash-lite": _("Google: Gemini 3.5 Flash Lite"),
+		# Translators: An OpenRouter model name shown in the model selection list.
+		"google/gemini-3.1-flash-lite": _("Google: Gemini 3.1 Flash Lite"),
 		# Translators: An OpenRouter model name shown in the model selection list.
 		"google/gemini-2.5-flash-lite": _("Google: Gemini 2.5 Flash Lite"),
 		# Translators: An OpenRouter model name shown in the model selection list.
@@ -115,7 +121,6 @@ class OpenRouterTranslateEngine(BaseHttpEngine):
 			"it",
 			"nl",
 			"pl",
-			"sv",
 			"ar",
 			"he",
 			"uk",
