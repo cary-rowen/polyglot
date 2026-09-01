@@ -1332,10 +1332,8 @@ msgid "Invalid API response or no translation result included."
 msgstr "API 响应无效或未包含翻译结果。"
 
 #: addon\globalPlugins\polyglot\services\engines\chromeAi.py:111
-msgid ""
-"Enable Chrome AI offline engine (requires Chrome 138+, resources released on "
-"NVDA exit)"
-msgstr "启用 Chrome AI 离线引擎（需要 Chrome 138+；NVDA 退出时释放资源）"
+msgid "Enable Chrome AI offline engine (Chrome 138+)"
+msgstr "启用 Chrome AI 离线引擎（Chrome 138+）"
 
 #: addon\globalPlugins\polyglot\services\engines\chromeAi.py:209
 msgid ""
@@ -1916,9 +1914,9 @@ msgstr "将手动翻译结果复制到剪贴板"
 
 #: addon\globalPlugins\polyglot\views\settings.py:85
 msgid ""
-"Prefer the local English-Chinese dictionary for selected text, clipboard "
-"text, and last spoken text"
-msgstr "翻译选中文本、剪贴板或最后朗读内容时优先使用本地英汉词典"
+"Prefer local English-Chinese dictionary for selected text, clipboard, and "
+"last spoken text"
+msgstr "优先使用本地英汉词典处理选中文本、剪贴板内容和最后朗读内容"
 
 #. Translators: Checkbox controlling local dictionary definitions in NVDA text review.
 #: addon\globalPlugins\polyglot\views\settings.py:93
@@ -1927,10 +1925,9 @@ msgstr "在文本查看中使用本地英汉词典"
 
 #: addon\globalPlugins\polyglot\views\settings.py:100
 msgid ""
-"Enable smart speech filter (skips non-translatable text like roles, states, "
-"location and other formatting information)"
-msgstr ""
-"启用智能语音过滤（忽略无需翻译的文本，例如角色、状态、位置和其他格式信息）"
+"Enable smart speech filter (skips roles, states, location, and formatting "
+"information)"
+msgstr "启用智能语音过滤器（跳过角色、状态、位置和格式信息）"
 
 #: addon\globalPlugins\polyglot\views\settings.py:104
 msgid "Clear Cache"

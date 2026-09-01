@@ -82,7 +82,7 @@ class TranslationSettingsPanel(SettingsPanel):
 				self,
 				# Translators: Checkbox controlling local dictionary lookup for the three manual translation commands.
 				label=_(
-					"Prefer the local English-Chinese dictionary for selected text, clipboard text, and last spoken text",
+					"Prefer local English-Chinese dictionary for selected text, clipboard, and last spoken text",
 				),
 			),
 		)
@@ -97,7 +97,7 @@ class TranslationSettingsPanel(SettingsPanel):
 			wx.CheckBox(
 				self,
 				label=_(
-					"Enable smart speech filter (skips non-translatable text like roles, states, location and other formatting information)",
+					"Enable smart speech filter (skips roles, states, location, and formatting information)",
 				),
 			),
 		)

@@ -108,7 +108,7 @@ class ChromeAiEngine(ChunkedTranslationMixin):
 	@property
 	def enabledConfigLabel(self) -> str:
 		"""Returns the Chrome AI-specific label for the common enable checkbox."""
-		return _("Enable Chrome AI offline engine (requires Chrome 138+, resources released on NVDA exit)")
+		return _("Enable Chrome AI offline engine (Chrome 138+)")
 
 	@property
 	def defaultSourceLanguage(self) -> str:

@@ -1347,12 +1347,8 @@ msgid "Invalid API response or no translation result included."
 msgstr "Phản hồi API không hợp lệ hoặc không bao gồm kết quả dịch."
 
 #: addon\globalPlugins\polyglot\services\engines\chromeAi.py:111
-msgid ""
-"Enable Chrome AI offline engine (requires Chrome 138+, resources released on "
-"NVDA exit)"
-msgstr ""
-"Bật bộ dịch ngoại tuyến Chrome AI (yêu cầu Chrome 138+, tài nguyên sẽ được "
-"giải phóng khi thoát NVDA)"
+msgid "Enable Chrome AI offline engine (Chrome 138+)"
+msgstr "Bật bộ dịch ngoại tuyến Chrome AI (Chrome 138+)"
 
 #: addon\globalPlugins\polyglot\services\engines\chromeAi.py:209
 msgid ""
@@ -1943,9 +1939,9 @@ msgstr "Sao chép kết quả dịch thủ công vào bộ nhớ tạm"
 
 #: addon\globalPlugins\polyglot\views\settings.py:85
 msgid ""
-"Prefer the local English-Chinese dictionary for selected text, clipboard "
-"text, and last spoken text"
-msgstr ""
+"Prefer local English-Chinese dictionary for selected text, clipboard, and "
+"last spoken text"
+msgstr "Ưu tiên từ điển Anh-Trung cục bộ cho văn bản đã chọn, bộ nhớ tạm và văn bản đọc gần nhất"
 
 #. Translators: Checkbox controlling local dictionary definitions in NVDA text review.
 #: addon\globalPlugins\polyglot\views\settings.py:93
@@ -1954,11 +1950,9 @@ msgstr ""
 
 #: addon\globalPlugins\polyglot\views\settings.py:100
 msgid ""
-"Enable smart speech filter (skips non-translatable text like roles, states, "
-"location and other formatting information)"
-msgstr ""
-"Bật bộ lọc giọng đọc thông minh (bỏ qua văn bản không cần dịch như vai trò, "
-"trạng thái, vị trí và các thông tin định dạng khác)"
+"Enable smart speech filter (skips roles, states, location, and formatting "
+"information)"
+msgstr "Bật bộ lọc giọng nói thông minh (bỏ qua vai trò, trạng thái, vị trí và định dạng)"
 
 #: addon\globalPlugins\polyglot\views\settings.py:104
 msgid "Clear Cache"
