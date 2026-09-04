@@ -97,17 +97,10 @@ def _getBindings() -> _DpapiBindings:
 	return _bindings
 
 
-def _formatLastError() -> str:
-	"""Return the most recent Windows error as readable text."""
-	errorCode = ctypes.get_last_error()
-	if not errorCode:
-		return "unknown error"
-	return f"{errorCode}: {ctypes.FormatError(errorCode).strip()}"
-
-
 def _raiseLastError(functionName: str) -> None:
 	"""Raise a secure-storage error for a failed Windows function."""
-	raise SecureStorageError(f"{functionName} failed: {_formatLastError()}")
+	error = ctypes.WinError(ctypes.get_last_error())
+	raise SecureStorageError(f"{functionName} failed: {error}") from error
 
 
 def _bytesToBlob(data: bytes) -> tuple[_DATA_BLOB, Any]:
@@ -154,11 +147,11 @@ def protectData(
 		return b""
 
 	bindings = _getBindings()
-	blobIn, bufferIn = _bytesToBlob(data)
+	blobIn, _bufferIn = _bytesToBlob(data)
 	entropyBlob = None
-	entropyBuffer = None
+	_entropyBuffer = None
 	if optionalEntropy is not None:
-		entropyBlob, entropyBuffer = _bytesToBlob(optionalEntropy)
+		entropyBlob, _entropyBuffer = _bytesToBlob(optionalEntropy)
 	entropyPointer = ctypes.byref(entropyBlob) if entropyBlob is not None else None
 	blobOut = _DATA_BLOB()
 
@@ -176,8 +169,6 @@ def protectData(
 		return _blobToBytes(blobOut)
 	finally:
 		_freeBlob(blobOut)
-		del bufferIn
-		del entropyBuffer
 
 
 def unprotectData(
@@ -198,11 +189,11 @@ def unprotectData(
 		return b""
 
 	bindings = _getBindings()
-	blobIn, bufferIn = _bytesToBlob(protectedData)
+	blobIn, _bufferIn = _bytesToBlob(protectedData)
 	entropyBlob = None
-	entropyBuffer = None
+	_entropyBuffer = None
 	if optionalEntropy is not None:
-		entropyBlob, entropyBuffer = _bytesToBlob(optionalEntropy)
+		entropyBlob, _entropyBuffer = _bytesToBlob(optionalEntropy)
 	entropyPointer = ctypes.byref(entropyBlob) if entropyBlob is not None else None
 	blobOut = _DATA_BLOB()
 
@@ -220,8 +211,6 @@ def unprotectData(
 		return _blobToBytes(blobOut)
 	finally:
 		_freeBlob(blobOut)
-		del bufferIn
-		del entropyBuffer
 
 
 def protectString(
