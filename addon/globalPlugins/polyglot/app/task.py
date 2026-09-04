@@ -9,6 +9,7 @@ from typing import Any
 
 from logHandler import log
 
+from ..common import config
 from ..common.cache import TranslationCache
 from ..common.exceptions import EngineError, SilentTranslationCancel
 from ..services import engineManager
@@ -72,7 +73,11 @@ class TranslationTask(threading.Thread):
 			if self.isCancelled():
 				return
 			engine = engineManager.getEngineById(self.engineId)
-			engineConfig = self.engineConfig
+			engineConfig = config.decryptConfigSecrets(
+				self.engineId,
+				self.engineConfig,
+				engine.getConfigSpec(),
+			)
 			autoDetectCode = engine.autoDetectCode
 			firstResult = engine.translate(
 				self.text,
