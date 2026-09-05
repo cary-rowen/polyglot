@@ -31,7 +31,7 @@ from scriptHandler import script
 from .app.manager import TranslationManager
 from .app.speechFilter import SpeechFilter
 from .common import cues
-from .common.config import getConfigSectionName
+from .common.config import getConfigSectionName, migrateStoredSecrets
 from .common.network import closeSession
 from .configspec import configSpec
 from .services import engineManager
@@ -88,6 +88,7 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
 		finalSpec = _buildFinalConfigSpec()
 		# Merge this final spec into NVDA's configuration.
 		config.conf.spec.merge(finalSpec)
+		self._migrateStoredSecrets()
 		self.manager = TranslationManager()
 		self.speechFilter = SpeechFilter(self.manager)
 		self.speechFilter.register()
@@ -96,9 +97,13 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
 		if not globalVars.appArgs.secure:
 			gui.settingsDialogs.NVDASettingsDialog.categoryClasses.append(settings.TranslationSettingsPanel)
 			self.modelManagerMenuItem = modelManagerMenu.bindToolsMenu(self)
+		config.post_configProfileSwitch.register(self._migrateStoredSecrets)
+		config.post_configReset.register(self._migrateStoredSecrets)
 
 	def terminate(self):
 		"""Unregister Polyglot UI and speech integrations and release resources."""
+		config.post_configProfileSwitch.unregister(self._migrateStoredSecrets)
+		config.post_configReset.unregister(self._migrateStoredSecrets)
 		self.manager.terminateAllTasks()
 		self.speechFilter.unregister()
 		closeSession()
@@ -111,6 +116,10 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
 				)
 			modelManagerMenu.unbindToolsMenu(self.modelManagerMenuItem)
 		super().terminate()
+
+	def _migrateStoredSecrets(self, **_kwargs: object) -> None:
+		"""Protect plaintext credentials after startup, profile switches, or config resets."""
+		migrateStoredSecrets(engineManager.getAllEngines())
 
 	def onOpenModelManager(self, event: wx.CommandEvent) -> None:
 		"""Open the native ChromeAI model manager from NVDA's Tools menu."""

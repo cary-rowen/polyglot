@@ -4,6 +4,7 @@
 # See the file COPYING.txt for more details.
 
 from collections import OrderedDict
+from functools import partial
 from typing import Any
 
 import addonHandler
@@ -11,13 +12,18 @@ import wx
 from gui import guiHelper
 from gui.settingsDialogs import SettingsPanel
 from logHandler import log
+from winUser import sendMessage
 
 from ..common.cache import TranslationCache
 from ..common import config
+from ..common.secureStorage import SecureStorageError
 from ..services import engineManager
 from . import factory as uiFactory
 
 addonHandler.initTranslation()
+
+_EM_SETPASSWORDCHAR = 0x00CC
+_PASSWORD_MASK_CHARACTER = ord("*")
 
 
 class TranslationSettingsPanel(SettingsPanel):
@@ -35,6 +41,7 @@ class TranslationSettingsPanel(SettingsPanel):
 	# Allow these instance variables to be None, matching their initial assignment.
 	activeEnginePanel: wx.Panel | None
 	_engineSwitchTimer: wx.CallLater | None
+	_protectedCredentialValues: dict[tuple[str, str], str]
 
 	def __init__(self, parent):
 		"""Initialize engine state and lazily created settings panels."""
@@ -47,6 +54,7 @@ class TranslationSettingsPanel(SettingsPanel):
 		self.dynamicControls = {}
 		self.enginePanelsCache = {}
 		self.activeEnginePanel = None
+		self._protectedCredentialValues = {}
 
 		# --- DEBOUNCING STRATEGY: Timer for smooth engine switching ---
 		self._engineSwitchTimer = None
@@ -117,6 +125,38 @@ class TranslationSettingsPanel(SettingsPanel):
 			self._engineSwitchTimer.Stop()
 		event.Skip()
 
+	def isValid(self) -> bool:
+		"""Protect edited credentials before NVDA starts saving any settings panel."""
+		self._protectedCredentialValues.clear()
+		for engineId, controls in self.dynamicControls.items():
+			for info in controls.values():
+				if info["spec"]["type"] != "password":
+					continue
+				control = info["control"]
+				assert isinstance(control, wx.TextCtrl)
+				if not control.IsModified():
+					continue
+				try:
+					protectedValue = config.protectSecret(control.GetValue())
+				except SecureStorageError:
+					log.error(
+						"Could not protect setting '%s.%s'.",
+						engineId,
+						info["spec"]["id"],
+						exc_info=True,
+					)
+					self._validationErrorMessageBox(
+						# Translators: Shown when an API credential cannot be encrypted for storage.
+						message=_(
+							"This credential could not be encrypted. Your change was not saved, "
+							"and the previous value was kept. Please try again."
+						),
+						option=info["spec"]["label"],
+					)
+					return False
+				self._protectedCredentialValues[(engineId, info["spec"]["id"])] = protectedValue
+		return True
+
 	def onSave(self):
 		"""Persist the current common and per-engine settings."""
 		conf = config.getConfig()
@@ -135,7 +175,15 @@ class TranslationSettingsPanel(SettingsPanel):
 				conf["engines"][engineId] = {}
 			engineConf = conf["engines"][engineId]
 			for _unused, info in controls.items():
+				credentialKey = (engineId, info["spec"]["id"])
+				if credentialKey in self._protectedCredentialValues:
+					engineConf[info["spec"]["id"]] = self._protectedCredentialValues[credentialKey]
+					control = info["control"]
+					assert isinstance(control, wx.TextCtrl)
+					control.SetModified(False)
+					continue
 				info["handler"].saveToConfig(info["control"], engineConf, info["spec"])
+		self._protectedCredentialValues.clear()
 
 	def postSave(self) -> None:
 		"""Apply local dictionary hook changes after every settings panel saves successfully."""
@@ -252,6 +300,7 @@ class TranslationSettingsPanel(SettingsPanel):
 		for spec in configSpecList:
 			handler = uiFactory.getControlHandler(spec["type"])
 			labelControl, control = handler.createControlPair(panel, spec)
+			auxiliaryControl = None
 
 			handler.loadFromConfig(control, engineConf, spec)
 			handler.bindEvent(control, self.onAnyControlChanged)
@@ -261,18 +310,43 @@ class TranslationSettingsPanel(SettingsPanel):
 				gridSizer.AddSpacer(0)
 			else:
 				gridSizer.Add(labelControl, 0, wx.ALIGN_CENTER_VERTICAL)
-				gridSizer.Add(control, 1, wx.EXPAND)
+				if spec["type"] == "password":
+					assert isinstance(control, wx.TextCtrl)
+					# Translators: Checkbox that reveals the contents of a masked credential field.
+					auxiliaryControl = wx.CheckBox(panel, label=_("Show credential"))
+					auxiliaryControl.Bind(
+						wx.EVT_CHECKBOX,
+						partial(self._onPasswordVisibilityChanged, passwordControl=control),
+					)
+					valueSizer = wx.BoxSizer(wx.HORIZONTAL)
+					valueSizer.Add(control, 1, wx.EXPAND)
+					valueSizer.Add(auxiliaryControl, 0, wx.ALIGN_CENTER_VERTICAL | wx.LEFT, 5)
+					gridSizer.Add(valueSizer, 1, wx.EXPAND)
+				else:
+					gridSizer.Add(control, 1, wx.EXPAND)
 
 			self.dynamicControls[engineId][spec["id"]] = {
 				"control": control,
 				"handler": handler,
 				"spec": spec,
 				"labelControl": labelControl,
+				"auxiliaryControl": auxiliaryControl,
 			}
 
 		containerSizer.Add(gridSizer, 1, wx.EXPAND | wx.ALL, 5)
 		panel.SetSizer(containerSizer)
 		return panel
+
+	def _onPasswordVisibilityChanged(
+		self,
+		event: wx.CommandEvent,
+		*,
+		passwordControl: wx.TextCtrl,
+	) -> None:
+		"""Show or mask the password associated with a visibility checkbox."""
+		maskCharacter = 0 if event.IsChecked() else _PASSWORD_MASK_CHARACTER
+		sendMessage(passwordControl.GetHandle(), _EM_SETPASSWORDCHAR, maskCharacter, 0)
+		passwordControl.Refresh()
 
 	def _applyUiStates(self, uiStates: dict[str, dict[str, Any]]):
 		engineId = self._getSelectedEngineId()
@@ -286,6 +360,8 @@ class TranslationSettingsPanel(SettingsPanel):
 			handler = info["handler"]
 			for prop, value in states.items():
 				handler.updateControlState(info["control"], info["labelControl"], prop, value)
+				if auxiliaryControl := info["auxiliaryControl"]:
+					handler.updateControlState(auxiliaryControl, None, prop, value)
 
 		self.Layout()
 

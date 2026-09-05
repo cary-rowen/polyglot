@@ -1,3 +1,7 @@
+### Unreleased
+
+- Added credential protection: engine credentials are encrypted with Windows DPAPI, existing plaintext values are migrated automatically, and credentials remain separate across NVDA configuration profiles. Credentials can be shown or hidden in settings.
+
 ### 1.2.1
 
 - Improved the Simplified Chinese and Ukrainian localizations and aligned the English and Simplified Chinese documentation.

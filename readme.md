@@ -107,6 +107,21 @@ Current dictionary size:
 
 ## Settings Guide
 
+### Credential Protection
+
+Polyglot uses Windows Data Protection API (DPAPI) to protect API keys, access tokens, and passwords used by
+its translation engines. NVDA configuration stores protected ciphertext instead of directly readable plaintext.
+When the add-on starts or an NVDA configuration profile is activated, credentials that have not yet been
+protected are encrypted automatically.
+
+Credential fields are masked by default. Select `Show credential` beside a field to view its contents.
+
+After an NVDA portable copy is moved to another computer or used by a different Windows user, saved credentials
+usually cannot be decrypted. Polyglot treats them as missing; re-enter them in settings and select `Apply` or `OK`.
+
+If you do not enter a new value, the original ciphertext is preserved. The original credentials will usually work
+again when the portable copy is returned to the original computer and Windows user.
+
 ### Common Settings
 
 - `Copy manual translation results to clipboard`: Copies manual translation output after a successful request.

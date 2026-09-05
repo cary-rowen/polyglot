@@ -8,6 +8,10 @@ from typing import Any
 
 import wx
 from configobj.validate import is_boolean
+from logHandler import log
+
+from ..common import config
+from ..common.secureStorage import SecureStorageError
 
 # Create a Type Alias for complex, reused types.
 ConfigSpec = dict[str, Any]
@@ -159,6 +163,35 @@ class TextHandler(LabeledControlHandler):
 		control.Bind(wx.EVT_TEXT, callback)
 
 
+class PasswordHandler(TextHandler):
+	"""Encrypt password controls while keeping plaintext confined to the settings control."""
+
+	def loadFromConfig(self, control: wx.Control, configSection: ConfigSection, spec: ConfigSpec) -> None:
+		"""Decrypt a protected or legacy plaintext value into a password control."""
+		storedValue = str(configSection.get(spec["id"], spec.get("default")) or "")
+		try:
+			plainValue = config.unprotectSecret(storedValue)
+		except SecureStorageError:
+			log.warning(
+				"Stored secret for setting '%s' could not be unprotected on this computer.",
+				spec["id"],
+				exc_info=True,
+			)
+			plainValue = ""
+		self.setValueToControl(control, plainValue, spec)
+		assert isinstance(control, wx.TextCtrl)
+		control.SetModified(False)
+
+	def saveToConfig(self, control: wx.Control, configSection: ConfigSection, spec: ConfigSpec) -> None:
+		"""Encrypt a changed password control before updating the configuration."""
+		assert isinstance(control, wx.TextCtrl)
+		if not control.IsModified():
+			return
+		protectedValue = config.protectSecret(control.GetValue())
+		configSection[spec["id"]] = protectedValue
+		control.SetModified(False)
+
+
 class ChoiceHandler(LabeledControlHandler):
 	"""Adapt enumerated string configuration items to wx choices."""
 
@@ -280,7 +313,7 @@ class SpinCtrlHandler(LabeledControlHandler):
 _controlHandlers: dict[str, ControlHandlerBase] = {
 	"checkbox": CheckboxHandler(),
 	"text": TextHandler(),
-	"password": TextHandler(),
+	"password": PasswordHandler(),
 	"choice": ChoiceHandler(),
 	"spinctrl": SpinCtrlHandler(),
 }

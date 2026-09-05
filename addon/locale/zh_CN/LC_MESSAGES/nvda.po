@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 'polyglot' '1.2.0'\n"
 "Report-Msgid-Bugs-To: 'nvda-translations@groups.io'\n"
-"POT-Creation-Date: 2026-09-04 03:04+0800\n"
+"POT-Creation-Date: 2026-09-05 02:25+0800\n"
 "PO-Revision-Date: 2026-09-04 02:06+0800\n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -21,150 +21,150 @@ msgstr ""
 #. Translators: Summary/title for this add-on
 #. to be shown on installation and add-on information found in add-on store
 #: addon\globalPlugins\polyglot\__init__.py:82
-#: addon\globalPlugins\polyglot\views\settings.py:26 buildVars.py:32
+#: addon\globalPlugins\polyglot\views\settings.py:32 buildVars.py:32
 msgid "Polyglot"
 msgstr "Polyglot"
 
-#: addon\globalPlugins\polyglot\__init__.py:148
+#: addon\globalPlugins\polyglot\__init__.py:157
 msgid "Enter the translation command layer; press H for command layer help"
 msgstr "进入翻译命令层；按 H 显示命令层帮助"
 
-#: addon\globalPlugins\polyglot\__init__.py:163
+#: addon\globalPlugins\polyglot\__init__.py:172
 msgid "Nothing selected"
 msgstr "未选择任何内容"
 
-#: addon\globalPlugins\polyglot\__init__.py:168
+#: addon\globalPlugins\polyglot\__init__.py:177
 msgid "Cannot get selected text from the current object"
 msgstr "无法从当前对象获取选中文本"
 
-#: addon\globalPlugins\polyglot\__init__.py:201
+#: addon\globalPlugins\polyglot\__init__.py:210
 msgid "Next source language"
 msgstr "下一个源语言"
 
-#: addon\globalPlugins\polyglot\__init__.py:207
+#: addon\globalPlugins\polyglot\__init__.py:216
 msgid "Previous source language"
 msgstr "上一个源语言"
 
-#: addon\globalPlugins\polyglot\__init__.py:213
+#: addon\globalPlugins\polyglot\__init__.py:222
 msgid "Next target language"
 msgstr "下一个目标语言"
 
-#: addon\globalPlugins\polyglot\__init__.py:219
+#: addon\globalPlugins\polyglot\__init__.py:228
 msgid "Previous target language"
 msgstr "上一个目标语言"
 
-#: addon\globalPlugins\polyglot\__init__.py:232
+#: addon\globalPlugins\polyglot\__init__.py:241
 msgid "Next translation engine"
 msgstr "下一个翻译引擎"
 
-#: addon\globalPlugins\polyglot\__init__.py:238
+#: addon\globalPlugins\polyglot\__init__.py:247
 msgid "Previous translation engine"
 msgstr "上一个翻译引擎"
 
-#: addon\globalPlugins\polyglot\__init__.py:244
+#: addon\globalPlugins\polyglot\__init__.py:253
 msgid "Swap source and target languages"
 msgstr "交换源语言和目标语言"
 
-#: addon\globalPlugins\polyglot\__init__.py:253
+#: addon\globalPlugins\polyglot\__init__.py:262
 msgid "Announce current engine and languages"
 msgstr "播报当前引擎和翻译语言方向"
 
-#: addon\globalPlugins\polyglot\__init__.py:260
+#: addon\globalPlugins\polyglot\__init__.py:269
 msgid "Copy last translation to clipboard"
 msgstr "复制上次翻译结果到剪贴板"
 
-#: addon\globalPlugins\polyglot\__init__.py:266
+#: addon\globalPlugins\polyglot\__init__.py:275
 msgid "No translation result to copy"
 msgstr "没有可复制的翻译结果"
 
-#: addon\globalPlugins\polyglot\__init__.py:268
+#: addon\globalPlugins\polyglot\__init__.py:277
 msgid "Open interactive translation dialog"
 msgstr "打开交互式翻译对话框"
 
-#: addon\globalPlugins\polyglot\__init__.py:281
+#: addon\globalPlugins\polyglot\__init__.py:290
 msgid "Open settings"
 msgstr "打开设置"
 
-#: addon\globalPlugins\polyglot\__init__.py:289
+#: addon\globalPlugins\polyglot\__init__.py:298
 msgid "Toggle auto-translation"
 msgstr "切换自动翻译"
 
-#: addon\globalPlugins\polyglot\__init__.py:292
+#: addon\globalPlugins\polyglot\__init__.py:301
 msgid "Auto-translation enabled"
 msgstr "自动翻译已开启"
 
-#: addon\globalPlugins\polyglot\__init__.py:292
+#: addon\globalPlugins\polyglot\__init__.py:301
 msgid "Auto-translation disabled"
 msgstr "自动翻译已关闭"
 
-#: addon\globalPlugins\polyglot\__init__.py:294
+#: addon\globalPlugins\polyglot\__init__.py:303
 #: addon\globalPlugins\polyglot\modelManager\dialog.py:212
 msgid "Clear cache"
 msgstr "清除缓存"
 
-#: addon\globalPlugins\polyglot\__init__.py:297
+#: addon\globalPlugins\polyglot\__init__.py:306
 msgid "Cache cleared"
 msgstr "缓存已清除"
 
-#: addon\globalPlugins\polyglot\__init__.py:299
+#: addon\globalPlugins\polyglot\__init__.py:308
 msgid "Translate selection"
 msgstr "翻译选中内容"
 
-#: addon\globalPlugins\polyglot\__init__.py:304
+#: addon\globalPlugins\polyglot\__init__.py:313
 msgid "Translate selection (reversed direction)"
 msgstr "反向翻译选中内容"
 
-#: addon\globalPlugins\polyglot\__init__.py:309
+#: addon\globalPlugins\polyglot\__init__.py:318
 msgid "Translate clipboard"
 msgstr "翻译剪贴板"
 
-#: addon\globalPlugins\polyglot\__init__.py:312
-#: addon\globalPlugins\polyglot\__init__.py:319
+#: addon\globalPlugins\polyglot\__init__.py:321
+#: addon\globalPlugins\polyglot\__init__.py:328
 msgid "Clipboard is empty"
 msgstr "剪贴板为空"
 
-#: addon\globalPlugins\polyglot\__init__.py:316
+#: addon\globalPlugins\polyglot\__init__.py:325
 msgid "Translate clipboard (reversed direction)"
 msgstr "反向翻译剪贴板"
 
-#: addon\globalPlugins\polyglot\__init__.py:323
+#: addon\globalPlugins\polyglot\__init__.py:332
 msgid "Translate last spoken text"
 msgstr "翻译最后朗读的内容"
 
-#: addon\globalPlugins\polyglot\__init__.py:326
-#: addon\globalPlugins\polyglot\__init__.py:333
+#: addon\globalPlugins\polyglot\__init__.py:335
+#: addon\globalPlugins\polyglot\__init__.py:342
 msgid "No last spoken text"
 msgstr "没有最后朗读的内容"
 
-#: addon\globalPlugins\polyglot\__init__.py:330
+#: addon\globalPlugins\polyglot\__init__.py:339
 msgid "Translate last spoken text (reversed direction)"
 msgstr "反向翻译最后朗读的内容"
 
-#: addon\globalPlugins\polyglot\__init__.py:337
+#: addon\globalPlugins\polyglot\__init__.py:346
 msgid "Show command layer help"
 msgstr "显示命令层帮助"
 
-#: addon\globalPlugins\polyglot\__init__.py:341
+#: addon\globalPlugins\polyglot\__init__.py:350
 msgid "Polyglot Help"
 msgstr "Polyglot 帮助"
 
-#: addon\globalPlugins\polyglot\__init__.py:350
+#: addon\globalPlugins\polyglot\__init__.py:359
 msgid "Translation Actions"
 msgstr "翻译操作"
 
-#: addon\globalPlugins\polyglot\__init__.py:361
+#: addon\globalPlugins\polyglot\__init__.py:370
 msgid "Configuration & Switching"
 msgstr "配置和切换"
 
-#: addon\globalPlugins\polyglot\__init__.py:374
+#: addon\globalPlugins\polyglot\__init__.py:383
 msgid "Tools & System"
 msgstr "工具和系统"
 
-#: addon\globalPlugins\polyglot\__init__.py:396
+#: addon\globalPlugins\polyglot\__init__.py:405
 msgid "Key"
 msgstr "按键"
 
-#: addon\globalPlugins\polyglot\__init__.py:396
+#: addon\globalPlugins\polyglot\__init__.py:405
 msgid "Action"
 msgstr "操作"
 
@@ -1938,12 +1938,12 @@ msgid "Polyglot Interactive Translation"
 msgstr "Polyglot 交互式翻译"
 
 #: addon\globalPlugins\polyglot\views\interactiveDialog.py:36
-#: addon\globalPlugins\polyglot\views\settings.py:61
+#: addon\globalPlugins\polyglot\views\settings.py:69
 msgid "Translation &engine:"
 msgstr "翻译引擎(&E)："
 
 #: addon\globalPlugins\polyglot\views\interactiveDialog.py:45
-#: addon\globalPlugins\polyglot\views\settings.py:237
+#: addon\globalPlugins\polyglot\views\settings.py:285
 msgid "Current Engine Settings"
 msgstr "当前引擎设置"
 
@@ -1989,40 +1989,51 @@ msgstr "不适用"
 msgid "Translating..."
 msgstr "正在翻译……"
 
-#: addon\globalPlugins\polyglot\views\settings.py:71
+#: addon\globalPlugins\polyglot\views\settings.py:79
 msgid "Common Settings"
 msgstr "通用设置"
 
-#: addon\globalPlugins\polyglot\views\settings.py:76
+#: addon\globalPlugins\polyglot\views\settings.py:84
 msgid "Copy manual translation results to clipboard"
 msgstr "将手动翻译结果复制到剪贴板"
 
-#: addon\globalPlugins\polyglot\views\settings.py:83
+#: addon\globalPlugins\polyglot\views\settings.py:91
 msgid ""
 "Prefer local English-Chinese dictionary for selected text, clipboard, and "
 "last spoken text"
 msgstr "优先使用本地英汉词典处理选中文本、剪贴板内容和最后朗读内容"
 
 #. Translators: Checkbox controlling local dictionary definitions in NVDA text review.
-#: addon\globalPlugins\polyglot\views\settings.py:91
+#: addon\globalPlugins\polyglot\views\settings.py:99
 msgid "Use the local English-Chinese dictionary in text review"
 msgstr "在文本查看中使用本地英汉词典"
 
-#: addon\globalPlugins\polyglot\views\settings.py:98
+#: addon\globalPlugins\polyglot\views\settings.py:106
 msgid ""
 "Enable smart speech filter (skips roles, states, location, and formatting "
 "information)"
 msgstr "启用智能语音过滤器（跳过角色、状态、位置和格式信息）"
 
-#: addon\globalPlugins\polyglot\views\settings.py:102
+#: addon\globalPlugins\polyglot\views\settings.py:110
 msgid "Clear Cache"
 msgstr "清除缓存"
 
-#: addon\globalPlugins\polyglot\views\settings.py:243
+#: addon\globalPlugins\polyglot\views\settings.py:151
+msgid ""
+"This credential could not be encrypted. Your change was not saved, and the "
+"previous value was kept. Please try again."
+msgstr "无法加密此凭据。更改未保存，原值保持不变。请重试。"
+
+#: addon\globalPlugins\polyglot\views\settings.py:291
 msgid "This engine requires no additional configuration."
 msgstr "此引擎无需额外配置。"
 
-#: addon\globalPlugins\polyglot\views\settings.py:333
+#. Translators: Checkbox that reveals the contents of a masked credential field.
+#: addon\globalPlugins\polyglot\views\settings.py:316
+msgid "Show credential"
+msgstr "显示凭据"
+
+#: addon\globalPlugins\polyglot\views\settings.py:409
 #, python-brace-format
 msgid "Clear Cache (Items: {})"
 msgstr "清除缓存（条目数：{}）"
