@@ -1,6 +1,6 @@
-### Unreleased
+### 1.3.0
 
-- Added credential protection: engine credentials are encrypted with Windows DPAPI, existing plaintext values are migrated automatically, and credentials remain separate across NVDA configuration profiles. Credentials can be shown or hidden in settings.
+- Added Windows DPAPI protection for engine credentials, so saved credentials are no longer stored in plaintext and portable profiles must be reconfigured when moved to another machine.
 
 ### 1.2.1
 
