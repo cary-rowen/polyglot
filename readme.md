@@ -165,6 +165,22 @@ Some engines expose additional controls:
 - `Ollama` engines expose API URL, model name, optional API key, prompt template, and custom prompts.
 - `Google Translate (Polyglot)` exposes a configurable endpoint URL and API key field.
 - `Google Translate (key-free)` offers an optional mirror-server toggle.
+- `LibreTranslate` exposes a configurable server URL and optional API key. It defaults to the local server at `http://localhost:5000`.
+
+### LibreTranslate
+
+`LibreTranslate` is an open-source, self-hosted machine translation service that provides an HTTP translation API based on Argos Translate.
+
+After selecting `LibreTranslate` in Polyglot settings, the following engine-specific options are available:
+
+- `Server URL`: The LibreTranslate service address. The default is `http://localhost:5000`.
+- `API key (optional)`: Enter a key when the server requires one. Leave it empty for local servers without API-key authentication.
+
+Source language, target language, proxy mode, and request timeout use the common engine settings.
+
+Project home: [LibreTranslate](https://github.com/LibreTranslate/LibreTranslate)
+
+See the [official documentation](https://docs.libretranslate.com/) for deployment instructions. Windows users can also run the service with an open-source portable package without using Docker.
 
 ## Chrome AI Offline Translation
 
@@ -221,6 +237,7 @@ The repository currently includes the following engines:
 | `Google Translate (key-free)` | None | Supports an optional mirror endpoint toggle. |
 | `Google Translate (Polyglot)` | Configurable API key and endpoint | Ships with default endpoint values in code; availability depends on service status. |
 | `Microsoft Translator (key-free)` | None | Uses the Edge `translatetext` endpoint. |
+| `LibreTranslate` | Optional API key | Uses a LibreTranslate-compatible server, including self-hosted instances; defaults to `http://localhost:5000`. |
 | `Niutrans` | Niutrans API key | Standard vendor API integration. |
 | `Ollama 1` | Ollama URL, model name, optional key | First saved Ollama profile. |
 | `Ollama 2` | Ollama URL, model name, optional key | Second saved Ollama profile. |

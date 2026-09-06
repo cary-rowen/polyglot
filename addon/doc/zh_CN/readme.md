@@ -147,6 +147,22 @@ Polyglot 使用 Windows 数据保护 API（DPAPI）保护各翻译引擎的 API 
 - `Ollama` 引擎提供 API 地址、模型名称、API 密钥（可选）、提示词模板和自定义提示词。
 - `Google Translate (Polyglot)` 提供可配置的端点 URL 和 API 密钥字段。
 - `Google Translate (key-free)` 提供可选的镜像服务器开关。
+- `LibreTranslate` 提供可配置的服务器 URL 和可选 API 密钥，默认使用本机 `http://localhost:5000`。
+
+### LibreTranslate
+
+`LibreTranslate` 是一个开源的自托管机器翻译服务，基于 Argos Translate 提供 HTTP 翻译接口。
+
+在 Polyglot 设置中选择 `LibreTranslate` 后，会新增以下设置项：
+
+- `服务器 URL`：LibreTranslate 服务地址，默认值为 `http://localhost:5000`。
+- `API 密钥（可选）`：当服务器要求 API 密钥时填写；本地未启用密钥验证的服务可以留空。
+
+源语言、目标语言、代理模式和请求超时使用引擎通用设置。
+
+项目主页：[LibreTranslate](https://github.com/LibreTranslate/LibreTranslate)
+
+部署 LibreTranslate 时，请参阅[官方文档](https://docs.libretranslate.com/)。Windows 用户也可以使用开源的 Portable 方案运行服务，无需通过 Docker 部署。
 
 ## Chrome AI 离线翻译
 
@@ -203,6 +219,7 @@ NVDA 退出时，Polyglot 会关闭由插件启动的 Chrome 实例。
 | `Google Translate (key-free)` | 无 | 可选启用镜像接口。 |
 | `Google Translate (Polyglot)` | 可配置 API 密钥和端点 URL | 代码内带默认接口值，实际可用性取决于服务状态。 |
 | `Microsoft Translator (key-free)` | 无 | 使用 Edge `translatetext` 端点。 |
+| `LibreTranslate` | 可选 API 密钥 | 使用兼容 LibreTranslate 的服务器，也支持自建实例；默认使用 `http://localhost:5000`。 |
 | `Niutrans` | 小牛翻译 API 密钥 | 标准厂商 API 接入。 |
 | `Ollama 1` | Ollama 地址、模型名、可选密钥 | 第一个独立 Ollama 配置槽。 |
 | `Ollama 2` | Ollama 地址、模型名、可选密钥 | 第二个独立 Ollama 配置槽。 |
