@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: 'nvda-translations@groups.io'\n"
-"POT-Creation-Date: 2026-09-04 03:04+0800\n"
-"PO-Revision-Date: 2026-09-01 14:32+0300\n"
+"POT-Creation-Date: 2026-09-06 14:55+0300\n"
+"PO-Revision-Date: 2026-09-06 15:33+0300\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: uk\n"
@@ -22,152 +22,152 @@ msgstr ""
 #. Translators: Summary/title for this add-on
 #. to be shown on installation and add-on information found in add-on store
 #: addon\globalPlugins\polyglot\__init__.py:82
-#: addon\globalPlugins\polyglot\views\settings.py:26 buildVars.py:32
+#: addon\globalPlugins\polyglot\views\settings.py:32 buildVars.py:32
 msgid "Polyglot"
 msgstr "Поліглот"
 
-#: addon\globalPlugins\polyglot\__init__.py:148
+#: addon\globalPlugins\polyglot\__init__.py:157
 msgid "Enter the translation command layer; press H for command layer help"
 msgstr ""
 "Відкрити командний шар додатка; натисніть H для отримання довідки щодо "
 "командного шару"
 
-#: addon\globalPlugins\polyglot\__init__.py:163
+#: addon\globalPlugins\polyglot\__init__.py:172
 msgid "Nothing selected"
 msgstr "Нічого не вибрано"
 
-#: addon\globalPlugins\polyglot\__init__.py:168
+#: addon\globalPlugins\polyglot\__init__.py:177
 msgid "Cannot get selected text from the current object"
 msgstr "Неможливо отримати вибраний текст із поточного об’єкта"
 
-#: addon\globalPlugins\polyglot\__init__.py:201
+#: addon\globalPlugins\polyglot\__init__.py:210
 msgid "Next source language"
 msgstr "Наступна мова оригіналу"
 
-#: addon\globalPlugins\polyglot\__init__.py:207
+#: addon\globalPlugins\polyglot\__init__.py:216
 msgid "Previous source language"
 msgstr "Попередна мова оригіналу"
 
-#: addon\globalPlugins\polyglot\__init__.py:213
+#: addon\globalPlugins\polyglot\__init__.py:222
 msgid "Next target language"
 msgstr "Наступна мова перекладу"
 
-#: addon\globalPlugins\polyglot\__init__.py:219
+#: addon\globalPlugins\polyglot\__init__.py:228
 msgid "Previous target language"
 msgstr "Попередня мова перекладу"
 
-#: addon\globalPlugins\polyglot\__init__.py:232
+#: addon\globalPlugins\polyglot\__init__.py:241
 msgid "Next translation engine"
 msgstr "Наступний сервіс перекладу"
 
-#: addon\globalPlugins\polyglot\__init__.py:238
+#: addon\globalPlugins\polyglot\__init__.py:247
 msgid "Previous translation engine"
 msgstr "Попередній сервіс перекладу"
 
-#: addon\globalPlugins\polyglot\__init__.py:244
+#: addon\globalPlugins\polyglot\__init__.py:253
 msgid "Swap source and target languages"
 msgstr "Поміняти мову оригіналу та мову перекладу"
 
-#: addon\globalPlugins\polyglot\__init__.py:253
+#: addon\globalPlugins\polyglot\__init__.py:262
 msgid "Announce current engine and languages"
 msgstr "Повідомити про поточний сервіс перекладу та мови"
 
-#: addon\globalPlugins\polyglot\__init__.py:260
+#: addon\globalPlugins\polyglot\__init__.py:269
 msgid "Copy last translation to clipboard"
 msgstr "Копіювати останній переклад у буфер обміну"
 
-#: addon\globalPlugins\polyglot\__init__.py:266
+#: addon\globalPlugins\polyglot\__init__.py:275
 msgid "No translation result to copy"
 msgstr "Немає результатів перекладу для копіювання"
 
-#: addon\globalPlugins\polyglot\__init__.py:268
+#: addon\globalPlugins\polyglot\__init__.py:277
 msgid "Open interactive translation dialog"
 msgstr "Відкрити інтерактивний діалог перекладу"
 
-#: addon\globalPlugins\polyglot\__init__.py:281
+#: addon\globalPlugins\polyglot\__init__.py:290
 msgid "Open settings"
 msgstr "Відкрити налаштування"
 
-#: addon\globalPlugins\polyglot\__init__.py:289
+#: addon\globalPlugins\polyglot\__init__.py:298
 msgid "Toggle auto-translation"
 msgstr "Перемикає автоматичний переклад"
 
-#: addon\globalPlugins\polyglot\__init__.py:292
+#: addon\globalPlugins\polyglot\__init__.py:301
 msgid "Auto-translation enabled"
 msgstr "Автоматичний переклад увімкнено"
 
-#: addon\globalPlugins\polyglot\__init__.py:292
+#: addon\globalPlugins\polyglot\__init__.py:301
 msgid "Auto-translation disabled"
 msgstr "Автоматичний переклад вимкнено"
 
-#: addon\globalPlugins\polyglot\__init__.py:294
+#: addon\globalPlugins\polyglot\__init__.py:303
 #: addon\globalPlugins\polyglot\modelManager\dialog.py:212
 msgid "Clear cache"
 msgstr "Очистити кеш"
 
-#: addon\globalPlugins\polyglot\__init__.py:297
+#: addon\globalPlugins\polyglot\__init__.py:306
 msgid "Cache cleared"
 msgstr "Кеш очищено"
 
-#: addon\globalPlugins\polyglot\__init__.py:299
+#: addon\globalPlugins\polyglot\__init__.py:308
 msgid "Translate selection"
 msgstr "Перекласти вибране"
 
-#: addon\globalPlugins\polyglot\__init__.py:304
+#: addon\globalPlugins\polyglot\__init__.py:313
 msgid "Translate selection (reversed direction)"
 msgstr "Перекласти вибране (у зворотному напрямку)"
 
-#: addon\globalPlugins\polyglot\__init__.py:309
+#: addon\globalPlugins\polyglot\__init__.py:318
 msgid "Translate clipboard"
 msgstr "Перекласти буфер обміну"
 
-#: addon\globalPlugins\polyglot\__init__.py:312
-#: addon\globalPlugins\polyglot\__init__.py:319
+#: addon\globalPlugins\polyglot\__init__.py:321
+#: addon\globalPlugins\polyglot\__init__.py:328
 msgid "Clipboard is empty"
 msgstr "Буфер обміну порожній"
 
-#: addon\globalPlugins\polyglot\__init__.py:316
+#: addon\globalPlugins\polyglot\__init__.py:325
 msgid "Translate clipboard (reversed direction)"
 msgstr "Перекласти буфер обміну (у зворотному напрямку)"
 
-#: addon\globalPlugins\polyglot\__init__.py:323
+#: addon\globalPlugins\polyglot\__init__.py:332
 msgid "Translate last spoken text"
 msgstr "Перекласти останній промовлений текст"
 
-#: addon\globalPlugins\polyglot\__init__.py:326
-#: addon\globalPlugins\polyglot\__init__.py:333
+#: addon\globalPlugins\polyglot\__init__.py:335
+#: addon\globalPlugins\polyglot\__init__.py:342
 msgid "No last spoken text"
 msgstr "Немає останнього промовленого тексту"
 
-#: addon\globalPlugins\polyglot\__init__.py:330
+#: addon\globalPlugins\polyglot\__init__.py:339
 msgid "Translate last spoken text (reversed direction)"
 msgstr "Перекласти останній промовлений текст (у зворотному напрямку)"
 
-#: addon\globalPlugins\polyglot\__init__.py:337
+#: addon\globalPlugins\polyglot\__init__.py:346
 msgid "Show command layer help"
 msgstr "Показати довідку командного шару"
 
-#: addon\globalPlugins\polyglot\__init__.py:341
+#: addon\globalPlugins\polyglot\__init__.py:350
 msgid "Polyglot Help"
 msgstr "Довідка поліглота"
 
-#: addon\globalPlugins\polyglot\__init__.py:350
+#: addon\globalPlugins\polyglot\__init__.py:359
 msgid "Translation Actions"
 msgstr "Дії перекладу"
 
-#: addon\globalPlugins\polyglot\__init__.py:361
+#: addon\globalPlugins\polyglot\__init__.py:370
 msgid "Configuration & Switching"
 msgstr "Конфігурація та перемикання"
 
-#: addon\globalPlugins\polyglot\__init__.py:374
+#: addon\globalPlugins\polyglot\__init__.py:383
 msgid "Tools & System"
 msgstr "Інструменти та система"
 
-#: addon\globalPlugins\polyglot\__init__.py:396
+#: addon\globalPlugins\polyglot\__init__.py:405
 msgid "Key"
-msgstr "Ключ"
+msgstr "Комбінація"
 
-#: addon\globalPlugins\polyglot\__init__.py:396
+#: addon\globalPlugins\polyglot\__init__.py:405
 msgid "Action"
 msgstr "Дія"
 
@@ -184,7 +184,7 @@ msgstr "Помилка заміни: «Автоматичне визначенн
 #: addon\globalPlugins\polyglot\app\manager.py:123
 #, python-brace-format
 msgid "Languages swapped: from {source} to {target}"
-msgstr "Змінено мови: з {source} на {target}"
+msgstr "Мови змінено: з {source} на {target}"
 
 #: addon\globalPlugins\polyglot\app\manager.py:167
 msgid "No languages available for cycling."
@@ -878,7 +878,7 @@ msgstr "{source} / {target}"
 #: addon\globalPlugins\polyglot\modelManager\service.py:234
 #: addon\globalPlugins\polyglot\modelManager\service.py:265
 msgid "Polyglot ChromeAI Model Manager"
-msgstr "Менеджер моделей"
+msgstr "Менеджер моделей Polyglot ChromeAI"
 
 #: addon\globalPlugins\polyglot\modelManager\dialog.py:127
 msgid ""
@@ -1179,11 +1179,11 @@ msgstr "Chrome AI (офлайн)"
 
 #: addon\globalPlugins\polyglot\modelManager\menu.py:66
 msgid "Polyglot ChromeAI model manager"
-msgstr "Менеджер моделей ChromeAI"
+msgstr "Менеджер моделей Polyglot ChromeAI"
 
 #: addon\globalPlugins\polyglot\modelManager\menu.py:67
 msgid "Manage Polyglot ChromeAI offline translation models"
-msgstr "Керування багатомовними моделями офлайн-перекладу ChromeAI"
+msgstr "Керування багатомовними моделями офлайн-перекладу Polyglot ChromeAI"
 
 #: addon\globalPlugins\polyglot\modelManager\service.py:196
 #, python-brace-format
@@ -1203,7 +1203,7 @@ msgstr ""
 "{packages}\n"
 "\n"
 "Виберіть «Так», щоб завантажити та встановити їх за допомогою менеджера "
-"моделей. Скористайтеся цією опцією, якщо служба завантаження моделей у "
+"моделей. Скористайтеся цією функцією, якщо служба завантаження моделей у "
 "Chrome працює повільно, заблокована або є ненадійною у вашій мережі.\n"
 "Виберіть «Ні», щоб дозволити Chrome завантажити їх.\n"
 "Виберіть «Скасувати», щоб скасувати цей переклад."
@@ -1387,7 +1387,7 @@ msgid ""
 "panel before using it."
 msgstr ""
 "Офлайн-модуль Chrome AI вимкнено. Перед використанням увімкніть його на "
-"панелі налаштувань поліглот."
+"панелі налаштувань поліглота."
 
 #. Translators: {model} is a model name like "Translation model".
 #: addon\globalPlugins\polyglot\services\engines\chromeAi.py:241
@@ -1475,7 +1475,7 @@ msgstr "Зберегти форматування"
 
 #: addon\globalPlugins\polyglot\services\engines\deepl.py:65
 msgid "Formality (for supported languages):"
-msgstr "Стилістичне оформлення (для підтримуваних мов):"
+msgstr "Формальність (для підтримуваних мов):"
 
 #: addon\globalPlugins\polyglot\services\engines\deepl.py:68
 msgid "Default"
@@ -1483,11 +1483,11 @@ msgstr "Початково"
 
 #: addon\globalPlugins\polyglot\services\engines\deepl.py:69
 msgid "More formal"
-msgstr "Більш офіційний"
+msgstr "більш формальний"
 
 #: addon\globalPlugins\polyglot\services\engines\deepl.py:70
 msgid "Less formal"
-msgstr "Менш офіційний"
+msgstr "Менш формальний"
 
 #: addon\globalPlugins\polyglot\services\engines\deepl.py:76
 msgid "Model type:"
@@ -1524,13 +1524,12 @@ msgid "DeepL Web (key-free)"
 msgstr "DeepL Web (без введення ключа)"
 
 #: addon\globalPlugins\polyglot\services\engines\deeplWeb.py:159
-#, fuzzy
 msgid "target"
-msgstr "Відкрити папку каталогу"
+msgstr "ціль"
 
 #: addon\globalPlugins\polyglot\services\engines\deeplWeb.py:159
 msgid "source"
-msgstr ""
+msgstr "джерело"
 
 #: addon\globalPlugins\polyglot\services\engines\deeplWeb.py:162
 #, python-brace-format
@@ -1976,12 +1975,12 @@ msgid "Polyglot Interactive Translation"
 msgstr "Інтерактивний переклад"
 
 #: addon\globalPlugins\polyglot\views\interactiveDialog.py:36
-#: addon\globalPlugins\polyglot\views\settings.py:61
+#: addon\globalPlugins\polyglot\views\settings.py:69
 msgid "Translation &engine:"
 msgstr "Сервіс &перекладу:"
 
 #: addon\globalPlugins\polyglot\views\interactiveDialog.py:45
-#: addon\globalPlugins\polyglot\views\settings.py:237
+#: addon\globalPlugins\polyglot\views\settings.py:285
 msgid "Current Engine Settings"
 msgstr "Поточні налаштування сервісу перекладу"
 
@@ -2027,15 +2026,15 @@ msgstr "Не застосовується"
 msgid "Translating..."
 msgstr "Переклад..."
 
-#: addon\globalPlugins\polyglot\views\settings.py:71
+#: addon\globalPlugins\polyglot\views\settings.py:79
 msgid "Common Settings"
 msgstr "Загальні налаштування"
 
-#: addon\globalPlugins\polyglot\views\settings.py:76
+#: addon\globalPlugins\polyglot\views\settings.py:84
 msgid "Copy manual translation results to clipboard"
 msgstr "Скопіювати результати перекладу в буфер обміну"
 
-#: addon\globalPlugins\polyglot\views\settings.py:83
+#: addon\globalPlugins\polyglot\views\settings.py:91
 msgid ""
 "Prefer local English-Chinese dictionary for selected text, clipboard, and "
 "last spoken text"
@@ -2044,12 +2043,12 @@ msgstr ""
 "останній текст"
 
 #. Translators: Checkbox controlling local dictionary definitions in NVDA text review.
-#: addon\globalPlugins\polyglot\views\settings.py:91
+#: addon\globalPlugins\polyglot\views\settings.py:99
 msgid "Use the local English-Chinese dictionary in text review"
 msgstr ""
 "Використовувати локальний англо-китайський словник під час перегляду тексту"
 
-#: addon\globalPlugins\polyglot\views\settings.py:98
+#: addon\globalPlugins\polyglot\views\settings.py:106
 msgid ""
 "Enable smart speech filter (skips roles, states, location, and formatting "
 "information)"
@@ -2057,15 +2056,28 @@ msgstr ""
 "Увімкнути розумний голосовий фільтр (пропускати ролі, стани, розташування та "
 "форматування)"
 
-#: addon\globalPlugins\polyglot\views\settings.py:102
+#: addon\globalPlugins\polyglot\views\settings.py:110
 msgid "Clear Cache"
 msgstr "Очистити кеш"
 
-#: addon\globalPlugins\polyglot\views\settings.py:243
+#: addon\globalPlugins\polyglot\views\settings.py:151
+msgid ""
+"This credential could not be encrypted. Your change was not saved, and the "
+"previous value was kept. Please try again."
+msgstr ""
+"Ці облікові дані не вдалося зашифрувати. Зміни не збережено, а попереднє "
+"значення залишилося без змін. Спробуйте ще раз."
+
+#: addon\globalPlugins\polyglot\views\settings.py:291
 msgid "This engine requires no additional configuration."
 msgstr "Цей сервіс перекладу не потребує додаткового налаштування."
 
-#: addon\globalPlugins\polyglot\views\settings.py:333
+#. Translators: Checkbox that reveals the contents of a masked credential field.
+#: addon\globalPlugins\polyglot\views\settings.py:316
+msgid "Show credential"
+msgstr "Показати облікові дані"
+
+#: addon\globalPlugins\polyglot\views\settings.py:409
 #, python-brace-format
 msgid "Clear Cache (Items: {})"
 msgstr "Очистити кеш ({} елементів)"
@@ -2080,12 +2092,18 @@ msgstr "Додаток для перекладу з підтримкою дек�
 #. Translators: what's new content for the add-on version to be shown in the add-on store
 #: buildVars.py:40
 msgid ""
-"### 1.2.1\n"
+"### 1.3.0\n"
 "\n"
-"- Improved the Simplified Chinese and Ukrainian localizations and aligned "
-"the English and Simplified Chinese documentation.\n"
-"- Removed unused internal code and obsolete comments."
+"- Added Windows DPAPI protection for engine credentials, so saved "
+"credentials are no longer stored in plaintext and portable profiles must be "
+"reconfigured when moved to another machine."
 msgstr ""
+"### 1.3.0\n"
+"\n"
+"- Додано захист за допомогою Windows DPAPI для облікових даних сервісу, "
+"завдяки чому збережені облікові дані більше не зберігаються у вигляді "
+"звичайного тексту, а переносні профілі необхідно налаштовувати заново після "
+"перенесення на інший комп’ютер."
 
 #~ msgid ""
 #~ "### 1.2.0\n"
