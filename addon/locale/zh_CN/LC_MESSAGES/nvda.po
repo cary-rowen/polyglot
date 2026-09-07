@@ -29,6 +29,14 @@ msgstr "Polyglot"
 msgid "Enter the translation command layer; press H for command layer help"
 msgstr "进入翻译命令层；按 H 显示命令层帮助"
 
+#. Translators: Braille-only message shown when the Polyglot command layer is entered.
+msgid "command layer. Press H for help."
+msgstr "命令层。按 H 查看帮助。"
+
+#. Translators: Input help mode message for exiting the Polyglot command layer.
+msgid "Exit the translation command layer."
+msgstr "退出翻译命令层。"
+
 #: addon\globalPlugins\polyglot\__init__.py:172
 msgid "Nothing selected"
 msgstr "未选择任何内容"

@@ -4,6 +4,7 @@
 
 import os
 import sys
+from html import escape
 
 # Load websocket-client submodule
 _ADDON_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -14,6 +15,7 @@ if _WEBSOCKET_CLIENT_PATH not in sys.path:
 
 import addonHandler
 import api
+import braille
 import config
 import globalPluginHandler
 import globalVars
@@ -30,6 +32,7 @@ from scriptHandler import script
 
 from .app.manager import TranslationManager
 from .app.speechFilter import SpeechFilter
+from ._commandLayer import ENTRY_GESTURE, LAYER_GESTURES, shouldExitLayer
 from .common import cues
 from .common.config import getConfigSectionName, migrateStoredSecrets
 from .common.network import closeSession
@@ -99,9 +102,12 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
 			self.modelManagerMenuItem = modelManagerMenu.bindToolsMenu(self)
 		config.post_configProfileSwitch.register(self._migrateStoredSecrets)
 		config.post_configReset.register(self._migrateStoredSecrets)
+		inputCore.decide_executeGesture.register(self._decideExecuteGesture)
 
 	def terminate(self):
 		"""Unregister Polyglot UI and speech integrations and release resources."""
+		inputCore.decide_executeGesture.unregister(self._decideExecuteGesture)
+		self._finishLayer()
 		config.post_configProfileSwitch.unregister(self._migrateStoredSecrets)
 		config.post_configReset.unregister(self._migrateStoredSecrets)
 		self.manager.terminateAllTasks()
@@ -125,44 +131,44 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
 		"""Open the native ChromeAI model manager from NVDA's Tools menu."""
 		modelManagerMenu.openModelManagerDialog()
 
-	def getScript(self, gesture: "inputCore.InputGesture") -> None:
-		"""Resolve gestures through the command layer while it is active."""
-		if not self.isLayerActive:
-			return super().getScript(gesture)
-		script = super().getScript(gesture)
-		if not script:
-			script = self._handleLayerError
+	def _decideExecuteGesture(self, gesture: inputCore.InputGesture) -> bool:
+		"""Leave the command layer before an unrelated gesture is resolved."""
+		if shouldExitLayer(
+			self.isLayerActive,
+			gesture.isModifier,
+			gesture.normalizedIdentifiers,
+			self._layerGestureIdentifiers,
+		):
+			self._finishLayer()
+		return True
 
-		if getattr(script, "_shouldStayInLayer", False):
-			return script
-
-		def wrappedScript(g):
-			try:
-				script(g)
-			finally:
-				self._finishLayer()
-
-		return wrappedScript
-
-	def _finishLayer(self):
-		"""Leave the command layer and restore normal gesture bindings."""
+	def _finishLayer(self) -> None:
+		"""Leave the command layer and remove its temporary gesture bindings."""
 		self.isLayerActive = False
-		self.clearGestureBindings()
-		self.bindGestures(self.__gestures)
-
-	def _handleLayerError(self, _gesture: "inputCore.InputGesture") -> None:
-		"""Play an error tone for an unbound command-layer gesture."""
-		tones.beep(120, 100)
+		self.bindGestures(dict.fromkeys(self.__layerGestures))
 
 	@script(description=_("Enter the translation command layer; press H for command layer help"))
 	def script_layerEntry(self, gesture: "inputCore.InputGesture") -> None:
+		"""Enter the translation command layer."""
 		if self.isLayerActive:
-			self._handleLayerError(gesture)
 			return
 		self.speechFilter.setGracePeriod()
 		self.bindGestures(self.__layerGestures)
 		self.isLayerActive = True
+		# Translators: Braille-only message shown when the Polyglot command layer is entered.
+		if braille.handler:
+			braille.handler.message(_("command layer. Press H for help."))
 		tones.beep(100, 10)
+
+	@script(
+		# Translators: Input help mode message for exiting the Polyglot command layer.
+		description=_("Exit the translation command layer."),
+		allowInSleepMode=True,
+	)
+	def script_layerExit(self, gesture: "inputCore.InputGesture") -> None:
+		"""Exit the translation command layer."""
+		self._finishLayer()
+		tones.beep(120, 100)
 
 	def _getSelectedText(self) -> str | None:
 		"""Get selected text, returning None when selection access fails."""
@@ -211,25 +217,17 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
 	def script_cycleSourceLangForward(self, gesture: "inputCore.InputGesture") -> None:
 		self._cycleLanguage("source", isForward=True)
 
-	script_cycleSourceLangForward._shouldStayInLayer = True
-
 	@script(description=_("Previous source language"))
 	def script_cycleSourceLangBackward(self, gesture: "inputCore.InputGesture") -> None:
 		self._cycleLanguage("source", isForward=False)
-
-	script_cycleSourceLangBackward._shouldStayInLayer = True
 
 	@script(description=_("Next target language"))
 	def script_cycleTargetLangForward(self, gesture: "inputCore.InputGesture") -> None:
 		self._cycleLanguage("target", isForward=True)
 
-	script_cycleTargetLangForward._shouldStayInLayer = True
-
 	@script(description=_("Previous target language"))
 	def script_cycleTargetLangBackward(self, gesture: "inputCore.InputGesture") -> None:
 		self._cycleLanguage("target", isForward=False)
-
-	script_cycleTargetLangBackward._shouldStayInLayer = True
 
 	def _cycleEngine(self, isForward: bool) -> None:
 		"""Cycle the configured engine and announce the result."""
@@ -242,13 +240,9 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
 	def script_cycleEngineForward(self, gesture: "inputCore.InputGesture") -> None:
 		self._cycleEngine(isForward=True)
 
-	script_cycleEngineForward._shouldStayInLayer = True
-
 	@script(description=_("Previous translation engine"))
 	def script_cycleEngineBackward(self, gesture: "inputCore.InputGesture") -> None:
 		self._cycleEngine(isForward=False)
-
-	script_cycleEngineBackward._shouldStayInLayer = True
 
 	@script(description=_("Swap source and target languages"))
 	def script_swapLanguages(self, gesture: "inputCore.InputGesture") -> None:
@@ -257,14 +251,10 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
 		if not isSuccessful:
 			tones.beep(220, 120)
 
-	script_swapLanguages._shouldStayInLayer = True
-
 	@script(description=_("Announce current engine and languages"))
 	def script_announceEngineLanguagesInfo(self, gesture: "inputCore.InputGesture") -> None:
 		announcement = self.manager.getCurrentEngineAndLanguageInfo()
 		cues.Speech.message(announcement)
-
-	script_announceEngineLanguagesInfo._shouldStayInLayer = True
 
 	@script(description=_("Copy last translation to clipboard"))
 	def script_copyLastResult(self, gesture: "inputCore.InputGesture") -> None:
@@ -276,6 +266,8 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
 
 	@script(description=_("Open interactive translation dialog"))
 	def script_openInteractiveDialog(self, gesture: "inputCore.InputGesture") -> None:
+		self._finishLayer()
+
 		def showDialog():
 			gui.mainFrame.prePopup()
 			try:
@@ -289,6 +281,7 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
 
 	@script(description=_("Open settings"))
 	def script_openSettings(self, gesture: "inputCore.InputGesture") -> None:
+		self._finishLayer()
 		wx.CallAfter(
 			gui.mainFrame.popupSettingsDialog,
 			gui.settingsDialogs.NVDASettingsDialog,
@@ -345,6 +338,7 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
 
 	@script(description=_("Show command layer help"))
 	def script_layerHelp(self, gesture: "inputCore.InputGesture") -> None:
+		self._finishLayer()
 		ui.browseableMessage(
 			self._generateLayerHelpHtml(),
 			title=_("Polyglot Help"),
@@ -356,6 +350,7 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
 	def _generateLayerHelpHtml(self) -> str:
 		groups = [
 			(
+				# Translators: Heading for translation commands in the command-layer help.
 				_("Translation Actions"),
 				[
 					"translateSelection",
@@ -367,6 +362,7 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
 				],
 			),
 			(
+				# Translators: Heading for configuration commands in the command-layer help.
 				_("Configuration & Switching"),
 				[
 					"cycleSourceLangForward",
@@ -380,6 +376,7 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
 				],
 			),
 			(
+				# Translators: Heading for tool commands in the command-layer help.
 				_("Tools & System"),
 				[
 					"openInteractiveDialog",
@@ -388,6 +385,7 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
 					"clearCache",
 					"openSettings",
 					"layerHelp",
+					"layerExit",
 				],
 			),
 		]
@@ -398,11 +396,16 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
 			scriptToKey[scriptName] = keyDisplayName
 
 		htmlParts = []
+		# Translators: Table column heading for a command-layer key.
+		keyHeading = escape(_("Key"))
+		# Translators: Table column heading for a command-layer action.
+		actionHeading = escape(_("Action"))
 		for title, scripts in groups:
-			htmlParts.append(f"<h2>{title}</h2>")
+			htmlParts.append(f"<h2>{escape(title)}</h2>")
 			htmlParts.append("<table border='1' style='border-collapse: collapse; width: 100%;'>")
 			htmlParts.append(
-				f"<thead><tr><th style='text-align: left; padding: 5px;'>{_('Key')}</th><th style='text-align: left; padding: 5px;'>{_('Action')}</th></tr></thead>",
+				f"<thead><tr><th style='text-align: left; padding: 5px;'>{keyHeading}</th>"
+				f"<th style='text-align: left; padding: 5px;'>{actionHeading}</th></tr></thead>",
 			)
 			htmlParts.append("<tbody>")
 			for scriptName in scripts:
@@ -412,32 +415,15 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
 				method = getattr(self, f"script_{scriptName}")
 				description = method.__doc__ or scriptName
 				htmlParts.append(
-					f"<tr><td style='padding: 5px;'>{keyDisplay}</td><td style='padding: 5px;'>{description}</td></tr>",
+					f"<tr><td style='padding: 5px;'>{escape(keyDisplay)}</td>"
+					f"<td style='padding: 5px;'>{escape(description)}</td></tr>",
 				)
 			htmlParts.append("</tbody></table>")
 
 		return "".join(htmlParts)
 
-	__gestures = {"kb:NVDA+Alt+Z": "layerEntry"}
-	__layerGestures = {
-		"kb:t": "translateSelection",
-		"kb:shift+t": "translateReverseSelection",
-		"kb:b": "translateClipboard",
-		"kb:shift+b": "translateReverseClipboard",
-		"kb:l": "translateLastSpoken",
-		"kb:shift+l": "translateReverseLastSpoken",
-		"kb:s": "cycleSourceLangForward",
-		"kb:shift+s": "cycleSourceLangBackward",
-		"kb:g": "cycleTargetLangForward",
-		"kb:shift+g": "cycleTargetLangBackward",
-		"kb:e": "cycleEngineForward",
-		"kb:shift+e": "cycleEngineBackward",
-		"kb:w": "swapLanguages",
-		"kb:a": "announceEngineLanguagesInfo",
-		"kb:c": "copyLastResult",
-		"kb:v": "toggleAutoTranslate",
-		"kb:i": "openInteractiveDialog",
-		"kb:o": "openSettings",
-		"kb:x": "clearCache",
-		"kb:h": "layerHelp",
-	}
+	__gestures = {ENTRY_GESTURE: "layerEntry"}
+	__layerGestures = LAYER_GESTURES
+	_layerGestureIdentifiers = frozenset(
+		inputCore.normalizeGestureIdentifier(identifier) for identifier in (*__gestures, *__layerGestures)
+	)

@@ -36,7 +36,7 @@ The preferred installation path is the NVDA Add-on Store. You can also install m
 
 ## Command Layer
 
-Press `NVDA+Alt+Z` to enter the command layer. A short beep confirms that the layer is active. Press `H` in the layer to show command layer help. Most commands execute once and exit the layer. Language and engine switching commands stay inside the layer so you can continue cycling. Engine switching cycles through enabled engines only.
+Press `NVDA+Alt+Z` to enter the command layer. A short beep confirms that the layer is active, and braille displays show `command layer. Press H for help.` The layer supports performing several commands in sequence; engine switching cycles through enabled engines only. Press `Escape` to exit explicitly. Pressing any other unmapped non-modifier gesture exits the layer before that gesture is handled normally by NVDA or the active application.
 
 | Key | Action |
 | --- | --- |
@@ -60,6 +60,7 @@ Press `NVDA+Alt+Z` to enter the command layer. A short beep confirms that the la
 | `O` | Open Polyglot settings. |
 | `X` | Clear the translation cache. |
 | `H` | Show command-layer help. |
+| `Escape` | Exit the command layer. |
 
 ## Interactive Translation Dialog
 
