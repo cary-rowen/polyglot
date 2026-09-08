@@ -1,3 +1,9 @@
+### 1.3.2
+
+- Added LibreTranslate support for self-hosted servers, with a configurable server URL and optional API key.
+- Improved command-layer interaction: run commands consecutively, press `Escape` to exit, or use an unrelated gesture to return to NVDA or the active application. Braille displays now show the layer status and help hint.
+- Improved the Ukrainian localization.
+
 ### 1.3.0
 
 - Added Windows DPAPI protection for engine credentials, so saved credentials are no longer stored in plaintext and portable profiles must be reconfigured when moved to another machine.

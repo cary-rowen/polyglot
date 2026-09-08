@@ -34,12 +34,14 @@ addon_info = AddonInfo(
 	# Translators: Long description to be shown for this add-on on add-on information from add-on store
 	addon_description=_("""A translation add-on for NVDA with support for multiple engines."""),
 	# version
-	addon_version="1.3.0",
+	addon_version="1.3.2",
 	# Brief changelog for this version
 	# Translators: what's new content for the add-on version to be shown in the add-on store
-	addon_changelog=_("""### 1.3.0
+	addon_changelog=_("""### 1.3.2
 
-- Added Windows DPAPI protection for engine credentials, so saved credentials are no longer stored in plaintext and portable profiles must be reconfigured when moved to another machine."""),
+- Added LibreTranslate support for self-hosted servers, with a configurable server URL and optional API key.
+- Improved command-layer interaction: run commands consecutively, press `Escape` to exit, or use an unrelated gesture to return to NVDA or the active application. Braille displays now show the layer status and help hint.
+- Improved the Ukrainian localization."""),
 	# Author(s)
 	addon_author="cary-rowen <cary-rowen@outlook.com>",
 	# URL for the add-on documentation support
