@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: 'nvda-translations@groups.io'\n"
-"POT-Creation-Date: 2026-09-06 14:55+0300\n"
-"PO-Revision-Date: 2026-09-06 15:33+0300\n"
+"POT-Creation-Date: 2026-09-09 08:24+0300\n"
+"PO-Revision-Date: 2026-09-09 08:32+0300\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: uk\n"
@@ -21,34 +21,43 @@ msgstr ""
 #. Add-on summary/title, usually the user visible name of the add-on
 #. Translators: Summary/title for this add-on
 #. to be shown on installation and add-on information found in add-on store
-#: addon\globalPlugins\polyglot\__init__.py:82
+#: addon\globalPlugins\polyglot\__init__.py:85
 #: addon\globalPlugins\polyglot\views\settings.py:32 buildVars.py:32
 msgid "Polyglot"
 msgstr "Поліглот"
 
-#: addon\globalPlugins\polyglot\__init__.py:157
+#: addon\globalPlugins\polyglot\__init__.py:150
 msgid "Enter the translation command layer; press H for command layer help"
 msgstr ""
 "Відкрити командний шар додатка; натисніть H для отримання довідки щодо "
 "командного шару"
 
-#: addon\globalPlugins\polyglot\__init__.py:172
+#: addon\globalPlugins\polyglot\__init__.py:160
+msgid "command layer. Press H for help."
+msgstr "командний шар. Натисніть H для отримання довідки."
+
+#. Translators: Input help mode message for exiting the Polyglot command layer.
+#: addon\globalPlugins\polyglot\__init__.py:165
+msgid "Exit the translation command layer."
+msgstr "Вийти з командного шару перекладу."
+
+#: addon\globalPlugins\polyglot\__init__.py:178
 msgid "Nothing selected"
 msgstr "Нічого не вибрано"
 
-#: addon\globalPlugins\polyglot\__init__.py:177
+#: addon\globalPlugins\polyglot\__init__.py:183
 msgid "Cannot get selected text from the current object"
 msgstr "Неможливо отримати вибраний текст із поточного об’єкта"
 
-#: addon\globalPlugins\polyglot\__init__.py:210
+#: addon\globalPlugins\polyglot\__init__.py:216
 msgid "Next source language"
 msgstr "Наступна мова оригіналу"
 
-#: addon\globalPlugins\polyglot\__init__.py:216
+#: addon\globalPlugins\polyglot\__init__.py:220
 msgid "Previous source language"
 msgstr "Попередна мова оригіналу"
 
-#: addon\globalPlugins\polyglot\__init__.py:222
+#: addon\globalPlugins\polyglot\__init__.py:224
 msgid "Next target language"
 msgstr "Наступна мова перекладу"
 
@@ -56,118 +65,123 @@ msgstr "Наступна мова перекладу"
 msgid "Previous target language"
 msgstr "Попередня мова перекладу"
 
-#: addon\globalPlugins\polyglot\__init__.py:241
+#: addon\globalPlugins\polyglot\__init__.py:239
 msgid "Next translation engine"
 msgstr "Наступний сервіс перекладу"
 
-#: addon\globalPlugins\polyglot\__init__.py:247
+#: addon\globalPlugins\polyglot\__init__.py:243
 msgid "Previous translation engine"
 msgstr "Попередній сервіс перекладу"
 
-#: addon\globalPlugins\polyglot\__init__.py:253
+#: addon\globalPlugins\polyglot\__init__.py:247
 msgid "Swap source and target languages"
 msgstr "Поміняти мову оригіналу та мову перекладу"
 
-#: addon\globalPlugins\polyglot\__init__.py:262
+#: addon\globalPlugins\polyglot\__init__.py:254
 msgid "Announce current engine and languages"
 msgstr "Повідомити про поточний сервіс перекладу та мови"
 
-#: addon\globalPlugins\polyglot\__init__.py:269
+#: addon\globalPlugins\polyglot\__init__.py:259
 msgid "Copy last translation to clipboard"
 msgstr "Копіювати останній переклад у буфер обміну"
 
-#: addon\globalPlugins\polyglot\__init__.py:275
+#: addon\globalPlugins\polyglot\__init__.py:265
 msgid "No translation result to copy"
 msgstr "Немає результатів перекладу для копіювання"
 
-#: addon\globalPlugins\polyglot\__init__.py:277
+#: addon\globalPlugins\polyglot\__init__.py:267
 msgid "Open interactive translation dialog"
 msgstr "Відкрити інтерактивний діалог перекладу"
 
-#: addon\globalPlugins\polyglot\__init__.py:290
+#: addon\globalPlugins\polyglot\__init__.py:282
 msgid "Open settings"
 msgstr "Відкрити налаштування"
 
-#: addon\globalPlugins\polyglot\__init__.py:298
+#: addon\globalPlugins\polyglot\__init__.py:291
 msgid "Toggle auto-translation"
 msgstr "Перемикає автоматичний переклад"
 
-#: addon\globalPlugins\polyglot\__init__.py:301
+#: addon\globalPlugins\polyglot\__init__.py:294
 msgid "Auto-translation enabled"
 msgstr "Автоматичний переклад увімкнено"
 
-#: addon\globalPlugins\polyglot\__init__.py:301
+#: addon\globalPlugins\polyglot\__init__.py:294
 msgid "Auto-translation disabled"
 msgstr "Автоматичний переклад вимкнено"
 
-#: addon\globalPlugins\polyglot\__init__.py:303
+#: addon\globalPlugins\polyglot\__init__.py:296
 #: addon\globalPlugins\polyglot\modelManager\dialog.py:212
 msgid "Clear cache"
 msgstr "Очистити кеш"
 
-#: addon\globalPlugins\polyglot\__init__.py:306
+#: addon\globalPlugins\polyglot\__init__.py:299
 msgid "Cache cleared"
 msgstr "Кеш очищено"
 
-#: addon\globalPlugins\polyglot\__init__.py:308
+#: addon\globalPlugins\polyglot\__init__.py:301
 msgid "Translate selection"
 msgstr "Перекласти вибране"
 
-#: addon\globalPlugins\polyglot\__init__.py:313
+#: addon\globalPlugins\polyglot\__init__.py:306
 msgid "Translate selection (reversed direction)"
 msgstr "Перекласти вибране (у зворотному напрямку)"
 
-#: addon\globalPlugins\polyglot\__init__.py:318
+#: addon\globalPlugins\polyglot\__init__.py:311
 msgid "Translate clipboard"
 msgstr "Перекласти буфер обміну"
 
+#: addon\globalPlugins\polyglot\__init__.py:314
 #: addon\globalPlugins\polyglot\__init__.py:321
-#: addon\globalPlugins\polyglot\__init__.py:328
 msgid "Clipboard is empty"
 msgstr "Буфер обміну порожній"
 
-#: addon\globalPlugins\polyglot\__init__.py:325
+#: addon\globalPlugins\polyglot\__init__.py:318
 msgid "Translate clipboard (reversed direction)"
 msgstr "Перекласти буфер обміну (у зворотному напрямку)"
 
-#: addon\globalPlugins\polyglot\__init__.py:332
+#: addon\globalPlugins\polyglot\__init__.py:325
 msgid "Translate last spoken text"
 msgstr "Перекласти останній промовлений текст"
 
+#: addon\globalPlugins\polyglot\__init__.py:328
 #: addon\globalPlugins\polyglot\__init__.py:335
-#: addon\globalPlugins\polyglot\__init__.py:342
 msgid "No last spoken text"
 msgstr "Немає останнього промовленого тексту"
 
-#: addon\globalPlugins\polyglot\__init__.py:339
+#: addon\globalPlugins\polyglot\__init__.py:332
 msgid "Translate last spoken text (reversed direction)"
 msgstr "Перекласти останній промовлений текст (у зворотному напрямку)"
 
-#: addon\globalPlugins\polyglot\__init__.py:346
+#: addon\globalPlugins\polyglot\__init__.py:339
 msgid "Show command layer help"
 msgstr "Показати довідку командного шару"
 
-#: addon\globalPlugins\polyglot\__init__.py:350
+#: addon\globalPlugins\polyglot\__init__.py:344
 msgid "Polyglot Help"
 msgstr "Довідка поліглота"
 
-#: addon\globalPlugins\polyglot\__init__.py:359
+#. Translators: Heading for translation commands in the command-layer help.
+#: addon\globalPlugins\polyglot\__init__.py:354
 msgid "Translation Actions"
 msgstr "Дії перекладу"
 
-#: addon\globalPlugins\polyglot\__init__.py:370
+#. Translators: Heading for configuration commands in the command-layer help.
+#: addon\globalPlugins\polyglot\__init__.py:366
 msgid "Configuration & Switching"
 msgstr "Конфігурація та перемикання"
 
-#: addon\globalPlugins\polyglot\__init__.py:383
+#. Translators: Heading for tool commands in the command-layer help.
+#: addon\globalPlugins\polyglot\__init__.py:380
 msgid "Tools & System"
 msgstr "Інструменти та система"
 
-#: addon\globalPlugins\polyglot\__init__.py:405
+#. Translators: Table column heading for a command-layer key.
+#: addon\globalPlugins\polyglot\__init__.py:400
 msgid "Key"
 msgstr "Комбінація"
 
-#: addon\globalPlugins\polyglot\__init__.py:405
+#. Translators: Table column heading for a command-layer action.
+#: addon\globalPlugins\polyglot\__init__.py:402
 msgid "Action"
 msgstr "Дія"
 
@@ -1575,6 +1589,38 @@ msgstr "Не вдалося проаналізувати відповідь API.
 msgid "Invalid API response or no translation text included."
 msgstr "Недійсна відповідь API або відсутній текст перекладу."
 
+#. Translators: Name of the LibreTranslate translation engine.
+#: addon\globalPlugins\polyglot\services\engines\libretranslate.py:23
+msgid "LibreTranslate"
+msgstr "LibreTranslate"
+
+#: addon\globalPlugins\polyglot\services\engines\libretranslate.py:116
+msgid "LibreTranslate server URL:"
+msgstr "URL сервера LibreTranslate:"
+
+#: addon\globalPlugins\polyglot\services\engines\libretranslate.py:122
+msgid "API key (optional):"
+msgstr "Ключ API (необов'язково):"
+
+#: addon\globalPlugins\polyglot\services\engines\libretranslate.py:151
+#: addon\globalPlugins\polyglot\services\engines\libretranslate.py:161
+msgid ""
+"LibreTranslate server URL must be a valid HTTP or HTTPS URL without a query "
+"or fragment."
+msgstr ""
+"URL сервера LibreTranslate має бути дійсним URL HTTP або HTTPS без "
+"параметрів запиту чи фрагмента."
+
+#. Translators: Error shown when LibreTranslate returns an unexpected JSON structure.
+#: addon\globalPlugins\polyglot\services\engines\libretranslate.py:200
+msgid "Invalid LibreTranslate response."
+msgstr "Недійсна відповідь LibreTranslate."
+
+#. Translators: Error shown when LibreTranslate omits the translated text.
+#: addon\globalPlugins\polyglot\services\engines\libretranslate.py:212
+msgid "Invalid LibreTranslate response or no translation result included."
+msgstr "Недійсна відповідь LibreTranslate або відсутній результат перекладу."
+
 #: addon\globalPlugins\polyglot\services\engines\microsoft.py:23
 msgid "Microsoft Translator (key-free)"
 msgstr "Microsoft Translator (без введення ключа)"
@@ -2092,18 +2138,40 @@ msgstr "Додаток для перекладу з підтримкою дек�
 #. Translators: what's new content for the add-on version to be shown in the add-on store
 #: buildVars.py:40
 msgid ""
-"### 1.3.0\n"
+"### 1.3.2\n"
 "\n"
-"- Added Windows DPAPI protection for engine credentials, so saved "
-"credentials are no longer stored in plaintext and portable profiles must be "
-"reconfigured when moved to another machine."
+"- Added LibreTranslate support for self-hosted servers, with a configurable "
+"server URL and optional API key.\n"
+"- Improved command-layer interaction: run commands consecutively, press "
+"`Escape` to exit, or use an unrelated gesture to return to NVDA or the "
+"active application. Braille displays now show the layer status and help "
+"hint.\n"
+"- Improved the Ukrainian localization."
 msgstr ""
-"### 1.3.0\n"
+"### 1.3.2\n"
 "\n"
-"- Додано захист за допомогою Windows DPAPI для облікових даних сервісу, "
-"завдяки чому збережені облікові дані більше не зберігаються у вигляді "
-"звичайного тексту, а переносні профілі необхідно налаштовувати заново після "
-"перенесення на інший комп’ютер."
+"- Додано підтримку LibreTranslate для серверів, що розміщуються на власних "
+"ресурсах, із можливістю налаштування URL-адреси сервера та додаткового ключа "
+"API.\n"
+"- Покращено взаємодію у командному шарі: команди виконуються послідовно, для "
+"виходу натисніть клавішу `Escape` або скористайтеся спеціальним жестом, щоб "
+"повернутися до NVDA чи активної програми. Брайлівські дисплеї тепер "
+"відображають стан рівня та підказки.\n"
+"- Покращено українську локалізацію."
+
+#~ msgid ""
+#~ "### 1.3.0\n"
+#~ "\n"
+#~ "- Added Windows DPAPI protection for engine credentials, so saved "
+#~ "credentials are no longer stored in plaintext and portable profiles must "
+#~ "be reconfigured when moved to another machine."
+#~ msgstr ""
+#~ "### 1.3.0\n"
+#~ "\n"
+#~ "- Додано захист за допомогою Windows DPAPI для облікових даних сервісу, "
+#~ "завдяки чому збережені облікові дані більше не зберігаються у вигляді "
+#~ "звичайного тексту, а переносні профілі необхідно налаштовувати заново "
+#~ "після перенесення на інший комп’ютер."
 
 #~ msgid ""
 #~ "### 1.2.0\n"
