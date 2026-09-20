@@ -21,7 +21,6 @@ from site_scons.site_tools.NVDATool.typings import (
 # which returns whatever is given to it as an argument.
 from site_scons.site_tools.NVDATool.utils import _
 
-
 # Add-on information variables
 addon_info = AddonInfo(
 	# add-on Name/identifier, internal for NVDA

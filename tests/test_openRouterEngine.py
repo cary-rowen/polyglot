@@ -19,6 +19,9 @@ if not hasattr(builtins, "_"):
 	setattr(builtins, "_", lambda message: message)
 for moduleName in ("config", "nvwave", "queueHandler", "tones", "ui"):
 	sys.modules.setdefault(moduleName, ModuleType(moduleName))
+nvdaState = ModuleType("NVDAState")
+setattr(nvdaState, "shouldWriteToDisk", Mock(return_value=False))
+sys.modules.setdefault("NVDAState", nvdaState)
 globalVars = ModuleType("globalVars")
 setattr(globalVars, "appArgs", Mock(configPath=str(PROJECT_ROOT)))
 sys.modules.setdefault("globalVars", globalVars)

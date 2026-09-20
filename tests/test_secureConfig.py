@@ -118,7 +118,7 @@ class SecureConfigTestCase(unittest.TestCase):
 			patch.object(configModule, "shouldWriteToDisk", return_value=True),
 			patch.object(configModule.nvdaConfig, "conf", conf, create=True),
 			patch.object(
-				configModule, "protectString", side_effect=lambda value, **_kwargs: f"dpapi-{value}"
+				configModule, "protectString", side_effect=lambda value, **_kwargs: f"dpapi-{value}",
 			),
 		):
 			configModule.migrateStoredSecrets([engine])

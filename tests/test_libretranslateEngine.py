@@ -103,7 +103,7 @@ class LibreTranslateEngineTest(unittest.TestCase):
 	def test_usesSharedBaseHttpRequestFlow(self) -> None:
 		"""Translation uses the existing HTTP request, retry, and proxy flow."""
 		with patch(
-			"polyglot.services.engine.sendRequest", return_value='{"translatedText":"Hallo"}'
+			"polyglot.services.engine.sendRequest", return_value='{"translatedText":"Hallo"}',
 		) as sendRequest:
 			result = self.engine._translateChunk("hello", "en", "de", self.config)
 

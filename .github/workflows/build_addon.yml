@@ -10,6 +10,7 @@ on:
     branches: [ main, master ]
 
   workflow_dispatch:
+  workflow_call:
 
 jobs:
   build:
@@ -25,7 +26,7 @@ jobs:
       with:
         submodules: recursive
     - name: Install uv
-      uses: astral-sh/setup-uv@v7
+      uses: astral-sh/setup-uv@v10.1.0
       with:
         enable-cache: true
     - name: Install dependencies
@@ -37,15 +38,15 @@ jobs:
     - name: Code checks
       run: |
         set +e
-        export SKIP=no-commit-to-branch,pyright
-        uv run pre-commit run --all-files
+        export PREK_SKIP=no-commit-to-branch,pyright
+        uv run prek run --all-files
         status=$?
         if [ "$status" -ne 0 ]; then
-          echo "::warning title=Code checks failed::pre-commit/lint checks reported issues. Build will continue; see this step log for details."
+          echo "::warning title=Code checks failed::prek/lint checks reported issues. Build will continue; see this step log for details."
           {
             echo "### Code checks warning"
             echo
-            echo "pre-commit/lint checks reported issues, but this workflow is configured to continue so build and release artifacts are not blocked."
+            echo "prek/lint checks reported issues, but this workflow is configured to continue so build and release artifacts are not blocked."
             echo
             echo "Exit code: \`$status\`"
           } >> "$GITHUB_STEP_SUMMARY"
