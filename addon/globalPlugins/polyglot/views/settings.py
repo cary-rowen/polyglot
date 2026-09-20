@@ -149,7 +149,7 @@ class TranslationSettingsPanel(SettingsPanel):
 						# Translators: Shown when an API credential cannot be encrypted for storage.
 						message=_(
 							"This credential could not be encrypted. Your change was not saved, "
-							"and the previous value was kept. Please try again."
+							"and the previous value was kept. Please try again.",
 						),
 						option=info["spec"]["label"],
 					)

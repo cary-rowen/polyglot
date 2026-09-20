@@ -11,7 +11,7 @@ from typing import Any
 
 
 COMMAND_LAYER = runpy.run_path(
-	Path(__file__).resolve().parents[1] / "addon" / "globalPlugins" / "polyglot" / "_commandLayer.py"
+	Path(__file__).resolve().parents[1] / "addon" / "globalPlugins" / "polyglot" / "_commandLayer.py",
 )
 LAYER_GESTURES: dict[str, str] = COMMAND_LAYER["LAYER_GESTURES"]
 shouldExitLayer: Any = COMMAND_LAYER["shouldExitLayer"]
