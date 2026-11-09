@@ -17,3 +17,7 @@ manifest.ini
 /tools/resource/candidates.json
 /[0-9]*.[0-9]*.[0-9]*.json
 *.egg-info
+/addon/globalPlugins/polyglot/common/resources/dictionary.it.pickle
+/addon/globalPlugins/polyglot/common/resources/conjugation.it.pickle
+/addon/globalPlugins/polyglot/common/resources/.dictionary.it.pickle.*.tmp
+/addon/globalPlugins/polyglot/common/resources/.conjugation.it.pickle.*.tmp

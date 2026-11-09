@@ -99,12 +99,46 @@ English-word input in Chinese → English requests. Other content continues thro
 Translation commands and text review have separate local-dictionary options. Both are enabled by default;
 disabling either restores that command's original behavior.
 
+### English and Italian are fully separate
+
+The add-on ships two independent offline dictionaries:
+
+- **English-Chinese** — English headwords, used for English requests only.
+- **Italian-Chinese** — Italian headwords, used for Italian requests only.
+
+Neither dictionary can answer for the other: an English lookup never returns an Italian entry, and an
+Italian lookup never returns an English one.
+
+- Source language **English** → Chinese (or a Chinese → English request for an English word) uses the
+  English-Chinese dictionary.
+- Source language **Italian** → Chinese uses the Italian-Chinese dictionary; Italian verb forms such as
+  `ho`, `sono` and `andato` are resolved to their infinitive before the definition is spoken.
+- Source language **Auto-detect** uses the English-Chinese dictionary only, so a wrong guess can never
+  produce an Italian definition.
+
+Text review has no language context, so the settings panel lets you choose which dictionary it uses
+(English by default).
+
+### Italian entries and conjugation
+
+- Looking up an Italian conjugated form speaks the full grammatical reading rather than a bare gloss:
+  `ho` is announced as “我有（avere 直陈式现在时 io）”, `sono` as “我是；他们是”, `mangio` as “我吃”.
+- Press `NVDA+Control+I` to open the **complete dictionary entry** for the word at the review cursor in a
+  browseable window. Verb conjugation is the first implemented section: it lists every tense and person.
+  Further sections will be added to the same window in later revisions.
+- The command resolves the word under the review cursor; when the cursor is not on a word, the current
+  selection is used.
+- When a form belongs to more than one verb (`porto` is both `porgere` and `portare`), the first entry is
+  shown and the alternatives are listed at the top.
+
 Current dictionary size:
 
-- 122,370 English entries, including about 118,460 complete headwords that can be queried directly.
-- 34,859 validated inflected forms.
-- About 154,800 complete word forms when case and common spelling variants are included.
-- The bundled dictionary is about 6.8 MB and requires no separate download.
+- English-Chinese: 122,370 entries, including about 118,460 complete headwords that can be queried
+  directly, plus 34,859 validated inflected forms; about 6.8 MB.
+- Italian-Chinese: 62,756 headwords (part-of-speech abbreviation plus Chinese definition) and 305,438
+  queryable entries including conjugated forms; about 22.5 MB.
+- Conjugation tables: 6,473 verbs, 289,496 forms; about 16.8 MB.
+- All data is bundled and requires no separate download.
 
 ## Settings Guide
 
@@ -126,9 +160,11 @@ again when the portable copy is returned to the original computer and Windows us
 ### Common Settings
 
 - `Copy manual translation results to clipboard`: Copies manual translation output after a successful request.
-- `Prefer local English-Chinese dictionary for selected text, clipboard, and last spoken text`: Controls local
+- `Prefer the local dictionary for selected text, clipboard, and last spoken text`: Controls local
   lookup for those three translation commands.
-- `Use the local English-Chinese dictionary in text review`: Controls local definitions for NVDA text review.
+- `Use the local dictionary in text review`: Controls local definitions for NVDA text review.
+- `Local dictionary language for text review:`: Chooses whether text review uses the English-Chinese or
+  the Italian-Chinese dictionary.
 - `Enable smart speech filter (skips roles, states, location, and formatting information)`: When translating spoken NVDA output, skips non-content speech such as roles, states, location, and formatting details where possible.
 - `Clear Cache`: Clears the persistent translation cache and shows the current item count in the button label.
 
