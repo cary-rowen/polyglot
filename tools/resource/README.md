@@ -4,6 +4,18 @@
 compiles them into `addon/globalPlugins/polyglot/common/resources/dictionary.pickle`.
 The JSON files are not included in the add-on package.
 
+The Italian data lives next to them in two more tracked source files:
+
+- `dictionary.it.json` — Italian headwords, each mapped to a part-of-speech
+  abbreviation plus one or more Chinese glosses.
+- `conjugation.it.tsv` — one row per conjugated form:
+  `lemma<TAB>pos<TAB>tense<TAB>person<TAB>forms`.
+
+SCons compiles both into
+`addon/globalPlugins/polyglot/common/resources/dictionary.it.pickle` and
+`.../conjugation.it.pickle` through `tools/compileItalianDictionary.py`.
+Neither product is committed.
+
 Copyright (C) 2025-2026 cary-rowen. Polyglot's selection, filtering,
 corrections, new entries, source data files, and build tooling are distributed
 under the GNU General Public License version 3 or later (`GPL-3.0-or-later`).

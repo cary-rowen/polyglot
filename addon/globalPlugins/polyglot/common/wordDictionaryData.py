@@ -29,8 +29,13 @@ _DICTIONARY_FIELDS = frozenset(
 _MIN_WORD_LENGTH = 2
 _MAX_WORD_LENGTH = 64
 _MAX_ALIAS_TARGETS = 3
+# Latin letters including diacritics (Italian: città, perché, è, più ...).
+# Keeping this range here instead of ASCII-only is what lets every later
+# Latin-script dictionary (French, Spanish, Portuguese, German, ...) reuse the
+# same validation and lookup code without touching it again.
+_LETTER = "A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u00FF\u0100-\u017F"
 _WORD_PATTERN = re.compile(
-	r"(?=[A-Za-z0-9'-]*[A-Za-z])[A-Za-z0-9]+(?:[-'][A-Za-z0-9]+)*(?:\.)?\Z",
+	rf"(?=[{_LETTER}0-9'-]*[{_LETTER}])[{_LETTER}0-9]+(?:[-'][{_LETTER}0-9]+)*(?:\.)?\Z",
 )
 _WORD_TRANSLATION = str.maketrans(
 	{
@@ -75,20 +80,27 @@ def canonicalizeWord(text: str) -> str:
 
 
 def normalizeKey(text: str) -> str:
-	"""Return the punctuation-insensitive key recommended by ECDICT."""
+	"""Return the punctuation- and accent-insensitive key used for aliases.
+
+	Diacritics are stripped so that ``citta`` resolves to ``città`` and
+	``perche`` to ``perché`` while keeping the original keys intact.
+	"""
 	canonicalText = canonicalizeWord(text)
-	return "".join(
-		character for character in canonicalText if character.isascii() and character.isalnum()
-	).casefold()
+	decomposed = unicodedata.normalize("NFD", canonicalText)
+	stripped = "".join(character for character in decomposed if not unicodedata.combining(character))
+	return "".join(character for character in stripped if character.isalnum()).casefold()
 
 
 def isLookupWord(word: str) -> bool:
-	"""Return whether text is one complete supported English word."""
+	"""Return whether text is one complete supported word (English or Italian)."""
 	wordWithoutPeriod = word.removesuffix(".")
-	return (
-		_MIN_WORD_LENGTH <= len(wordWithoutPeriod) <= _MAX_WORD_LENGTH
-		and _WORD_PATTERN.fullmatch(word) is not None
-	)
+	if not (_MIN_WORD_LENGTH <= len(wordWithoutPeriod) <= _MAX_WORD_LENGTH):
+		return False
+	# Fast path: plain ASCII alphanumerics (the overwhelming majority of keys).
+	# Equivalent to the pattern below, but avoids a regex call per entry.
+	if word.isascii() and word.isalnum() and not word.isdigit():
+		return True
+	return _WORD_PATTERN.fullmatch(word) is not None
 
 
 def _normalizeDefinition(definition: str) -> str:
@@ -305,7 +317,9 @@ def _validateInflectionAliases(
 	if type(value) is not dict:
 		raise ValueError("Dictionary inflection aliases must be a dictionary.")
 	aliases = cast(dict[object, object], value)
-	if len(aliases) > len(entries):
+	# Italian verb morphology yields far more inflected forms than headwords,
+	# so the original 1:1 sanity bound is relaxed to 5:1.
+	if len(aliases) > len(entries) * 5:
 		raise ValueError("Dictionary inflection alias table is unexpectedly large.")
 	for alias, target in aliases.items():
 		if (

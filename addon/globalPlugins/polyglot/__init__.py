@@ -34,6 +34,7 @@ from .app.manager import TranslationManager
 from .app.speechFilter import SpeechFilter
 from ._commandLayer import ENTRY_GESTURE, LAYER_GESTURES, shouldExitLayer
 from .common import cues
+from .common.conjugation import ItalianConjugationBook
 from .common.config import getConfigSectionName, migrateStoredSecrets
 from .common.network import closeSession
 from .configspec import configSpec
@@ -93,6 +94,7 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
 		config.conf.spec.merge(finalSpec)
 		self._migrateStoredSecrets()
 		self.manager = TranslationManager()
+		self.conjugationBook = ItalianConjugationBook()
 		self.speechFilter = SpeechFilter(self.manager)
 		self.speechFilter.register()
 		self.isLayerActive = False
@@ -346,6 +348,108 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
 			closeButton=True,
 			copyButton=True,
 		)
+
+	@script(
+		# Translators: Description of the command that shows the complete dictionary entry for a word.
+		description=_("Show the complete dictionary entry for the word at the review cursor"),
+		gesture="kb:NVDA+control+i",
+	)
+	def script_showItalianConjugation(self, gesture: "inputCore.InputGesture") -> None:
+		self._finishLayer()
+		word = self._getConjugationWord()
+		if not word:
+			# Translators: Spoken when no single word can be found for the dictionary entry command.
+			ui.message(_("No word found at the review position."))
+			return
+		candidates = self.conjugationBook.resolve(word)
+		if not candidates:
+			# Translators: Spoken when the word has no Italian dictionary entry yet.
+			ui.message(_("No dictionary entry found for {word}.").format(word=word))
+			return
+		lemma = candidates[0]
+		table = self.conjugationBook.table(lemma)
+		if not table:
+			ui.message(_("No dictionary entry found for {word}.").format(word=word))
+			return
+		ui.browseableMessage(
+			self._buildWordEntryHtml(lemma, table, candidates[1:]),
+			# Translators: Title of the browseable window showing a complete dictionary entry.
+			title=_("{word} — dictionary entry").format(word=lemma),
+			isHtml=True,
+			closeButton=True,
+			copyButton=True,
+		)
+
+	def _getConjugationWord(self) -> str:
+		"""Return the word under the review cursor, falling back to the selection."""
+		text = ""
+		try:
+			info = api.getReviewPosition().copy()
+			info.expand(textInfos.UNIT_WORD)
+			text = info.text or ""
+		except Exception:
+			text = ""
+		word = self._cleanConjugationWord(text)
+		if word:
+			return word
+		try:
+			focus = api.getFocusObject()
+			selection = focus.makeTextInfo(textInfos.POSITION_SELECTION)
+			if not selection.isCollapsed:
+				return self._cleanConjugationWord(selection.text)
+		except Exception:
+			pass
+		return ""
+
+	@staticmethod
+	def _cleanConjugationWord(text: str) -> str:
+		"""Return one trimmed word without surrounding punctuation."""
+		word = (text or "").strip().strip(".,;:!?\"'()[]{}«»“”‘’")
+		if not word or " " in word or "\n" in word or "\t" in word:
+			return ""
+		return word
+
+	def _buildWordEntryHtml(
+		self,
+		lemma: str,
+		table: dict,
+		alternatives: list[str],
+	) -> str:
+		"""Render one dictionary entry as an accessible HTML document.
+
+		The entry is a container: conjugation is the first implemented section,
+		further sections (definitions, examples, ...) can be appended later.
+		"""
+		title = _("{word} — dictionary entry").format(word=lemma)
+		parts = [
+			"<html><head><meta charset='utf-8'><title>%s</title></head><body>" % escape(title),
+			f"<h1>{escape(lemma)}</h1>",
+		]
+		pos = table.get("pos") or ""
+		if pos:
+			parts.append(f"<p>{escape(pos)}</p>")
+		if alternatives:
+			# Translators: Lists other possible infinitives for an ambiguous Italian verb form.
+			parts.append(
+				f"<p>{escape(_('Also possibly: {verbs}').format(verbs=', '.join(alternatives)))}</p>",
+			)
+		tenses = table.get("tenses", [])
+		if tenses:
+			# Translators: Section heading of a dictionary entry listing verb conjugation.
+			parts.append(f"<h2>{escape(_('Conjugation'))}</h2>")
+		for tense in tenses:
+			parts.append(f"<h3>{escape(tense.get('tense', ''))}</h3>")
+			parts.append("<table border='1' cellpadding='4' cellspacing='0'>")
+			# Translators: Table header for the grammatical person column.
+			parts.append(f"<tr><th>{escape(_('Person'))}</th><th>{escape(_('Form'))}</th></tr>")
+			for row in tense.get("forms", []):
+				person = row.get("person") or "—"
+				parts.append(
+					f"<tr><td>{escape(person)}</td><td>{escape(row.get('form', ''))}</td></tr>",
+				)
+			parts.append("</table>")
+		parts.append("</body></html>")
+		return "\n".join(parts)
 
 	def _generateLayerHelpHtml(self) -> str:
 		groups = [

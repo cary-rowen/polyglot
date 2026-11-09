@@ -1,3 +1,11 @@
+### 1.3.4
+
+- Added a bundled Italian-Chinese offline dictionary: 62,756 headwords (part-of-speech abbreviation plus Chinese definition) and 242,682 conjugated forms. It is used only when the translation source language is Italian, so English lookups never return Italian entries and vice versa.
+- Italian conjugated forms now speak their grammatical reading instead of a bare gloss: `ho` is announced as 我有（avere 直陈式现在时 io）, `sono` as 我是 / 他们是.
+- New command `NVDA+Control+I` opens the complete dictionary entry for the word at the review cursor in a browseable window. Verb conjugation is the first implemented section; further sections can be added to the same window.
+- Added a text-review setting to choose which offline dictionary text review uses (English or Italian).
+- The offline dictionary now accepts accented Latin letters and resolves words with or without accents (città / citta, perché / perche). This is the groundwork for further Latin-script languages: word validation, normalisation and alias keys are no longer ASCII-only, so French, Spanish, Portuguese or German data can be added without touching the lookup engine again.
+
 ### 1.3.2
 
 - Added LibreTranslate support for self-hosted servers, with a configurable server URL and optional API key.
