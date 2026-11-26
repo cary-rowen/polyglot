@@ -17,12 +17,12 @@ from ...common.exceptions import (
 	NetworkConnectionError,
 	ResponseParsingError,
 )
+from ._nvdacn import NVDACN_API_URL
 
 addonHandler.initTranslation()
 
 __all__ = ["genSignHeaders"]
 
-_NVDACN_API_URL = "https://nvdacn.com/api/"
 _VIVO_APP_ID = "3046775094"
 _AUTH_REQUEST_TIMEOUT = 3  # Seconds for a single authentication request attempt
 
@@ -44,7 +44,7 @@ def _genCanonicalQueryString(params: dict) -> str:
 def _fetchSignatureFromService(nvdacnUser: str, nvdacnPass: str, signingStringBytes: bytes) -> str:
 	"""Fetch the Vivo signature from the NVDACN API."""
 	apiParams = {"user": nvdacnUser, "pass": nvdacnPass, "name": "vivo", "action": "signature"}
-	url = f"{_NVDACN_API_URL}?{urllib.parse.urlencode(apiParams)}"
+	url = f"{NVDACN_API_URL}?{urllib.parse.urlencode(apiParams)}"
 
 	try:
 		responseBody = network.sendRequest(

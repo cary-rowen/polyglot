@@ -84,14 +84,9 @@ class TranslationEngine(ABC):
 		)
 
 	@property
-	def doesSupportLanguageDetection(self) -> bool:
-		"""Return whether the engine accepts an automatic-detection source code."""
-		return self.autoDetectCode is not None
-
-	@property
 	def doesReportDetectedLanguage(self) -> bool:
 		"""Return whether translation results include the detected source language."""
-		return self.doesSupportLanguageDetection
+		return self.autoDetectCode is not None
 
 	def areLanguagesEquivalent(self, detectedLanguage: str, targetLanguage: str) -> bool:
 		"""Return whether a detected source and target language are equivalent for auto-swap."""

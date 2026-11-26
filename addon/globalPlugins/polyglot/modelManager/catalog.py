@@ -267,11 +267,6 @@ def normalizeLanguageCode(code: str) -> str:
 	return lowerCode.split("-", 1)[0]
 
 
-def languageName(code: str) -> str:
-	"""Return a localized display name for a language code."""
-	return languages.getLanguageName(code)
-
-
 def pairDisplayName(package: ModelPackage) -> str:
 	"""Return a compact localized package display name without redundant English labels."""
 	sourceLanguage = normalizeLanguageCode(package.sourceLanguage)
@@ -279,10 +274,10 @@ def pairDisplayName(package: ModelPackage) -> str:
 	if not sourceLanguage or not targetLanguage:
 		return package.displayName or package.key
 	if sourceLanguage == _BASE_LANGUAGE and targetLanguage != _BASE_LANGUAGE:
-		return languageName(targetLanguage)
+		return languages.getLanguageName(targetLanguage)
 	if targetLanguage == _BASE_LANGUAGE and sourceLanguage != _BASE_LANGUAGE:
-		return languageName(sourceLanguage)
+		return languages.getLanguageName(sourceLanguage)
 	return _("{source} / {target}").format(
-		source=languageName(sourceLanguage),
-		target=languageName(targetLanguage),
+		source=languages.getLanguageName(sourceLanguage),
+		target=languages.getLanguageName(targetLanguage),
 	)
