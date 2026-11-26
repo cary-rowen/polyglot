@@ -22,7 +22,7 @@ class VivoTranslateEngine(BaseHttpEngine):
 	id = "vivo"
 	name = _("VIVO Translate")
 
-	API_URL = "https://api-ai.vivo.com.cn/translation/query/self"
+	API_URL = "https://api-ai.vivo.com.cn/translation/query"
 	ERROR_CODES = {
 		10000: _("Server error"),
 		20000: _("Invalid request parameters"),
@@ -30,12 +30,8 @@ class VivoTranslateEngine(BaseHttpEngine):
 
 	@property
 	def maxRequestLength(self) -> int:
-		"""
-		Empirical testing (EN->ZH) revealed a limit of 5,001 characters.
-		It uses 'application/x-www-form-urlencoded'. To avoid payload bloat
-		and strict domestic gateway limits, a safe buffer of 3,000 is used.
-		"""
-		return 3000
+		"""Return the 1,200-character limit documented by the Vivo endpoint."""
+		return 1200
 
 	@property
 	def autoDetectCode(self) -> str | None:
@@ -70,7 +66,7 @@ class VivoTranslateEngine(BaseHttpEngine):
 		if not nvdacnUser or not nvdacnPass:
 			raise AuthenticationError(_("NVDACN username and password must be provided in settings."))
 
-		uri = "/translation/query/self"
+		uri = "/translation/query"
 		try:
 			headers = vivoAuth.genSignHeaders(nvdacnUser, nvdacnPass, "POST", uri, {})
 			headers["Content-Type"] = "application/x-www-form-urlencoded"
@@ -90,7 +86,13 @@ class VivoTranslateEngine(BaseHttpEngine):
 			"from": langFrom,
 			"to": langTo,
 			"text": text,
-			"app": "test",
+			"app": "accessible",
+			"sysVer": "PD1709",
+			"product": "PD1709",
+			"model": "vivoX20",
+			"appVer": "1.0",
+			"fr": "vivo_translator",
+			"userId": "accessible_NV",
 			"requestId": str(uuid.uuid4()),
 		}
 		return {
