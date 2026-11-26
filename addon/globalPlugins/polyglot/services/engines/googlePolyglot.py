@@ -25,7 +25,7 @@ class GoogleHQTranslateEngine(BaseHttpEngine):
 		return "auto"
 
 	@property
-	def defaultTargetLanguage(self) -> str:
+	def fallbackTargetLanguage(self) -> str:
 		return "zh-CN"
 
 	def getSupportedLanguages(self) -> dict:

@@ -35,7 +35,7 @@ class GoogleTranslateEngine(BaseHttpEngine):
 		return "auto"
 
 	@property
-	def defaultTargetLanguage(self) -> str:
+	def fallbackTargetLanguage(self) -> str:
 		return "zh-CN"
 
 	def getConfigSpec(self) -> list[dict]:

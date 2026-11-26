@@ -13,6 +13,7 @@ from NVDAState import shouldWriteToDisk
 from .secureStorage import SecureStorageError, protectString, unprotectString
 
 _CONFIG_SECTION = "modernTranslate"
+_LANGUAGE_DEFAULTS_MARKER = "languageDefaultsMigrated"
 _PROTECTED_SECRET_PREFIX = "polyglot-dpapi:v1:"
 _PROTECTED_SECRET_NAMESPACE = "polyglot-dpapi:"
 _PROTECTED_SECRET_DESCRIPTION = "Polyglot protected secret"
@@ -117,6 +118,36 @@ def _migrateProfileSecrets(
 			engineSection[fieldName] = protectedSecret
 			wasChanged = True
 	return wasChanged
+
+
+def pinLegacyLanguageDefaults(engines: Iterable[Any]) -> None:
+	"""Keep upgrading users on their previous fixed language defaults, once.
+
+	NVDA only stores values that differ from the default, so users who kept the old fixed
+	defaults have nothing saved. Without pinning, their translation direction would follow
+	the new NVDA-language default after upgrading. Fresh installs only receive the marker.
+	"""
+	if not shouldWriteToDisk():
+		return
+	profiles = nvdaConfig.conf.profiles
+	baseProfile = profiles[0]
+	addOnSection = baseProfile.get(_CONFIG_SECTION)
+	if isinstance(addOnSection, MutableMapping) and addOnSection.get(_LANGUAGE_DEFAULTS_MARKER):
+		return
+	isUpgrade = any(isinstance(profile.get(_CONFIG_SECTION), MutableMapping) for profile in profiles)
+	addOnSection = baseProfile.setdefault(_CONFIG_SECTION, {})
+	if isUpgrade:
+		engineSections = addOnSection.setdefault("engines", {})
+		for engine in engines:
+			engineSection = engineSections.setdefault(engine.id, {})
+			engineSection.setdefault("langTo", engine.fallbackTargetLanguage)
+			if engine.fallbackSourceLanguage is not None:
+				engineSection.setdefault("langFrom", engine.fallbackSourceLanguage)
+	addOnSection[_LANGUAGE_DEFAULTS_MARKER] = True
+	try:
+		nvdaConfig.conf._writeProfileToFile(baseProfile.filename, baseProfile)
+	except Exception:
+		log.error("Could not save Polyglot language defaults to the base configuration.", exc_info=True)
 
 
 def migrateStoredSecrets(engines: Iterable[Any]) -> None:

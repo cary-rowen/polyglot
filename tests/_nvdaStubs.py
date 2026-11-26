@@ -29,6 +29,7 @@ def installNvdaStubs() -> None:
 		("globalVars", "appArgs", Mock(configPath=str(PROJECT_ROOT))),
 		("extensionPoints", "Action", Mock),
 		("addonHandler", "initTranslation", Mock()),
+		("languageHandler", "getLanguage", Mock(return_value="en")),
 		("logHandler", "log", Mock()),
 		("polyglot", "__path__", [str(PROJECT_ROOT / "addon" / "globalPlugins" / "polyglot")]),
 	):

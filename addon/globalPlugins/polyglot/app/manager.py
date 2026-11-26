@@ -32,25 +32,20 @@ _CHINESE_DICTIONARY_TARGET_CODES = frozenset(
 )
 
 
-def _normalizeLanguageCode(language: str | None) -> str:
-	"""Normalize language-code spelling for local dictionary direction checks."""
-	return (language or "").strip().replace("_", "-").casefold()
-
-
 def _isEnglishLanguage(language: str | None) -> bool:
 	"""Return whether a language code identifies English."""
-	return _normalizeLanguageCode(language).partition("-")[0] == "en"
+	return languages.normalizeLanguageCode(language).partition("-")[0] == "en"
 
 
 def _isChineseLanguage(language: str | None) -> bool:
 	"""Return whether a language code identifies a Chinese source language."""
-	normalizedLanguage = _normalizeLanguageCode(language)
+	normalizedLanguage = languages.normalizeLanguageCode(language)
 	return normalizedLanguage in ("cht", "yue", "wyw") or normalizedLanguage.partition("-")[0] == "zh"
 
 
 def _isChineseDictionaryTarget(language: str | None) -> bool:
 	"""Return whether a language code identifies a supported Chinese dictionary target."""
-	return _normalizeLanguageCode(language) in _CHINESE_DICTIONARY_TARGET_CODES
+	return languages.normalizeLanguageCode(language) in _CHINESE_DICTIONARY_TARGET_CODES
 
 
 def _isAutoDetectedLanguage(language: str | None, autoDetectCode: str | None) -> bool:
@@ -58,7 +53,7 @@ def _isAutoDetectedLanguage(language: str | None, autoDetectCode: str | None) ->
 	return (
 		language is not None
 		and autoDetectCode is not None
-		and _normalizeLanguageCode(language) == _normalizeLanguageCode(autoDetectCode)
+		and languages.normalizeLanguageCode(language) == languages.normalizeLanguageCode(autoDetectCode)
 	)
 
 

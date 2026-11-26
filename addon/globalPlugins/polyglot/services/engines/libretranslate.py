@@ -98,8 +98,8 @@ class LibreTranslateEngine(BaseHttpEngine):
 		return "auto"
 
 	@property
-	def defaultTargetLanguage(self) -> str:
-		"""Return Simplified Chinese as the default target language."""
+	def fallbackTargetLanguage(self) -> str:
+		"""Return Simplified Chinese as the fallback target language."""
 		return "zh-Hans"
 
 	def getSupportedLanguages(self) -> dict[str, str]:

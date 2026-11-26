@@ -49,7 +49,7 @@ class BaiduTranslateEngine(BaseHttpEngine):
 		return "auto"
 
 	@property
-	def defaultTargetLanguage(self) -> str:
+	def fallbackTargetLanguage(self) -> str:
 		return "zh"
 
 	def getConfigSpec(self) -> list[dict]:

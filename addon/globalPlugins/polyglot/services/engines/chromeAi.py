@@ -103,11 +103,11 @@ class ChromeAiEngine(ChunkedTranslationMixin):
 		return _("Enable Chrome AI offline engine (Chrome 138+)")
 
 	@property
-	def defaultSourceLanguage(self) -> str:
+	def fallbackSourceLanguage(self) -> str:
 		return "en"
 
 	@property
-	def defaultTargetLanguage(self) -> str:
+	def fallbackTargetLanguage(self) -> str:
 		return "zh"
 
 	def getConfigSpec(self) -> list[dict[str, Any]]:

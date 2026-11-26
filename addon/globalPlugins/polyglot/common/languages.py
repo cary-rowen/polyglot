@@ -2,7 +2,10 @@
 # This file is covered by the GNU General Public License version 3 or later.
 # See the file COPYING.txt for more details.
 
+from collections.abc import Collection
+
 import addonHandler
+import languageHandler
 from logHandler import log
 
 addonHandler.initTranslation()
@@ -299,3 +302,86 @@ def getLanguageName(code: str) -> str:
 def getLanguageFamily(code: str) -> str:
 	"""Return the base language subtag used for language-family comparisons."""
 	return code.partition("-")[0].casefold()
+
+
+def normalizeLanguageCode(language: str | None) -> str:
+	"""Normalize language-code spelling to lower case with hyphen separators."""
+	return (language or "").strip().replace("_", "-").casefold()
+
+
+_SIMPLIFIED_CHINESE = ("zh-hans", "zh-cn", "zh-chs")
+_TRADITIONAL_CHINESE = ("zh-hant", "zh-tw", "zh-hk", "cht")
+_LOCALE_ALIASES: dict[str, tuple[str, ...]] = {
+	"zh-cn": _SIMPLIFIED_CHINESE,
+	"zh-sg": _SIMPLIFIED_CHINESE,
+	"zh-hans": _SIMPLIFIED_CHINESE,
+	"zh-tw": _TRADITIONAL_CHINESE,
+	"zh-hk": _TRADITIONAL_CHINESE,
+	"zh-mo": _TRADITIONAL_CHINESE,
+	"zh-hant": _TRADITIONAL_CHINESE,
+	"es-co": ("es-419",),
+}
+
+_BASE_LANGUAGE_ALIASES: dict[str, tuple[str, ...]] = {
+	"ar": ("ara",),
+	"bg": ("bul",),
+	"da": ("dan",),
+	"en": ("en-us", "en-gb"),
+	"es": ("spa", "es-419"),
+	"et": ("est",),
+	"fi": ("fin",),
+	"fil": ("tl",),
+	"fr": ("fra",),
+	"he": ("iw",),
+	"iw": ("he",),
+	"ja": ("jp",),
+	"jv": ("jw",),
+	"ko": ("kor",),
+	"nb": ("no",),
+	"nn": ("no", "nb"),
+	"no": ("nb",),
+	"pt": ("pt-pt", "pt-br"),
+	"ro": ("rom",),
+	"sl": ("slo",),
+	"sv": ("swe",),
+	"vi": ("vie",),
+	"zh": _SIMPLIFIED_CHINESE,
+}
+
+
+def resolveTargetLanguage(
+	supportedCodes: Collection[str],
+	fallback: str,
+	nvdaLanguage: str | None = None,
+	excludeCodes: Collection[str] = (),
+) -> str:
+	"""Resolve NVDA's interface language to the best matching engine target code."""
+	if nvdaLanguage is None:
+		try:
+			nvdaLanguage = languageHandler.getLanguage()
+		except Exception:
+			return fallback
+	if not nvdaLanguage:
+		return fallback
+
+	excluded = {code.casefold() for code in excludeCodes}
+	supportedByLower = {code.casefold(): code for code in supportedCodes if code.casefold() not in excluded}
+
+	normalized = normalizeLanguageCode(nvdaLanguage)
+	if not normalized:
+		return fallback
+
+	parts = normalized.split("-")
+	base = getLanguageFamily(normalized)
+	candidates: list[str] = [normalized, *_LOCALE_ALIASES.get(normalized, ())]
+	if len(parts) > 2:
+		prefix = f"{parts[0]}-{parts[1]}"
+		candidates.extend((prefix, *_LOCALE_ALIASES.get(prefix, ())))
+	candidates.append(base)
+	candidates.extend(_BASE_LANGUAGE_ALIASES.get(base, ()))
+
+	for candidate in candidates:
+		matched = supportedByLower.get(candidate)
+		if matched is not None:
+			return matched
+	return fallback

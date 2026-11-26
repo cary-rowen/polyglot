@@ -34,7 +34,7 @@ from .app.manager import TranslationManager
 from .app.speechFilter import SpeechFilter
 from ._commandLayer import ENTRY_GESTURE, LAYER_GESTURES, shouldExitLayer
 from .common import cues
-from .common.config import getConfigSectionName, migrateStoredSecrets
+from .common.config import getConfigSectionName, migrateStoredSecrets, pinLegacyLanguageDefaults
 from .common.network import closeSession
 from .configspec import configSpec
 from .services import engineManager
@@ -91,6 +91,8 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
 		finalSpec = _buildFinalConfigSpec()
 		# Merge this final spec into NVDA's configuration.
 		config.conf.spec.merge(finalSpec)
+		# Must run before anything reads Polyglot settings, so no stale values are cached.
+		pinLegacyLanguageDefaults(engineManager.getAllEngines())
 		self._migrateStoredSecrets()
 		self.manager = TranslationManager()
 		self.speechFilter = SpeechFilter(self.manager)

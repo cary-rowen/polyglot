@@ -96,7 +96,7 @@ class OpenRouterTranslateEngine(BaseHttpEngine):
 		return "auto"
 
 	@property
-	def defaultTargetLanguage(self) -> str:
+	def fallbackTargetLanguage(self) -> str:
 		return "en"
 
 	@property

@@ -31,7 +31,7 @@ class CaiyunTranslateEngine(BaseHttpEngine):
 		return "auto"
 
 	@property
-	def defaultTargetLanguage(self) -> str:
+	def fallbackTargetLanguage(self) -> str:
 		return "zh"
 
 	def getSupportedLanguages(self) -> dict:

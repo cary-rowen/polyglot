@@ -2,6 +2,7 @@
 # This file is covered by the GNU General Public License version 3 or later.
 # See the file COPYING.txt for more details.
 
+import functools
 import json
 import random
 import time
@@ -12,6 +13,7 @@ from collections.abc import Callable
 import addonHandler
 from logHandler import log
 
+from ..common import languages
 from ..common.exceptions import EngineError, ResponseParsingError
 from ..common.network import sendRequest
 from ..common.textUtils import splitText
@@ -44,6 +46,42 @@ class TranslationEngine(ABC):
 		Subclasses must return None if not supported.
 		"""
 		pass
+
+	@property
+	def fallbackSourceLanguage(self) -> str | None:
+		"""Return the preferred source language when automatic detection is unavailable."""
+		return None
+
+	@property
+	@abstractmethod
+	def fallbackTargetLanguage(self) -> str:
+		"""Return the fallback target language used when NVDA's language is unsupported."""
+		pass
+
+	# Cached: NVDA's interface language only changes after a restart.
+	@functools.cached_property
+	def defaultTargetLanguage(self) -> str:
+		"""Return the default target language, preferring NVDA's interface language."""
+		autoCode = self.autoDetectCode
+		return languages.resolveTargetLanguage(
+			self.getSupportedLanguages(),
+			fallback=self.fallbackTargetLanguage,
+			excludeCodes=() if autoCode is None else (autoCode,),
+		)
+
+	@functools.cached_property
+	def defaultSourceLanguage(self) -> str:
+		"""Return the default source language without colliding with the default target."""
+		if self.autoDetectCode is not None:
+			return self.autoDetectCode
+		target = self.defaultTargetLanguage
+		supported = self.getSupportedLanguages()
+		for candidate in (self.fallbackSourceLanguage, self.fallbackTargetLanguage, *supported):
+			if candidate and candidate in supported and candidate != target:
+				return candidate
+		raise NotImplementedError(
+			f"Translation engine '{self.id}' does not support auto language detection and has no valid default source language.",
+		)
 
 	@property
 	def doesSupportLanguageDetection(self) -> bool:
@@ -209,28 +247,6 @@ class BaseHttpEngine(ChunkedTranslationMixin):
 		"""
 		raise NotImplementedError(
 			f"""Translation engine '{self.id}' must explicitly implement the 'autoDetectCode' property in a subclass (return None if not supported).""",
-		)
-
-	@property
-	def defaultSourceLanguage(self) -> str:
-		"""
-		Provides an intelligent, conditional default source language.
-		- If the engine supports language detection, it automatically uses its autoDetectCode.
-		- If not, the subclass is forced to override this property and provide a specific language.
-		"""
-		autoCode = self.autoDetectCode
-		if self.doesSupportLanguageDetection and autoCode is not None:
-			return autoCode
-		raise NotImplementedError(
-			f"""Translation engine '{self.id}' does not support auto language detection, and must therefore explicitly override the 'defaultSourceLanguage' property in a subclass.""",
-		)
-
-	@property
-	@abstractmethod
-	def defaultTargetLanguage(self) -> str:
-		"""Forces all concrete HTTP engines to explicitly define their default target language."""
-		raise NotImplementedError(
-			f"Translation engine '{self.id}' must explicitly implement the 'defaultTargetLanguage' property.",
 		)
 
 	def getConfigSpec(self) -> list[dict[str, Any]]:

@@ -33,7 +33,7 @@ class DeepLEngine(BaseHttpEngine):
 		return "auto"
 
 	@property
-	def defaultTargetLanguage(self) -> str:
+	def fallbackTargetLanguage(self) -> str:
 		return "ZH"
 
 	def getConfigSpec(self) -> list[dict]:

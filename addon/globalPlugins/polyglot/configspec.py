@@ -12,6 +12,7 @@ configSpec: ConfigObj = ConfigObj(
 		"enableLocalDictionaryForTranslation = boolean(default=True)",
 		"enableLocalDictionaryForTextReview = boolean(default=True)",
 		"enableSmartFilter = boolean(default=True)",
+		"languageDefaultsMigrated = boolean(default=False)",
 		"",
 		# Define an 'engines' subsection for engine-specific configurations.
 		"[engines]",

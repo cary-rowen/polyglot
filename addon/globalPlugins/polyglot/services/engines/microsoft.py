@@ -38,7 +38,7 @@ class MicrosoftTranslateEngine(BaseHttpEngine):
 		return 30000
 
 	@property
-	def defaultTargetLanguage(self) -> str:
+	def fallbackTargetLanguage(self) -> str:
 		return "zh-Hans"  # Microsoft's code for Simplified Chinese
 
 	def getSupportedLanguages(self) -> dict:

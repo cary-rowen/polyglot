@@ -23,7 +23,7 @@ class TencentWebTranslateEngine(NvdacnJsonEngine):
 		return "auto"
 
 	@property
-	def defaultTargetLanguage(self) -> str:
+	def fallbackTargetLanguage(self) -> str:
 		return "zh"
 
 	@property

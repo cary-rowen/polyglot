@@ -39,7 +39,7 @@ class YandexTranslateEngine(BaseHttpEngine):
 		return ""
 
 	@property
-	def defaultTargetLanguage(self) -> str:
+	def fallbackTargetLanguage(self) -> str:
 		return "zh"
 
 	@property

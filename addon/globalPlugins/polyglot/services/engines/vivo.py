@@ -39,11 +39,11 @@ class VivoTranslateEngine(BaseHttpEngine):
 		return None
 
 	@property
-	def defaultSourceLanguage(self) -> str:
+	def fallbackSourceLanguage(self) -> str:
 		return "en"
 
 	@property
-	def defaultTargetLanguage(self) -> str:
+	def fallbackTargetLanguage(self) -> str:
 		return "zh-CHS"
 
 	def getConfigSpec(self) -> list[dict]:
