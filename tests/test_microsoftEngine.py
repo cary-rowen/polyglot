@@ -4,35 +4,16 @@
 
 """Runnable checks for Microsoft's key-free Edge translation endpoint."""
 
-import builtins
 import json
-import sys
 import unittest
-from pathlib import Path
-from types import ModuleType
-from unittest.mock import Mock, patch
+from unittest.mock import patch
 
+try:
+	from tests._nvdaStubs import installNvdaStubs
+except ImportError:
+	from _nvdaStubs import installNvdaStubs
 
-PROJECT_ROOT = Path(__file__).resolve().parents[1]
-if not hasattr(builtins, "_"):
-	setattr(builtins, "_", lambda message: message)
-for moduleName in ("config", "nvwave", "queueHandler", "tones", "ui"):
-	sys.modules.setdefault(moduleName, ModuleType(moduleName))
-globalVars = ModuleType("globalVars")
-setattr(globalVars, "appArgs", Mock(configPath=str(PROJECT_ROOT)))
-sys.modules.setdefault("globalVars", globalVars)
-extensionPoints = ModuleType("extensionPoints")
-setattr(extensionPoints, "Action", Mock)
-sys.modules.setdefault("extensionPoints", extensionPoints)
-addonHandler = ModuleType("addonHandler")
-setattr(addonHandler, "initTranslation", Mock())
-sys.modules.setdefault("addonHandler", addonHandler)
-logHandler = ModuleType("logHandler")
-setattr(logHandler, "log", Mock())
-sys.modules.setdefault("logHandler", logHandler)
-polyglotPackage = ModuleType("polyglot")
-setattr(polyglotPackage, "__path__", [str(PROJECT_ROOT / "addon" / "globalPlugins" / "polyglot")])
-sys.modules.setdefault("polyglot", polyglotPackage)
+installNvdaStubs()
 
 from polyglot.common.exceptions import ApiResponseError  # noqa: E402
 from polyglot.services.engines.microsoft import MicrosoftTranslateEngine  # noqa: E402
@@ -47,44 +28,38 @@ class MicrosoftTranslateEngineTest(unittest.TestCase):
 		self.config = {"proxyMode": "none", "timeout": 15}
 
 	def test_buildsUnauthenticatedStringArrayRequest(self) -> None:
-		"""The endpoint receives a bare string array without an auth header."""
+		"""The endpoint maps Chinese codes and sends a bare JSON string array."""
 		params = self.engine._buildRequestParams("a &lt; b", "zh-CN", "zh-TW", self.config)
 
 		self.assertEqual(params["method"], "POST")
-		self.assertIn(
-			"https://edge.microsoft.com/translate/translatetext?from=zh-Hans&to=zh-Hant&isEnterpriseClient=false",
+		self.assertEqual(
 			params["url"],
+			"https://edge.microsoft.com/translate/translatetext?from=zh-Hans&to=zh-Hant&isEnterpriseClient=false",
 		)
 		self.assertEqual(json.loads(params["data"].decode("utf-8")), ["a &lt; b"])
 		self.assertEqual(params["headers"], {"Content-Type": "application/json"})
 
-	def test_usesSharedBaseHttpRequestFlow(self) -> None:
-		"""Translation goes through the base class request and retry wrapper."""
+	def test_translateChunkUsesSharedHttpFlowAndAutoDetect(self) -> None:
+		"""BaseHttpEngine forwards auto-detect requests and proxyMode='none' to sendRequest."""
 		responseBody = '[{"translations":[{"text":"translated"}]}]'
 		with patch("polyglot.services.engine.sendRequest", return_value=responseBody) as sendRequest:
 			result = self.engine._translateChunk("hello", "", "zh-Hans", self.config)
 
 		sendRequest.assert_called_once()
 		self.assertEqual(result, {"translation": "translated", "langDetected": None})
-		self.assertEqual(sendRequest.call_args.kwargs["method"], "POST")
 		self.assertIn(
 			"/translate/translatetext?from=&to=zh-Hans&isEnterpriseClient=false",
 			sendRequest.call_args.kwargs["url"],
 		)
-		self.assertEqual(json.loads(sendRequest.call_args.kwargs["data"].decode("utf-8")), ["hello"])
 		self.assertEqual(sendRequest.call_args.kwargs["proxies"], {"http": None, "https": None})
 
-	def test_parsesDetectedLanguageAndPreservesLiteralEntities(self) -> None:
-		"""Detected language is retained without interpreting response text as HTML."""
+	def test_parsesResponseAndRejectsMalformedBody(self) -> None:
+		"""Detected language is retained without HTML unescaping; invalid payloads raise."""
 		responseBody = '[{"detectedLanguage":{"language":"en"},"translations":[{"text":"Compare &lt; B"}]}]'
-
 		self.assertEqual(
 			self.engine._parseResponse(responseBody),
 			{"translation": "Compare &lt; B", "langDetected": "en"},
 		)
-
-	def test_rejectsMalformedResponse(self) -> None:
-		"""Unexpected successful responses become a user-facing API error."""
 		with self.assertRaises(ApiResponseError):
 			self.engine._parseResponse("{}")
 

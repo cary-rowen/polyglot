@@ -8,24 +8,15 @@ from __future__ import annotations
 
 import sys
 import unittest
-from pathlib import Path
-from types import ModuleType
 from typing import Any
 from unittest.mock import Mock, call, patch
 
+try:
+	from tests._nvdaStubs import installNvdaStubs
+except ImportError:
+	from _nvdaStubs import installNvdaStubs
 
-PROJECT_ROOT = Path(__file__).resolve().parents[1]
-
-nvdaConfig = sys.modules.setdefault("config", ModuleType("config"))
-extensionPoints = sys.modules.setdefault("extensionPoints", ModuleType("extensionPoints"))
-setattr(extensionPoints, "Action", Mock)
-logHandler = sys.modules.setdefault("logHandler", ModuleType("logHandler"))
-setattr(logHandler, "log", Mock())
-nvdaState = sys.modules.setdefault("NVDAState", ModuleType("NVDAState"))
-setattr(nvdaState, "shouldWriteToDisk", Mock(return_value=False))
-polyglotPackage = ModuleType("polyglot")
-setattr(polyglotPackage, "__path__", [str(PROJECT_ROOT / "addon" / "globalPlugins" / "polyglot")])
-sys.modules.setdefault("polyglot", polyglotPackage)
+installNvdaStubs()
 
 from polyglot.common import config as configModule  # noqa: E402
 from polyglot.common import secureStorage  # noqa: E402
@@ -118,7 +109,9 @@ class SecureConfigTestCase(unittest.TestCase):
 			patch.object(configModule, "shouldWriteToDisk", return_value=True),
 			patch.object(configModule.nvdaConfig, "conf", conf, create=True),
 			patch.object(
-				configModule, "protectString", side_effect=lambda value, **_kwargs: f"dpapi-{value}",
+				configModule,
+				"protectString",
+				side_effect=lambda value, **_kwargs: f"dpapi-{value}",
 			),
 		):
 			configModule.migrateStoredSecrets([engine])
@@ -144,7 +137,7 @@ class SecureStorageRoundTripTestCase(unittest.TestCase):
 
 	def test_protectStringRoundTrip(self) -> None:
 		"""Protected UTF-8 text decrypts for the current Windows user."""
-		secret = "api-token-\u2603-\u4f60\u597d"
+		secret = "api-token-☃-你好"
 		protected = secureStorage.protectString(secret)
 		self.assertNotEqual(protected, secret)
 		self.assertEqual(secureStorage.unprotectString(protected), secret)

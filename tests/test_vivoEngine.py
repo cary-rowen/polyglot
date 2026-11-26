@@ -4,35 +4,16 @@
 
 """Runnable checks for Vivo's translation request format."""
 
-import builtins
-import sys
 import unittest
-from pathlib import Path
-from types import ModuleType
-from unittest.mock import Mock, patch
+from unittest.mock import patch
 from urllib.parse import parse_qs
 
+try:
+	from tests._nvdaStubs import installNvdaStubs
+except ImportError:
+	from _nvdaStubs import installNvdaStubs
 
-PROJECT_ROOT = Path(__file__).resolve().parents[1]
-if not hasattr(builtins, "_"):
-	setattr(builtins, "_", lambda message: message)
-for moduleName in ("config", "nvwave", "queueHandler", "tones", "ui"):
-	sys.modules.setdefault(moduleName, ModuleType(moduleName))
-globalVars = ModuleType("globalVars")
-setattr(globalVars, "appArgs", Mock(configPath=str(PROJECT_ROOT)))
-sys.modules.setdefault("globalVars", globalVars)
-extensionPoints = ModuleType("extensionPoints")
-setattr(extensionPoints, "Action", Mock)
-sys.modules.setdefault("extensionPoints", extensionPoints)
-addonHandler = ModuleType("addonHandler")
-setattr(addonHandler, "initTranslation", Mock())
-sys.modules.setdefault("addonHandler", addonHandler)
-logHandler = ModuleType("logHandler")
-setattr(logHandler, "log", Mock())
-sys.modules.setdefault("logHandler", logHandler)
-polyglotPackage = ModuleType("polyglot")
-setattr(polyglotPackage, "__path__", [str(PROJECT_ROOT / "addon" / "globalPlugins" / "polyglot")])
-sys.modules.setdefault("polyglot", polyglotPackage)
+installNvdaStubs()
 
 from polyglot.services.engines.vivo import VivoTranslateEngine  # noqa: E402
 

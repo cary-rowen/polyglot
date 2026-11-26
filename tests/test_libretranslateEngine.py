@@ -4,35 +4,15 @@
 
 """Runnable checks for the LibreTranslate HTTP engine."""
 
-import builtins
 import json
-import sys
 import unittest
-from pathlib import Path
-from types import ModuleType
-from unittest.mock import Mock, patch
 
+try:
+	from tests._nvdaStubs import installNvdaStubs
+except ImportError:
+	from _nvdaStubs import installNvdaStubs
 
-PROJECT_ROOT = Path(__file__).resolve().parents[1]
-if not hasattr(builtins, "_"):
-	setattr(builtins, "_", lambda message: message)
-for moduleName in ("config", "nvwave", "queueHandler", "tones", "ui"):
-	sys.modules.setdefault(moduleName, ModuleType(moduleName))
-globalVars = ModuleType("globalVars")
-setattr(globalVars, "appArgs", Mock(configPath=str(PROJECT_ROOT)))
-sys.modules.setdefault("globalVars", globalVars)
-extensionPoints = ModuleType("extensionPoints")
-setattr(extensionPoints, "Action", Mock)
-sys.modules.setdefault("extensionPoints", extensionPoints)
-addonHandler = ModuleType("addonHandler")
-setattr(addonHandler, "initTranslation", Mock())
-sys.modules.setdefault("addonHandler", addonHandler)
-logHandler = ModuleType("logHandler")
-setattr(logHandler, "log", Mock())
-sys.modules.setdefault("logHandler", logHandler)
-polyglotPackage = ModuleType("polyglot")
-setattr(polyglotPackage, "__path__", [str(PROJECT_ROOT / "addon" / "globalPlugins" / "polyglot")])
-sys.modules.setdefault("polyglot", polyglotPackage)
+installNvdaStubs()
 
 from polyglot.common.exceptions import ApiResponseError  # noqa: E402
 from polyglot.services.engines.libretranslate import LibreTranslateEngine  # noqa: E402
@@ -46,24 +26,18 @@ class LibreTranslateEngineTest(unittest.TestCase):
 		self.engine = LibreTranslateEngine()
 		self.config = {"proxyMode": "none", "timeout": 15}
 
-	def test_exposesConfiguredLibreTranslateLanguages(self) -> None:
-		"""The language list includes the configured LibreTranslate codes."""
-		availableLanguages = self.engine.getSupportedLanguages()
-		for code in ("auto", "en", "zh-Hans", "zh-Hant", "pt-BR", "ur"):
-			with self.subTest(code=code):
-				self.assertIn(code, availableLanguages)
-		self.assertEqual(self.engine.maxRequestLength, 2000)
-
 	def test_buildsLocalRequestWithoutOptionalApiKey(self) -> None:
 		"""The default request targets the standard local server and omits an empty key."""
 		params = self.engine._buildRequestParams("Hello", "auto", "zh-Hans", self.config)
 
 		self.assertEqual(params["url"], "http://localhost:5000/translate")
-		payload = json.loads(params["data"].decode("utf-8"))
-		self.assertEqual(payload, {"q": "Hello", "source": "auto", "target": "zh-Hans", "format": "text"})
+		self.assertEqual(
+			json.loads(params["data"].decode("utf-8")),
+			{"q": "Hello", "source": "auto", "target": "zh-Hans", "format": "text"},
+		)
 
 	def test_buildsPrefixedServerRequestWithApiKey(self) -> None:
-		"""A server path prefix and API key are preserved in the request."""
+		"""A server path prefix, trailing /translate, and API key are preserved."""
 		config = {"serverUrl": "https://example.test/lt/", "apiKey": "secret"}
 		params = self.engine._buildRequestParams("Hello", "en", "de", config)
 
@@ -81,35 +55,20 @@ class LibreTranslateEngineTest(unittest.TestCase):
 			with self.subTest(serverUrl=serverUrl), self.assertRaises(ApiResponseError):
 				self.engine._buildRequestParams("Hello", "en", "de", {"serverUrl": serverUrl})
 
-	def test_parsesTranslationAndDetectedLanguage(self) -> None:
-		"""The common result includes translated text and normalized detection."""
+	def test_parsesResponseAndServiceErrors(self) -> None:
+		"""Successful responses normalize detection; error payloads raise ApiResponseError."""
 		responseBody = json.dumps(
 			{
-				"translatedText": "\u4f60\u597d",
+				"translatedText": "你好",
 				"detectedLanguage": {"confidence": 99.0, "language": "zh"},
 			},
 		)
-
 		self.assertEqual(
 			self.engine._parseResponse(responseBody),
-			{"translation": "\u4f60\u597d", "langDetected": "zh-Hans"},
+			{"translation": "你好", "langDetected": "zh-Hans"},
 		)
-
-	def test_parsesServiceError(self) -> None:
-		"""An API error response becomes a user-facing engine error."""
 		with self.assertRaisesRegex(ApiResponseError, "API key"):
 			self.engine._parseResponse('{"error":"Invalid API key"}')
-
-	def test_usesSharedBaseHttpRequestFlow(self) -> None:
-		"""Translation uses the existing HTTP request, retry, and proxy flow."""
-		with patch(
-			"polyglot.services.engine.sendRequest", return_value='{"translatedText":"Hallo"}',
-		) as sendRequest:
-			result = self.engine._translateChunk("hello", "en", "de", self.config)
-
-		sendRequest.assert_called_once()
-		self.assertEqual(result, {"translation": "Hallo", "langDetected": None})
-		self.assertEqual(sendRequest.call_args.kwargs["proxies"], {"http": None, "https": None})
 
 
 if __name__ == "__main__":

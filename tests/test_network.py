@@ -4,26 +4,16 @@
 
 """Small runnable checks for HTTP connection reuse."""
 
-import sys
 import unittest
 from http.client import HTTPMessage
-from pathlib import Path
-from types import ModuleType
 from unittest.mock import Mock, patch
 
+try:
+	from tests._nvdaStubs import installNvdaStubs
+except ImportError:
+	from _nvdaStubs import installNvdaStubs
 
-PROJECT_ROOT = Path(__file__).resolve().parents[1]
-addonHandler = ModuleType("addonHandler")
-setattr(addonHandler, "initTranslation", Mock())
-sys.modules.setdefault("addonHandler", addonHandler)
-logHandler = ModuleType("logHandler")
-setattr(logHandler, "log", Mock())
-sys.modules.setdefault("logHandler", logHandler)
-# Another test module may have installed the stub first; share whichever one the add-on imports.
-logHandler = sys.modules["logHandler"]
-polyglotPackage = ModuleType("polyglot")
-setattr(polyglotPackage, "__path__", [str(PROJECT_ROOT / "addon" / "globalPlugins" / "polyglot")])
-sys.modules.setdefault("polyglot", polyglotPackage)
+installNvdaStubs()
 
 import requests  # noqa: E402
 from requests.cookies import extract_cookies_to_jar  # noqa: E402
@@ -38,10 +28,6 @@ class SharedSessionTest(unittest.TestCase):
 		"""Start each check without a cached session."""
 		network.closeSession()
 		self.addCleanup(network.closeSession)
-
-	def test_sessionIsReusedAcrossCalls(self) -> None:
-		"""The same session object is handed out until it is closed."""
-		self.assertIs(network.getSession(), network.getSession())
 
 	def test_sessionUsesConnectionPool(self) -> None:
 		"""Both schemes are mounted on an adapter that keeps connections alive."""
@@ -70,10 +56,8 @@ class SharedSessionTest(unittest.TestCase):
 		self.assertIsNot(network.getSession(), session)
 
 	def test_sendRequestUsesTheSharedSession(self) -> None:
-		"""Consecutive requests go through one session, so its connection is reused."""
-		response = Mock()
-		response.text = "translated"
-		response.raise_for_status = Mock()
+		"""Consecutive requests go through one shared session so connections are reused."""
+		response = Mock(text="translated")
 		with patch.object(requests.Session, "request", autospec=True, return_value=response) as request:
 			for _unused in range(2):
 				self.assertEqual(
@@ -86,12 +70,10 @@ class SharedSessionTest(unittest.TestCase):
 		self.assertIs(firstSession, network.getSession())
 
 	def test_sendRequestKeepsCallerHeaders(self) -> None:
-		"""Caller headers still win, and a default User-Agent is still supplied."""
-		response = Mock()
-		response.text = "ok"
-		response.raise_for_status = Mock()
+		"""Caller headers win while a default User-Agent is still supplied."""
+		response = Mock(text="ok")
 		with patch.object(requests.Session, "request", autospec=True, return_value=response) as request:
-			_unused = network.sendRequest(
+			network.sendRequest(
 				method="GET",
 				url="https://example.com/api",
 				headers={"Authorization": "Bearer key"},

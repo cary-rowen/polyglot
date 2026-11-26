@@ -4,17 +4,16 @@
 
 """Runnable checks for command-layer state transitions."""
 
-import runpy
 import unittest
-from pathlib import Path
-from typing import Any
 
+try:
+	from tests._nvdaStubs import installNvdaStubs
+except ImportError:
+	from _nvdaStubs import installNvdaStubs
 
-COMMAND_LAYER = runpy.run_path(
-	Path(__file__).resolve().parents[1] / "addon" / "globalPlugins" / "polyglot" / "_commandLayer.py",
-)
-LAYER_GESTURES: dict[str, str] = COMMAND_LAYER["LAYER_GESTURES"]
-shouldExitLayer: Any = COMMAND_LAYER["shouldExitLayer"]
+installNvdaStubs()
+
+from polyglot._commandLayer import LAYER_GESTURES, shouldExitLayer  # noqa: E402
 
 
 class CommandLayerTestCase(unittest.TestCase):
@@ -34,11 +33,7 @@ class CommandLayerTestCase(unittest.TestCase):
 			(True, False, ("kb:q",), True),
 		)
 		for isActive, isModifier, identifiers, expected in cases:
-			with self.subTest(
-				isActive=isActive,
-				isModifier=isModifier,
-				identifiers=identifiers,
-			):
+			with self.subTest(isActive=isActive, isModifier=isModifier, identifiers=identifiers):
 				self.assertEqual(
 					shouldExitLayer(isActive, isModifier, identifiers, layerIdentifiers),
 					expected,
