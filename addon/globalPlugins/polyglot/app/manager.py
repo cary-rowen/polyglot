@@ -14,7 +14,11 @@ from ..common import config
 from ..common.cache import TranslationCache
 from ..common.exceptions import EngineError
 from ..common import languages
-from ..common.wordDictionary import EnglishChineseDictionary, formatWordLookupResult
+from ..common.wordDictionary import (
+	EnglishChineseDictionary,
+	ItalianChineseDictionary,
+	formatWordLookupResult,
+)
 from ..services import engineManager
 from .task import TranslationTask
 from ..common import cues
@@ -48,6 +52,11 @@ def _isChineseLanguage(language: str | None) -> bool:
 	return normalizedLanguage in ("cht", "yue", "wyw") or normalizedLanguage.partition("-")[0] == "zh"
 
 
+def _isItalianLanguage(language: str | None) -> bool:
+	"""Return whether a language code identifies Italian."""
+	return _normalizeLanguageCode(language).partition("-")[0] == "it"
+
+
 def _isChineseDictionaryTarget(language: str | None) -> bool:
 	"""Return whether a language code identifies a supported Chinese dictionary target."""
 	return _normalizeLanguageCode(language) in _CHINESE_DICTIONARY_TARGET_CODES
@@ -68,6 +77,7 @@ class TranslationManager:
 	# Annotations for instance variables defined and managed by this class
 	cache: TranslationCache
 	wordDictionary: EnglishChineseDictionary
+	italianDictionary: ItalianChineseDictionary
 	lastTranslation: str | None
 	consecutiveFailures: int
 	_currentTask: TranslationTask | None
@@ -78,6 +88,7 @@ class TranslationManager:
 		super().__init__()
 		self.cache = TranslationCache()
 		self.wordDictionary = EnglishChineseDictionary()
+		self.italianDictionary = ItalianChineseDictionary()
 		self.lastTranslation = None
 		self.consecutiveFailures = 0
 		self._currentTask = None
@@ -453,10 +464,19 @@ class TranslationManager:
 		isSourceEnglish = _isEnglishLanguage(langFrom) or _isAutoDetectedLanguage(langFrom, autoDetectCode)
 		isEnglishToChinese = isSourceEnglish and _isChineseDictionaryTarget(langTo)
 		isChineseToEnglish = _isChineseLanguage(langFrom) and _isEnglishLanguage(langTo)
-		if not isEnglishToChinese and not isChineseToEnglish:
+		# Italian is only used when the user explicitly selects it as the source
+		# language: auto-detect stays English-only so the two dictionaries can
+		# never answer for each other.
+		isItalianToChinese = _isItalianLanguage(langFrom) and _isChineseDictionaryTarget(langTo)
+
+		if isItalianToChinese:
+			dictionary = self.italianDictionary
+		elif isEnglishToChinese or isChineseToEnglish:
+			dictionary = self.wordDictionary
+		else:
 			return None
 
-		lookupResult = self.wordDictionary.lookup(text)
+		lookupResult = dictionary.lookup(text)
 		if lookupResult is None or not lookupResult.matches:
 			return None
 		return formatWordLookupResult(lookupResult)

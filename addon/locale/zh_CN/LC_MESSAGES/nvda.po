@@ -2160,3 +2160,36 @@ msgstr ""
 #~ "- 在翻译请求间复用 HTTP 连接，降低重复翻译的延迟。\n"
 #~ "- 移除不可用的 Lingva Translate 引擎。\n"
 #~ "- 修复 Chrome AI 和通用设置面板中长标签溢出的问题。"
+
+msgid "Prefer the local dictionary for selected text, clipboard, and last spoken text"
+msgstr "优先使用本地离线词典处理选中文本、剪贴板内容和最后朗读内容"
+
+msgid "Use the local dictionary in text review"
+msgstr "在文本查看中使用本地离线词典"
+
+msgid "Local dictionary language for text review:"
+msgstr "文本查看使用的离线词典语言："
+
+msgid "No word found at the review position."
+msgstr "未在浏览光标处找到单词。"
+
+msgid "Also possibly: {verbs}"
+msgstr "也可能是：{verbs}"
+
+msgid "Person"
+msgstr "人称"
+
+msgid "Form"
+msgstr "变位形式"
+
+msgid "Show the complete dictionary entry for the word at the review cursor"
+msgstr "查看浏览光标所在单词的完整词条"
+
+msgid "No dictionary entry found for {word}."
+msgstr "未找到 {word} 的词条。"
+
+msgid "{word} — dictionary entry"
+msgstr "{word} 的词条"
+
+msgid "Conjugation"
+msgstr "动词变位"

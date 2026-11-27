@@ -60,6 +60,25 @@ def buildWordDictionary(target: list[FS.File], source: list[FS.File], env: objec
 	)
 
 
+def buildItalianDictionary(target: list[FS.File], source: list[FS.File], env: object) -> None:
+	"""Compile the Italian dictionary and its conjugation tables."""
+	moduleSpec = importlib.util.spec_from_file_location(
+		"_polyglotItalianDictionaryCompiler",
+		Path("tools/compileItalianDictionary.py").resolve(),
+	)
+	if moduleSpec is None or moduleSpec.loader is None:
+		raise RuntimeError("Unable to load the Italian dictionary compiler.")
+	compiler = importlib.util.module_from_spec(moduleSpec)
+	moduleSpec.loader.exec_module(compiler)
+	compiler.compileItalianDictionary(
+		Path(source[0].abspath),
+		Path(source[1].abspath),
+		Path(target[0].abspath),
+		Path(target[1].abspath),
+		Path(source[2].abspath),
+	)
+
+
 addonDir: Final = Path("addon/")
 localeDir: Final = addonDir / "locale"
 docsDir: Final = addonDir / "doc"
@@ -135,6 +154,26 @@ env.Clean(
 	expandGlobs([str(wordDictionaryDir / "resources/.dictionary.pickle.*.tmp")]),
 )
 env.Depends(addon, [wordDictionary, env.File(wordDictionaryDir / "resources/README.md")])
+
+italianDictionarySource = env.File(wordDictionarySourceDir / "dictionary.it.json")
+italianConjugationSource = env.File(wordDictionarySourceDir / "conjugation.it.tsv")
+italianDictionary = env.Command(
+	[
+		str(wordDictionaryDir / "resources/dictionary.it.pickle"),
+		str(wordDictionaryDir / "resources/conjugation.it.pickle"),
+	],
+	[italianDictionarySource, italianConjugationSource, wordDictionaryCompiler],
+	buildItalianDictionary,
+)
+env.Precious(italianDictionary)
+env.Clean(
+	addon,
+	expandGlobs([
+		str(wordDictionaryDir / "resources/.dictionary.it.pickle.*.tmp"),
+		str(wordDictionaryDir / "resources/.conjugation.it.pickle.*.tmp"),
+	]),
+)
+env.Depends(addon, [italianDictionary])
 
 # Convert markdown files to html
 # We need at least doc in English and should enable the Help button for the add-on in Add-ons Manager

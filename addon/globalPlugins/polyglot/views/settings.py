@@ -88,7 +88,7 @@ class TranslationSettingsPanel(SettingsPanel):
 				self,
 				# Translators: Checkbox controlling local dictionary lookup for manual translation commands.
 				label=_(
-					"Prefer local English-Chinese dictionary for selected text, clipboard, and last spoken text",
+					"Prefer the local dictionary for selected text, clipboard, and last spoken text",
 				),
 			),
 		)
@@ -96,9 +96,16 @@ class TranslationSettingsPanel(SettingsPanel):
 			wx.CheckBox(
 				self,
 				# Translators: Checkbox controlling local dictionary definitions in NVDA text review.
-				label=_("Use the local English-Chinese dictionary in text review"),
+				label=_("Use the local dictionary in text review"),
 			),
 		)
+		self.reviewDictionaryLanguageChoice = commonSHelper.addLabeledControl(
+			# Translators: Choice selecting which offline dictionary text review uses.
+			_("Local dictionary language for text review:"),
+			wx.Choice,
+		)
+		for label, code in ((_("English"), "en"), (_("Italian"), "it")):
+			self.reviewDictionaryLanguageChoice.Append(label, code)
 		self.enableSmartFilterCheckbox = commonSHelper.addItem(
 			wx.CheckBox(
 				self,
@@ -114,6 +121,7 @@ class TranslationSettingsPanel(SettingsPanel):
 		self.copyResultCheckbox.Bind(wx.EVT_CHECKBOX, self.onAnyControlChanged)
 		self.enableLocalDictionaryForTranslationCheckbox.Bind(wx.EVT_CHECKBOX, self.onAnyControlChanged)
 		self.enableLocalDictionaryForTextReviewCheckbox.Bind(wx.EVT_CHECKBOX, self.onAnyControlChanged)
+		self.reviewDictionaryLanguageChoice.Bind(wx.EVT_CHOICE, self.onAnyControlChanged)
 		self.enableSmartFilterCheckbox.Bind(wx.EVT_CHECKBOX, self.onAnyControlChanged)
 		self.clearCacheButton.Bind(wx.EVT_BUTTON, self.onClearCache)
 
@@ -166,6 +174,7 @@ class TranslationSettingsPanel(SettingsPanel):
 		conf["copyResult"] = self.uiModel["copyResult"]
 		conf["enableLocalDictionaryForTranslation"] = self.uiModel["enableLocalDictionaryForTranslation"]
 		conf["enableLocalDictionaryForTextReview"] = self.uiModel["enableLocalDictionaryForTextReview"]
+		conf["reviewDictionaryLanguage"] = self.uiModel["reviewDictionaryLanguage"]
 		conf["enableSmartFilter"] = self.uiModel["enableSmartFilter"]
 
 		for engineId, controls in self.dynamicControls.items():
@@ -241,6 +250,13 @@ class TranslationSettingsPanel(SettingsPanel):
 			self.enableLocalDictionaryForTextReviewCheckbox.SetValue(
 				conf.get("enableLocalDictionaryForTextReview", True),
 			)
+			reviewLanguage = conf.get("reviewDictionaryLanguage", "en")
+			reviewSelection = 0
+			for index in range(self.reviewDictionaryLanguageChoice.GetCount()):
+				if self.reviewDictionaryLanguageChoice.GetClientData(index) == reviewLanguage:
+					reviewSelection = index
+					break
+			self.reviewDictionaryLanguageChoice.SetSelection(reviewSelection)
 			self.enableSmartFilterCheckbox.SetValue(conf.get("enableSmartFilter", True))
 
 			self._switchEnginePanel()
@@ -375,6 +391,7 @@ class TranslationSettingsPanel(SettingsPanel):
 			"copyResult": self.copyResultCheckbox.IsChecked(),
 			"enableLocalDictionaryForTranslation": self.enableLocalDictionaryForTranslationCheckbox.IsChecked(),
 			"enableLocalDictionaryForTextReview": self.enableLocalDictionaryForTextReviewCheckbox.IsChecked(),
+			"reviewDictionaryLanguage": self._getSelectedReviewLanguage(),
 			"enableSmartFilter": self.enableSmartFilterCheckbox.IsChecked(),
 		}
 
@@ -386,6 +403,13 @@ class TranslationSettingsPanel(SettingsPanel):
 		"""Refresh cache information when the panel becomes active."""
 		super().onPanelActivated()
 		self._updateCacheButton()
+
+	def _getSelectedReviewLanguage(self) -> str:
+		"""Return the dictionary language selected for text review."""
+		selection = self.reviewDictionaryLanguageChoice.GetSelection()
+		if selection == wx.NOT_FOUND:
+			return "en"
+		return self.reviewDictionaryLanguageChoice.GetClientData(selection) or "en"
 
 	def _getSelectedEngineId(self) -> str | None:
 		selection = self.engineChoice.GetSelection()

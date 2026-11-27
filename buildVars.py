@@ -33,7 +33,7 @@ addon_info = AddonInfo(
 	# Translators: Long description to be shown for this add-on on add-on information from add-on store
 	addon_description=_("""A translation add-on for NVDA with support for multiple engines."""),
 	# version
-	addon_version="1.3.2",
+	addon_version="1.3.4",
 	# Brief changelog for this version
 	# Translators: what's new content for the add-on version to be shown in the add-on store
 	addon_changelog=_("""### 1.3.2
@@ -89,6 +89,8 @@ excludedFiles: list[str] = [
 	"**/__pycache__/**",
 	"**/*.pyc",
 	"globalPlugins/polyglot/common/resources/.dictionary.pickle.*.tmp",
+	"globalPlugins/polyglot/common/resources/.dictionary.it.pickle.*.tmp",
+	"globalPlugins/polyglot/common/resources/.conjugation.it.pickle.*.tmp",
 	"websocketClientRepo/.git",
 	"websocketClientRepo/.git/**",
 	"websocketClientRepo/.git/**/*",

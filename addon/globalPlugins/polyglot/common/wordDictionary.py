@@ -28,6 +28,9 @@ _DEFINITION_SEPARATOR_PATTERN = re.compile(r"[;,；，]")
 _MIN_UNAMBIGUOUS_UPPER_LENGTH = 4
 _ABBREVIATION_PATTERN = re.compile(r"(?<![A-Za-z])abbr\.", re.IGNORECASE)
 _BUNDLED_DICTIONARY_PATH = Path(__file__).with_name("resources") / "dictionary.pickle"
+_BUNDLED_ITALIAN_DICTIONARY_PATH = (
+	Path(__file__).with_name("resources") / "dictionary.it.pickle"
+)
 _SENTENCE_PUNCTUATION = ",!?;:，。！？；：…"
 _SURROUNDING_PAIRS = (
 	('"', '"'),
@@ -108,6 +111,8 @@ def _stripSurroundingPunctuation(text: str) -> str:
 
 class EnglishChineseDictionary:
 	"""Lazily load and query the bundled English-to-Chinese dictionary."""
+
+	_DICTIONARY_LABEL = "English-to-Chinese"
 
 	def __init__(self, dictionaryPath: Path | None = None) -> None:
 		"""Initialize a dictionary backed by ``dictionaryPath`` or the bundled data."""
@@ -238,7 +243,7 @@ class EnglishChineseDictionary:
 				self._inflectionEntryKeys,
 			) = loadDictionaryData(self._dictionaryPath)
 			log.debug(
-				"Loaded local English-to-Chinese dictionary: "
+				"Loaded local %s dictionary: " % self._DICTIONARY_LABEL
 				+ "%d entries, %d casefold aliases, %d normalized aliases, "
 				+ "%d inflection aliases, %d ambiguous aliases",
 				len(self._entries),
@@ -250,7 +255,10 @@ class EnglishChineseDictionary:
 				+ sum(isinstance(target, tuple) for target in self._inflectionEntryKeys.values()),
 			)
 		except (OSError, ValueError):
-			log.error("Unable to load the bundled English-to-Chinese dictionary.", exc_info=True)
+			log.error(
+				"Unable to load the bundled %s dictionary." % self._DICTIONARY_LABEL,
+				exc_info=True,
+			)
 			self._entries = {}
 			self._casefoldEntryKeys = {}
 			self._normalizedEntryKeys = {}
@@ -280,3 +288,17 @@ class EnglishChineseDictionary:
 	def _logUppercaseFallback() -> None:
 		"""Log that a short uppercase word is being reported as an uncertain fallback."""
 		log.debug("Local word dictionary found a possible short uppercase fallback")
+
+
+class ItalianChineseDictionary(EnglishChineseDictionary):
+	"""Lazily load and query the bundled Italian-to-Chinese dictionary.
+
+	The Italian data lives in its own pickle so that an English lookup can never
+	return an Italian entry, and vice versa.
+	"""
+
+	_DICTIONARY_LABEL = "Italian-to-Chinese"
+
+	def __init__(self, dictionaryPath: Path | None = None) -> None:
+		"""Initialize a dictionary backed by the Italian bundle."""
+		super().__init__(dictionaryPath or _BUNDLED_ITALIAN_DICTIONARY_PATH)

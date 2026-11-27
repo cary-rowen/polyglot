@@ -17,6 +17,7 @@ from ..common import cues
 from ..common import config
 from ..common.wordDictionary import (
 	EnglishChineseDictionary,
+	ItalianChineseDictionary,
 	WordLookupResult,
 	formatWordLookupResult,
 )
@@ -203,6 +204,7 @@ class SpeechFilter:
 	_suppressCapture: int
 	_gracePeriodEnd: float
 	_wordDictionary: EnglishChineseDictionary
+	_italianWordDictionary: ItalianChineseDictionary
 	_isWordDefinitionHookActive: bool
 	_origModuleSpellTextInfo: Callable[..., None] | None
 	_origPackageSpellTextInfo: Callable[..., None] | None
@@ -218,6 +220,7 @@ class SpeechFilter:
 		self._suppressCapture = 0
 		self._gracePeriodEnd = 0.0
 		self._wordDictionary = manager.wordDictionary
+		self._italianWordDictionary = manager.italianDictionary
 		self._isWordDefinitionHookActive = False
 		self._origModuleSpellTextInfo = None
 		self._origPackageSpellTextInfo = None
@@ -385,10 +388,12 @@ class SpeechFilter:
 			"""Speak a local definition or delegate unchanged to NVDA's spelling implementation."""
 			# Keep NVDA's public keyword name; core review commands pass it by keyword.
 			if self._isWordDefinitionHookActive and useCharacterDescriptions:
-				lookupResult = self._wordDictionary.lookup(info.text)
-				if lookupResult is not None:
-					self._speakWordLookupResult(lookupResult, priority)
-					return
+				dictionary = self._getTextReviewDictionary()
+				if dictionary is not None:
+					lookupResult = dictionary.lookup(info.text)
+					if lookupResult is not None:
+						self._speakWordLookupResult(lookupResult, priority)
+						return
 			original(
 				info,
 				useCharacterDescriptions=useCharacterDescriptions,
@@ -396,6 +401,19 @@ class SpeechFilter:
 			)
 
 		return hookedSpellTextInfo
+
+	def _getTextReviewDictionary(self) -> EnglishChineseDictionary | None:
+		"""Return the dictionary selected for text review, or None when disabled.
+
+		English and Italian are separate bundles, so text review only ever
+		consults the language chosen in the settings.
+		"""
+		language = config.getConfig().get("reviewDictionaryLanguage", "en")
+		if language == "it":
+			return self._italianWordDictionary
+		if language == "en":
+			return self._wordDictionary
+		return None
 
 	@staticmethod
 	def _isChineseNvdaLanguage() -> bool:

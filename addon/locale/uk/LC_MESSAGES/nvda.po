@@ -2271,3 +2271,36 @@ msgstr ""
 #~ "- Покращено продуктивність ChromeAI під час «холодного запуску».\n"
 #~ "- Посилено безпеку керованої обробки Chrome в ChromeAI для підвищення "
 #~ "стабільності та безпеки."
+
+msgid "Prefer the local dictionary for selected text, clipboard, and last spoken text"
+msgstr ""
+
+msgid "Use the local dictionary in text review"
+msgstr ""
+
+msgid "Local dictionary language for text review:"
+msgstr ""
+
+msgid "No word found at the review position."
+msgstr ""
+
+msgid "Also possibly: {verbs}"
+msgstr ""
+
+msgid "Person"
+msgstr ""
+
+msgid "Form"
+msgstr ""
+
+msgid "Show the complete dictionary entry for the word at the review cursor"
+msgstr ""
+
+msgid "No dictionary entry found for {word}."
+msgstr ""
+
+msgid "{word} — dictionary entry"
+msgstr ""
+
+msgid "Conjugation"
+msgstr ""
