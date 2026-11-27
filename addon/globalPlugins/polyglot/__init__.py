@@ -260,6 +260,7 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
 
 	@script(description=_("Copy last translation to clipboard"))
 	def script_copyLastResult(self, gesture: "inputCore.InputGesture") -> None:
+		self._finishLayer()
 		lastResult = self.manager.lastTranslation
 		if lastResult:
 			_unused = api.copyToClip(lastResult, notify=True)
@@ -292,26 +293,31 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
 
 	@script(description=_("Toggle auto-translation"))
 	def script_toggleAutoTranslate(self, gesture: "inputCore.InputGesture") -> None:
+		self._finishLayer()
 		newState = self.manager.toggleAutoTranslate()
 		cues.Speech.message(_("Auto-translation enabled") if newState else _("Auto-translation disabled"))
 
 	@script(description=_("Clear cache"))
 	def script_clearCache(self, gesture: "inputCore.InputGesture") -> None:
+		self._finishLayer()
 		self.manager.clearCache()
 		cues.Speech.message(_("Cache cleared"))
 
 	@script(description=_("Translate selection"))
 	def script_translateSelection(self, gesture: "inputCore.InputGesture") -> None:
+		self._finishLayer()
 		if text := self._getSelectedText():
 			self._executeTranslation(text, shouldReverse=False, shouldShowStatus=True)
 
 	@script(description=_("Translate selection (reversed direction)"))
 	def script_translateReverseSelection(self, gesture: "inputCore.InputGesture") -> None:
+		self._finishLayer()
 		if text := self._getSelectedText():
 			self._executeTranslation(text, shouldReverse=True, shouldShowStatus=True)
 
 	@script(description=_("Translate clipboard"))
 	def script_translateClipboard(self, gesture: "inputCore.InputGesture") -> None:
+		self._finishLayer()
 		if not (text := api.getClipData()):
 			cues.Speech.message(_("Clipboard is empty"))
 			return
@@ -319,6 +325,7 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
 
 	@script(description=_("Translate clipboard (reversed direction)"))
 	def script_translateReverseClipboard(self, gesture: "inputCore.InputGesture") -> None:
+		self._finishLayer()
 		if not (text := api.getClipData()):
 			cues.Speech.message(_("Clipboard is empty"))
 			return
@@ -326,6 +333,7 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
 
 	@script(description=_("Translate last spoken text"))
 	def script_translateLastSpoken(self, gesture: "inputCore.InputGesture") -> None:
+		self._finishLayer()
 		if not (text := self.speechFilter.lastSpokenText):
 			cues.Speech.message(_("No last spoken text"))
 			return
@@ -333,6 +341,7 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
 
 	@script(description=_("Translate last spoken text (reversed direction)"))
 	def script_translateReverseLastSpoken(self, gesture: "inputCore.InputGesture") -> None:
+		self._finishLayer()
 		if not (text := self.speechFilter.lastSpokenText):
 			cues.Speech.message(_("No last spoken text"))
 			return
