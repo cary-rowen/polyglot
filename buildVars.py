@@ -33,14 +33,15 @@ addon_info = AddonInfo(
 	# Translators: Long description to be shown for this add-on on add-on information from add-on store
 	addon_description=_("""A translation add-on for NVDA with support for multiple engines."""),
 	# version
-	addon_version="1.3.2",
+	addon_version="1.4.0",
 	# Brief changelog for this version
 	# Translators: what's new content for the add-on version to be shown in the add-on store
-	addon_changelog=_("""### 1.3.2
+	addon_changelog=_("""### 1.4.0
 
-- Added LibreTranslate support for self-hosted servers, with a configurable server URL and optional API key.
-- Improved command-layer interaction: run commands consecutively, press `Escape` to exit, or use an unrelated gesture to return to NVDA or the active application. Braille displays now show the layer status and help hint.
-- Improved the Ukrainian localization."""),
+- Default the target language to NVDA’s interface language for new installations, while preserving existing users’ language settings.
+- Automatically exit the command layer after translation, copying results, clearing the cache, or toggling auto-translation. Language and engine switching remain available for consecutive commands.
+- Update VIVO Translate to use its current API.
+- Improve Ukrainian translations."""),
 	# Author(s)
 	addon_author="cary-rowen <cary-rowen@outlook.com>",
 	# URL for the add-on documentation support

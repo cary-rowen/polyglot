@@ -5,10 +5,10 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: 'polyglot' '1.3.0'\n"
+"Project-Id-Version: 'polyglot' '1.4.0'\n"
 "Report-Msgid-Bugs-To: 'nvda-translations@groups.io'\n"
-"POT-Creation-Date: 2026-09-09 06:30+0800\n"
-"PO-Revision-Date: 2026-09-09 06:38+0800\n"
+"POT-Creation-Date: 2026-11-28 07:06+0800\n"
+"PO-Revision-Date: 2026-11-28 07:07+0800\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: zh_CN\n"
@@ -21,192 +21,192 @@ msgstr ""
 #. Translators: Summary/title for this add-on
 #. to be shown on installation and add-on information found in add-on store
 #: addon\globalPlugins\polyglot\__init__.py:85
-#: addon\globalPlugins\polyglot\views\settings.py:32 buildVars.py:32
+#: addon\globalPlugins\polyglot\views\settings.py:32 buildVars.py:31
 msgid "Polyglot"
 msgstr "Polyglot"
 
-#: addon\globalPlugins\polyglot\__init__.py:150
+#: addon\globalPlugins\polyglot\__init__.py:152
 msgid "Enter the translation command layer; press H for command layer help"
 msgstr "进入翻译命令层；按 H 显示命令层帮助"
 
-#: addon\globalPlugins\polyglot\__init__.py:160
+#: addon\globalPlugins\polyglot\__init__.py:162
 msgid "command layer. Press H for help."
 msgstr "命令层。按 H 查看帮助。"
 
 #. Translators: Input help mode message for exiting the Polyglot command layer.
-#: addon\globalPlugins\polyglot\__init__.py:165
+#: addon\globalPlugins\polyglot\__init__.py:167
 msgid "Exit the translation command layer."
 msgstr "退出翻译命令层。"
 
-#: addon\globalPlugins\polyglot\__init__.py:178
+#: addon\globalPlugins\polyglot\__init__.py:180
 msgid "Nothing selected"
 msgstr "未选择任何内容"
 
-#: addon\globalPlugins\polyglot\__init__.py:183
+#: addon\globalPlugins\polyglot\__init__.py:185
 msgid "Cannot get selected text from the current object"
 msgstr "无法从当前对象获取选中文本"
 
-#: addon\globalPlugins\polyglot\__init__.py:216
+#: addon\globalPlugins\polyglot\__init__.py:218
 msgid "Next source language"
 msgstr "下一个源语言"
 
-#: addon\globalPlugins\polyglot\__init__.py:220
+#: addon\globalPlugins\polyglot\__init__.py:222
 msgid "Previous source language"
 msgstr "上一个源语言"
 
-#: addon\globalPlugins\polyglot\__init__.py:224
+#: addon\globalPlugins\polyglot\__init__.py:226
 msgid "Next target language"
 msgstr "下一个目标语言"
 
-#: addon\globalPlugins\polyglot\__init__.py:228
+#: addon\globalPlugins\polyglot\__init__.py:230
 msgid "Previous target language"
 msgstr "上一个目标语言"
 
-#: addon\globalPlugins\polyglot\__init__.py:239
+#: addon\globalPlugins\polyglot\__init__.py:241
 msgid "Next translation engine"
 msgstr "下一个翻译引擎"
 
-#: addon\globalPlugins\polyglot\__init__.py:243
+#: addon\globalPlugins\polyglot\__init__.py:245
 msgid "Previous translation engine"
 msgstr "上一个翻译引擎"
 
-#: addon\globalPlugins\polyglot\__init__.py:247
+#: addon\globalPlugins\polyglot\__init__.py:249
 msgid "Swap source and target languages"
 msgstr "交换源语言和目标语言"
 
-#: addon\globalPlugins\polyglot\__init__.py:254
+#: addon\globalPlugins\polyglot\__init__.py:256
 msgid "Announce current engine and languages"
 msgstr "播报当前引擎和翻译语言方向"
 
-#: addon\globalPlugins\polyglot\__init__.py:259
+#: addon\globalPlugins\polyglot\__init__.py:261
 msgid "Copy last translation to clipboard"
 msgstr "复制上次翻译结果到剪贴板"
 
-#: addon\globalPlugins\polyglot\__init__.py:265
+#: addon\globalPlugins\polyglot\__init__.py:268
 msgid "No translation result to copy"
 msgstr "没有可复制的翻译结果"
 
-#: addon\globalPlugins\polyglot\__init__.py:267
+#: addon\globalPlugins\polyglot\__init__.py:270
 msgid "Open interactive translation dialog"
 msgstr "打开交互式翻译对话框"
 
-#: addon\globalPlugins\polyglot\__init__.py:282
+#: addon\globalPlugins\polyglot\__init__.py:285
 msgid "Open settings"
 msgstr "打开设置"
 
-#: addon\globalPlugins\polyglot\__init__.py:291
+#: addon\globalPlugins\polyglot\__init__.py:294
 msgid "Toggle auto-translation"
 msgstr "切换自动翻译"
 
-#: addon\globalPlugins\polyglot\__init__.py:294
+#: addon\globalPlugins\polyglot\__init__.py:298
 msgid "Auto-translation enabled"
 msgstr "自动翻译已开启"
 
-#: addon\globalPlugins\polyglot\__init__.py:294
+#: addon\globalPlugins\polyglot\__init__.py:298
 msgid "Auto-translation disabled"
 msgstr "自动翻译已关闭"
 
-#: addon\globalPlugins\polyglot\__init__.py:296
+#: addon\globalPlugins\polyglot\__init__.py:300
 #: addon\globalPlugins\polyglot\modelManager\dialog.py:212
 msgid "Clear cache"
 msgstr "清除缓存"
 
-#: addon\globalPlugins\polyglot\__init__.py:299
+#: addon\globalPlugins\polyglot\__init__.py:304
 msgid "Cache cleared"
 msgstr "缓存已清除"
 
-#: addon\globalPlugins\polyglot\__init__.py:301
+#: addon\globalPlugins\polyglot\__init__.py:306
 msgid "Translate selection"
 msgstr "翻译选中内容"
 
-#: addon\globalPlugins\polyglot\__init__.py:306
+#: addon\globalPlugins\polyglot\__init__.py:312
 msgid "Translate selection (reversed direction)"
 msgstr "反向翻译选中内容"
 
-#: addon\globalPlugins\polyglot\__init__.py:311
+#: addon\globalPlugins\polyglot\__init__.py:318
 msgid "Translate clipboard"
 msgstr "翻译剪贴板"
 
-#: addon\globalPlugins\polyglot\__init__.py:314
-#: addon\globalPlugins\polyglot\__init__.py:321
+#: addon\globalPlugins\polyglot\__init__.py:322
+#: addon\globalPlugins\polyglot\__init__.py:330
 msgid "Clipboard is empty"
 msgstr "剪贴板为空"
 
-#: addon\globalPlugins\polyglot\__init__.py:318
+#: addon\globalPlugins\polyglot\__init__.py:326
 msgid "Translate clipboard (reversed direction)"
 msgstr "反向翻译剪贴板"
 
-#: addon\globalPlugins\polyglot\__init__.py:325
+#: addon\globalPlugins\polyglot\__init__.py:334
 msgid "Translate last spoken text"
 msgstr "翻译最后朗读的内容"
 
-#: addon\globalPlugins\polyglot\__init__.py:328
-#: addon\globalPlugins\polyglot\__init__.py:335
+#: addon\globalPlugins\polyglot\__init__.py:338
+#: addon\globalPlugins\polyglot\__init__.py:346
 msgid "No last spoken text"
 msgstr "没有最后朗读的内容"
 
-#: addon\globalPlugins\polyglot\__init__.py:332
+#: addon\globalPlugins\polyglot\__init__.py:342
 msgid "Translate last spoken text (reversed direction)"
 msgstr "反向翻译最后朗读的内容"
 
-#: addon\globalPlugins\polyglot\__init__.py:339
+#: addon\globalPlugins\polyglot\__init__.py:350
 msgid "Show command layer help"
 msgstr "显示命令层帮助"
 
-#: addon\globalPlugins\polyglot\__init__.py:344
+#: addon\globalPlugins\polyglot\__init__.py:355
 msgid "Polyglot Help"
 msgstr "Polyglot 帮助"
 
 #. Translators: Heading for translation commands in the command-layer help.
-#: addon\globalPlugins\polyglot\__init__.py:354
+#: addon\globalPlugins\polyglot\__init__.py:365
 msgid "Translation Actions"
 msgstr "翻译操作"
 
 #. Translators: Heading for configuration commands in the command-layer help.
-#: addon\globalPlugins\polyglot\__init__.py:366
+#: addon\globalPlugins\polyglot\__init__.py:377
 msgid "Configuration & Switching"
 msgstr "配置和切换"
 
 #. Translators: Heading for tool commands in the command-layer help.
-#: addon\globalPlugins\polyglot\__init__.py:380
+#: addon\globalPlugins\polyglot\__init__.py:391
 msgid "Tools & System"
 msgstr "工具和系统"
 
 #. Translators: Table column heading for a command-layer key.
-#: addon\globalPlugins\polyglot\__init__.py:400
+#: addon\globalPlugins\polyglot\__init__.py:411
 msgid "Key"
 msgstr "按键"
 
 #. Translators: Table column heading for a command-layer action.
-#: addon\globalPlugins\polyglot\__init__.py:402
+#: addon\globalPlugins\polyglot\__init__.py:413
 msgid "Action"
 msgstr "操作"
 
-#: addon\globalPlugins\polyglot\app\manager.py:109
-#: addon\globalPlugins\polyglot\app\manager.py:147
+#: addon\globalPlugins\polyglot\app\manager.py:104
+#: addon\globalPlugins\polyglot\app\manager.py:142
 msgid "Invalid engine configuration."
 msgstr "引擎配置无效。"
 
-#: addon\globalPlugins\polyglot\app\manager.py:118
+#: addon\globalPlugins\polyglot\app\manager.py:113
 msgid "Swap failed: 'Auto-detect' cannot be the target language."
 msgstr "交换失败：“自动检测”不能作为目标语言。"
 
 #. Translators: A message indicating that the source and target languages have been swapped. {source} is the new source language, {target} is the new target language.
-#: addon\globalPlugins\polyglot\app\manager.py:123
+#: addon\globalPlugins\polyglot\app\manager.py:118
 #, python-brace-format
 msgid "Languages swapped: from {source} to {target}"
 msgstr "语言已交换：从 {source} 到 {target}"
 
-#: addon\globalPlugins\polyglot\app\manager.py:167
+#: addon\globalPlugins\polyglot\app\manager.py:162
 msgid "No languages available for cycling."
 msgstr "无可用语言。"
 
-#: addon\globalPlugins\polyglot\app\manager.py:192
+#: addon\globalPlugins\polyglot\app\manager.py:187
 msgid "No translation engines available."
 msgstr "无可用翻译引擎。"
 
-#: addon\globalPlugins\polyglot\app\manager.py:197
-#: addon\globalPlugins\polyglot\app\manager.py:349
+#: addon\globalPlugins\polyglot\app\manager.py:192
+#: addon\globalPlugins\polyglot\app\manager.py:344
 #: addon\globalPlugins\polyglot\views\interactiveDialog.py:40
 #: addon\globalPlugins\polyglot\views\interactiveDialog.py:236
 #: addon\globalPlugins\polyglot\views\interactiveDialog.py:272
@@ -214,51 +214,51 @@ msgid "No enabled translation engines available."
 msgstr "没有已启用的翻译引擎。"
 
 #. Translators: Announcement of the current translation engine and languages. {engine} is the engine name, {source} is the source language, {target} is the target language.
-#: addon\globalPlugins\polyglot\app\manager.py:213
+#: addon\globalPlugins\polyglot\app\manager.py:208
 #, python-brace-format
 msgid "{engine}, from {source} to {target}"
 msgstr "{engine} 从 {source} 到 {target}"
 
-#: addon\globalPlugins\polyglot\app\manager.py:222
+#: addon\globalPlugins\polyglot\app\manager.py:217
 msgid "Languages not configured or current engine is invalid"
 msgstr "语言未配置或当前引擎无效"
 
-#: addon\globalPlugins\polyglot\app\manager.py:267
+#: addon\globalPlugins\polyglot\app\manager.py:262
 msgid "Languages not configured, cannot reverse."
 msgstr "未配置语言，无法执行反向翻译。"
 
-#: addon\globalPlugins\polyglot\app\manager.py:273
+#: addon\globalPlugins\polyglot\app\manager.py:268
 msgid "Reverse failed: 'Auto-detect' cannot be the target language."
 msgstr "反向翻译失败：“自动检测”不能作为目标语言。"
 
-#: addon\globalPlugins\polyglot\app\manager.py:276
+#: addon\globalPlugins\polyglot\app\manager.py:271
 msgid "Current translation engine is invalid."
 msgstr "当前翻译引擎无效。"
 
-#: addon\globalPlugins\polyglot\app\manager.py:293
+#: addon\globalPlugins\polyglot\app\manager.py:288
 msgid "Nothing to translate"
 msgstr "无内容可翻译"
 
-#: addon\globalPlugins\polyglot\app\manager.py:307
+#: addon\globalPlugins\polyglot\app\manager.py:302
 #, python-brace-format
 msgid "Error: Selected engine '{engine}' is unavailable or not configured."
 msgstr "错误：所选引擎“{engine}”不可用或未配置。"
 
 #. Translators: Error message when the selected translation engine is not configured properly. {engine} is the internal ID of the engine.
-#: addon\globalPlugins\polyglot\app\manager.py:379
+#: addon\globalPlugins\polyglot\app\manager.py:374
 #, python-brace-format
 msgid "Error: Engine '{engine}' is not configured."
 msgstr "错误：引擎“{engine}”未配置。"
 
-#: addon\globalPlugins\polyglot\app\manager.py:479
+#: addon\globalPlugins\polyglot\app\manager.py:474
 msgid "Translation failed: "
 msgstr "翻译失败："
 
-#: addon\globalPlugins\polyglot\app\manager.py:483
+#: addon\globalPlugins\polyglot\app\manager.py:478
 msgid "An unknown error occurred"
 msgstr "发生未知错误"
 
-#: addon\globalPlugins\polyglot\app\manager.py:497
+#: addon\globalPlugins\polyglot\app\manager.py:492
 msgid "Auto-translation disabled due to repeated failures."
 msgstr "自动翻译因连续失败已被禁用。"
 
@@ -268,515 +268,515 @@ msgid "%d percent"
 msgstr "百分之 %d"
 
 #. --- Special Codes ---
-#: addon\globalPlugins\polyglot\common\languages.py:17
-#: addon\globalPlugins\polyglot\common\languages.py:18
+#: addon\globalPlugins\polyglot\common\languages.py:20
+#: addon\globalPlugins\polyglot\common\languages.py:21
 msgid "Auto-detect"
 msgstr "自动检测"
 
 #. Used by Microsoft and Yandex
 #. --- Chinese Variants ---
-#: addon\globalPlugins\polyglot\common\languages.py:20
-#: addon\globalPlugins\polyglot\common\languages.py:30
+#: addon\globalPlugins\polyglot\common\languages.py:23
+#: addon\globalPlugins\polyglot\common\languages.py:33
 msgid "Chinese"
 msgstr "中文"
-
-#: addon\globalPlugins\polyglot\common\languages.py:21
-#: addon\globalPlugins\polyglot\common\languages.py:22
-#: addon\globalPlugins\polyglot\common\languages.py:23
-msgid "Chinese (Simplified)"
-msgstr "中文（简体）"
 
 #: addon\globalPlugins\polyglot\common\languages.py:24
 #: addon\globalPlugins\polyglot\common\languages.py:25
 #: addon\globalPlugins\polyglot\common\languages.py:26
+msgid "Chinese (Simplified)"
+msgstr "中文（简体）"
+
 #: addon\globalPlugins\polyglot\common\languages.py:27
+#: addon\globalPlugins\polyglot\common\languages.py:28
+#: addon\globalPlugins\polyglot\common\languages.py:29
+#: addon\globalPlugins\polyglot\common\languages.py:30
 msgid "Chinese (Traditional)"
 msgstr "中文（繁体）"
 
-#: addon\globalPlugins\polyglot\common\languages.py:28
+#: addon\globalPlugins\polyglot\common\languages.py:31
 msgid "Cantonese"
 msgstr "粤语"
 
-#: addon\globalPlugins\polyglot\common\languages.py:29
+#: addon\globalPlugins\polyglot\common\languages.py:32
 msgid "Classical Chinese"
 msgstr "文言文"
 
 #. DeepL
 #. --- Major Languages ---
-#: addon\globalPlugins\polyglot\common\languages.py:32
+#: addon\globalPlugins\polyglot\common\languages.py:35
 msgid "English"
 msgstr "英语"
 
-#: addon\globalPlugins\polyglot\common\languages.py:33
+#: addon\globalPlugins\polyglot\common\languages.py:36
 msgid "English (American)"
 msgstr "美式英语"
 
-#: addon\globalPlugins\polyglot\common\languages.py:34
+#: addon\globalPlugins\polyglot\common\languages.py:37
 msgid "English (British)"
 msgstr "英式英语"
 
-#: addon\globalPlugins\polyglot\common\languages.py:35
-#: addon\globalPlugins\polyglot\common\languages.py:36
+#: addon\globalPlugins\polyglot\common\languages.py:38
+#: addon\globalPlugins\polyglot\common\languages.py:39
 msgid "Japanese"
 msgstr "日语"
 
 #. Baidu
-#: addon\globalPlugins\polyglot\common\languages.py:37
-#: addon\globalPlugins\polyglot\common\languages.py:38
-#: addon\globalPlugins\polyglot\common\languages.py:39
+#: addon\globalPlugins\polyglot\common\languages.py:40
+#: addon\globalPlugins\polyglot\common\languages.py:41
+#: addon\globalPlugins\polyglot\common\languages.py:42
 msgid "Korean"
 msgstr "韩语"
 
 #. DeepL
-#: addon\globalPlugins\polyglot\common\languages.py:40
-#: addon\globalPlugins\polyglot\common\languages.py:41
+#: addon\globalPlugins\polyglot\common\languages.py:43
+#: addon\globalPlugins\polyglot\common\languages.py:44
 msgid "French"
 msgstr "法语"
 
 #. Baidu
-#: addon\globalPlugins\polyglot\common\languages.py:42
+#: addon\globalPlugins\polyglot\common\languages.py:45
 msgid "German"
 msgstr "德语"
 
-#: addon\globalPlugins\polyglot\common\languages.py:43
-#: addon\globalPlugins\polyglot\common\languages.py:45
+#: addon\globalPlugins\polyglot\common\languages.py:46
+#: addon\globalPlugins\polyglot\common\languages.py:48
 msgid "Spanish"
 msgstr "西班牙语"
 
-#: addon\globalPlugins\polyglot\common\languages.py:44
+#: addon\globalPlugins\polyglot\common\languages.py:47
 msgid "Spanish (Latin American)"
 msgstr "拉丁美洲西班牙语"
 
 #. Baidu
-#: addon\globalPlugins\polyglot\common\languages.py:46
+#: addon\globalPlugins\polyglot\common\languages.py:49
 msgid "Russian"
 msgstr "俄语"
 
-#: addon\globalPlugins\polyglot\common\languages.py:47
+#: addon\globalPlugins\polyglot\common\languages.py:50
 msgid "Portuguese"
 msgstr "葡萄牙语"
 
-#: addon\globalPlugins\polyglot\common\languages.py:48
+#: addon\globalPlugins\polyglot\common\languages.py:51
 msgid "Portuguese (Brazilian)"
 msgstr "巴西葡萄牙语"
 
-#: addon\globalPlugins\polyglot\common\languages.py:49
+#: addon\globalPlugins\polyglot\common\languages.py:52
 msgid "Portuguese (European)"
 msgstr "欧洲葡萄牙语"
 
-#: addon\globalPlugins\polyglot\common\languages.py:50
+#: addon\globalPlugins\polyglot\common\languages.py:53
 msgid "Italian"
 msgstr "意大利语"
 
-#: addon\globalPlugins\polyglot\common\languages.py:51
-#: addon\globalPlugins\polyglot\common\languages.py:52
+#: addon\globalPlugins\polyglot\common\languages.py:54
+#: addon\globalPlugins\polyglot\common\languages.py:55
 msgid "Arabic"
 msgstr "阿拉伯语"
 
 #. Baidu
-#: addon\globalPlugins\polyglot\common\languages.py:53
+#: addon\globalPlugins\polyglot\common\languages.py:56
 msgid "Achuar"
 msgstr "阿舒阿尔语"
 
-#: addon\globalPlugins\polyglot\common\languages.py:54
+#: addon\globalPlugins\polyglot\common\languages.py:57
 msgid "Amharic"
 msgstr "阿姆哈拉语"
 
 #. --- Other European Languages ---
-#: addon\globalPlugins\polyglot\common\languages.py:56
+#: addon\globalPlugins\polyglot\common\languages.py:59
 msgid "Dutch"
 msgstr "荷兰语"
 
-#: addon\globalPlugins\polyglot\common\languages.py:57
-#: addon\globalPlugins\polyglot\common\languages.py:58
+#: addon\globalPlugins\polyglot\common\languages.py:60
+#: addon\globalPlugins\polyglot\common\languages.py:61
 msgid "Swedish"
 msgstr "瑞典语"
 
 #. Baidu
-#: addon\globalPlugins\polyglot\common\languages.py:59
+#: addon\globalPlugins\polyglot\common\languages.py:62
 msgid "Polish"
 msgstr "波兰语"
 
-#: addon\globalPlugins\polyglot\common\languages.py:60
-#: addon\globalPlugins\polyglot\common\languages.py:61
+#: addon\globalPlugins\polyglot\common\languages.py:63
+#: addon\globalPlugins\polyglot\common\languages.py:64
 msgid "Danish"
 msgstr "丹麦语"
 
 #. Baidu
-#: addon\globalPlugins\polyglot\common\languages.py:62
-#: addon\globalPlugins\polyglot\common\languages.py:63
+#: addon\globalPlugins\polyglot\common\languages.py:65
+#: addon\globalPlugins\polyglot\common\languages.py:66
 msgid "Finnish"
 msgstr "芬兰语"
 
 #. Baidu
-#: addon\globalPlugins\polyglot\common\languages.py:64
+#: addon\globalPlugins\polyglot\common\languages.py:67
 msgid "Norwegian"
 msgstr "挪威语"
 
-#: addon\globalPlugins\polyglot\common\languages.py:65
+#: addon\globalPlugins\polyglot\common\languages.py:68
 msgid "Norwegian (Bokmål)"
 msgstr "挪威语（博克马尔）"
 
-#: addon\globalPlugins\polyglot\common\languages.py:66
+#: addon\globalPlugins\polyglot\common\languages.py:69
 msgid "Norwegian (Nynorsk)"
 msgstr "挪威语（尼诺斯克）"
 
-#: addon\globalPlugins\polyglot\common\languages.py:67
+#: addon\globalPlugins\polyglot\common\languages.py:70
 msgid "Czech"
 msgstr "捷克语"
 
-#: addon\globalPlugins\polyglot\common\languages.py:68
+#: addon\globalPlugins\polyglot\common\languages.py:71
 msgid "Slovak"
 msgstr "斯洛伐克语"
 
-#: addon\globalPlugins\polyglot\common\languages.py:69
+#: addon\globalPlugins\polyglot\common\languages.py:72
 msgid "Hungarian"
 msgstr "匈牙利语"
 
-#: addon\globalPlugins\polyglot\common\languages.py:70
-#: addon\globalPlugins\polyglot\common\languages.py:71
+#: addon\globalPlugins\polyglot\common\languages.py:73
+#: addon\globalPlugins\polyglot\common\languages.py:74
 msgid "Romanian"
 msgstr "罗马尼亚语"
 
 #. Baidu
-#: addon\globalPlugins\polyglot\common\languages.py:72
-#: addon\globalPlugins\polyglot\common\languages.py:73
+#: addon\globalPlugins\polyglot\common\languages.py:75
+#: addon\globalPlugins\polyglot\common\languages.py:76
 msgid "Bulgarian"
 msgstr "保加利亚语"
 
 #. Baidu
-#: addon\globalPlugins\polyglot\common\languages.py:74
+#: addon\globalPlugins\polyglot\common\languages.py:77
 msgid "Greek"
 msgstr "希腊语"
 
-#: addon\globalPlugins\polyglot\common\languages.py:75
+#: addon\globalPlugins\polyglot\common\languages.py:78
 msgid "Lithuanian"
 msgstr "立陶宛语"
 
-#: addon\globalPlugins\polyglot\common\languages.py:76
+#: addon\globalPlugins\polyglot\common\languages.py:79
 msgid "Latvian"
 msgstr "拉脱维亚语"
 
-#: addon\globalPlugins\polyglot\common\languages.py:77
-#: addon\globalPlugins\polyglot\common\languages.py:78
+#: addon\globalPlugins\polyglot\common\languages.py:80
+#: addon\globalPlugins\polyglot\common\languages.py:81
 msgid "Estonian"
 msgstr "爱沙尼亚语"
 
 #. Baidu
-#: addon\globalPlugins\polyglot\common\languages.py:79
-#: addon\globalPlugins\polyglot\common\languages.py:80
+#: addon\globalPlugins\polyglot\common\languages.py:82
+#: addon\globalPlugins\polyglot\common\languages.py:83
 msgid "Slovenian"
 msgstr "斯洛文尼亚语"
 
 #. Baidu
-#: addon\globalPlugins\polyglot\common\languages.py:81
+#: addon\globalPlugins\polyglot\common\languages.py:84
 msgid "Croatian"
 msgstr "克罗地亚语"
 
-#: addon\globalPlugins\polyglot\common\languages.py:82
+#: addon\globalPlugins\polyglot\common\languages.py:85
 msgid "Serbian"
 msgstr "塞尔维亚语"
 
-#: addon\globalPlugins\polyglot\common\languages.py:83
+#: addon\globalPlugins\polyglot\common\languages.py:86
 msgid "Bosnian"
 msgstr "波斯尼亚语"
 
-#: addon\globalPlugins\polyglot\common\languages.py:84
+#: addon\globalPlugins\polyglot\common\languages.py:87
 msgid "Albanian"
 msgstr "阿尔巴尼亚语"
 
-#: addon\globalPlugins\polyglot\common\languages.py:85
+#: addon\globalPlugins\polyglot\common\languages.py:88
 msgid "Macedonian"
 msgstr "马其顿语"
 
-#: addon\globalPlugins\polyglot\common\languages.py:86
+#: addon\globalPlugins\polyglot\common\languages.py:89
 msgid "Ukrainian"
 msgstr "乌克兰语"
 
-#: addon\globalPlugins\polyglot\common\languages.py:87
+#: addon\globalPlugins\polyglot\common\languages.py:90
 msgid "Belarusian"
 msgstr "白俄罗斯语"
 
-#: addon\globalPlugins\polyglot\common\languages.py:88
+#: addon\globalPlugins\polyglot\common\languages.py:91
 msgid "Icelandic"
 msgstr "冰岛语"
 
-#: addon\globalPlugins\polyglot\common\languages.py:89
+#: addon\globalPlugins\polyglot\common\languages.py:92
 msgid "Irish"
 msgstr "爱尔兰语"
 
-#: addon\globalPlugins\polyglot\common\languages.py:90
+#: addon\globalPlugins\polyglot\common\languages.py:93
 msgid "Maltese"
 msgstr "马耳他语"
 
-#: addon\globalPlugins\polyglot\common\languages.py:91
+#: addon\globalPlugins\polyglot\common\languages.py:94
 msgid "Welsh"
 msgstr "威尔士语"
 
-#: addon\globalPlugins\polyglot\common\languages.py:92
+#: addon\globalPlugins\polyglot\common\languages.py:95
 msgid "Basque"
 msgstr "巴斯克语"
 
-#: addon\globalPlugins\polyglot\common\languages.py:93
+#: addon\globalPlugins\polyglot\common\languages.py:96
 msgid "Catalan"
 msgstr "加泰罗尼亚语"
 
-#: addon\globalPlugins\polyglot\common\languages.py:94
+#: addon\globalPlugins\polyglot\common\languages.py:97
 msgid "Galician"
 msgstr "加利西亚语"
 
-#: addon\globalPlugins\polyglot\common\languages.py:95
+#: addon\globalPlugins\polyglot\common\languages.py:98
 msgid "Luxembourgish"
 msgstr "卢森堡语"
 
-#: addon\globalPlugins\polyglot\common\languages.py:96
+#: addon\globalPlugins\polyglot\common\languages.py:99
 msgid "Scots Gaelic"
 msgstr "苏格兰盖尔语"
 
 #. --- Other Asian & Middle Eastern Languages ---
-#: addon\globalPlugins\polyglot\common\languages.py:98
+#: addon\globalPlugins\polyglot\common\languages.py:101
 msgid "Thai"
 msgstr "泰语"
 
-#: addon\globalPlugins\polyglot\common\languages.py:99
-#: addon\globalPlugins\polyglot\common\languages.py:100
+#: addon\globalPlugins\polyglot\common\languages.py:102
+#: addon\globalPlugins\polyglot\common\languages.py:103
 msgid "Vietnamese"
 msgstr "越南语"
 
 #. Baidu
-#: addon\globalPlugins\polyglot\common\languages.py:101
+#: addon\globalPlugins\polyglot\common\languages.py:104
 msgid "Indonesian"
 msgstr "印度尼西亚语"
 
-#: addon\globalPlugins\polyglot\common\languages.py:102
+#: addon\globalPlugins\polyglot\common\languages.py:105
 msgid "Malay"
 msgstr "马来语"
 
-#: addon\globalPlugins\polyglot\common\languages.py:103
+#: addon\globalPlugins\polyglot\common\languages.py:106
 msgid "Filipino"
 msgstr "菲律宾语"
 
-#: addon\globalPlugins\polyglot\common\languages.py:104
+#: addon\globalPlugins\polyglot\common\languages.py:107
 msgid "Cebuano"
 msgstr "宿务语"
 
-#: addon\globalPlugins\polyglot\common\languages.py:105
+#: addon\globalPlugins\polyglot\common\languages.py:108
 msgid "Myanmar (Burmese)"
 msgstr "缅甸语"
 
-#: addon\globalPlugins\polyglot\common\languages.py:106
+#: addon\globalPlugins\polyglot\common\languages.py:109
 msgid "Khmer"
 msgstr "高棉语"
 
-#: addon\globalPlugins\polyglot\common\languages.py:107
+#: addon\globalPlugins\polyglot\common\languages.py:110
 msgid "Lao"
 msgstr "老挝语"
 
-#: addon\globalPlugins\polyglot\common\languages.py:108
+#: addon\globalPlugins\polyglot\common\languages.py:111
 msgid "Javanese"
 msgstr "爪哇语"
 
-#: addon\globalPlugins\polyglot\common\languages.py:109
+#: addon\globalPlugins\polyglot\common\languages.py:112
 msgid "Sundanese"
 msgstr "巽他语"
 
-#: addon\globalPlugins\polyglot\common\languages.py:110
+#: addon\globalPlugins\polyglot\common\languages.py:113
 msgid "Hindi"
 msgstr "印地语"
 
-#: addon\globalPlugins\polyglot\common\languages.py:111
+#: addon\globalPlugins\polyglot\common\languages.py:114
 msgid "Bengali"
 msgstr "孟加拉语"
 
-#: addon\globalPlugins\polyglot\common\languages.py:112
+#: addon\globalPlugins\polyglot\common\languages.py:115
 msgid "Punjabi"
 msgstr "旁遮普语"
 
-#: addon\globalPlugins\polyglot\common\languages.py:113
+#: addon\globalPlugins\polyglot\common\languages.py:116
 msgid "Gujarati"
 msgstr "古吉拉特语"
 
-#: addon\globalPlugins\polyglot\common\languages.py:114
+#: addon\globalPlugins\polyglot\common\languages.py:117
 msgid "Marathi"
 msgstr "马拉地语"
 
-#: addon\globalPlugins\polyglot\common\languages.py:115
+#: addon\globalPlugins\polyglot\common\languages.py:118
 msgid "Tamil"
 msgstr "泰米尔语"
 
-#: addon\globalPlugins\polyglot\common\languages.py:116
+#: addon\globalPlugins\polyglot\common\languages.py:119
 msgid "Telugu"
 msgstr "泰卢固语"
 
-#: addon\globalPlugins\polyglot\common\languages.py:117
+#: addon\globalPlugins\polyglot\common\languages.py:120
 msgid "Kannada"
 msgstr "卡纳达语"
 
-#: addon\globalPlugins\polyglot\common\languages.py:118
+#: addon\globalPlugins\polyglot\common\languages.py:121
 msgid "Malayalam"
 msgstr "马拉雅拉姆语"
 
-#: addon\globalPlugins\polyglot\common\languages.py:119
+#: addon\globalPlugins\polyglot\common\languages.py:122
 msgid "Sinhala"
 msgstr "僧伽罗语"
 
-#: addon\globalPlugins\polyglot\common\languages.py:120
+#: addon\globalPlugins\polyglot\common\languages.py:123
 msgid "Nepali"
 msgstr "尼泊尔语"
 
-#: addon\globalPlugins\polyglot\common\languages.py:121
+#: addon\globalPlugins\polyglot\common\languages.py:124
 msgid "Sindhi"
 msgstr "信德语"
 
-#: addon\globalPlugins\polyglot\common\languages.py:122
+#: addon\globalPlugins\polyglot\common\languages.py:125
 msgid "Persian"
 msgstr "波斯语"
 
-#: addon\globalPlugins\polyglot\common\languages.py:123
-#: addon\globalPlugins\polyglot\common\languages.py:124
+#: addon\globalPlugins\polyglot\common\languages.py:126
+#: addon\globalPlugins\polyglot\common\languages.py:127
 msgid "Hebrew"
 msgstr "希伯来语"
 
 #. Chrome Translator API
-#: addon\globalPlugins\polyglot\common\languages.py:125
+#: addon\globalPlugins\polyglot\common\languages.py:128
 msgid "Turkish"
 msgstr "土耳其语"
 
-#: addon\globalPlugins\polyglot\common\languages.py:126
+#: addon\globalPlugins\polyglot\common\languages.py:129
 msgid "Azerbaijani"
 msgstr "阿塞拜疆语"
 
-#: addon\globalPlugins\polyglot\common\languages.py:127
+#: addon\globalPlugins\polyglot\common\languages.py:130
 msgid "Armenian"
 msgstr "亚美尼亚语"
 
-#: addon\globalPlugins\polyglot\common\languages.py:128
+#: addon\globalPlugins\polyglot\common\languages.py:131
 msgid "Georgian"
 msgstr "格鲁吉亚语"
 
-#: addon\globalPlugins\polyglot\common\languages.py:129
+#: addon\globalPlugins\polyglot\common\languages.py:132
 msgid "Uzbek"
 msgstr "乌兹别克语"
 
-#: addon\globalPlugins\polyglot\common\languages.py:130
+#: addon\globalPlugins\polyglot\common\languages.py:133
 msgid "Kazakh"
 msgstr "哈萨克语"
 
-#: addon\globalPlugins\polyglot\common\languages.py:131
+#: addon\globalPlugins\polyglot\common\languages.py:134
 msgid "Kyrgyz"
 msgstr "吉尔吉斯语"
 
-#: addon\globalPlugins\polyglot\common\languages.py:132
+#: addon\globalPlugins\polyglot\common\languages.py:135
 msgid "Tajik"
 msgstr "塔吉克语"
 
-#: addon\globalPlugins\polyglot\common\languages.py:133
+#: addon\globalPlugins\polyglot\common\languages.py:136
 msgid "Urdu"
 msgstr "乌尔都语"
 
-#: addon\globalPlugins\polyglot\common\languages.py:134
+#: addon\globalPlugins\polyglot\common\languages.py:137
 msgid "Pashto"
 msgstr "普什图语"
 
-#: addon\globalPlugins\polyglot\common\languages.py:135
+#: addon\globalPlugins\polyglot\common\languages.py:138
 msgid "Kurdish"
 msgstr "库尔德语"
 
-#: addon\globalPlugins\polyglot\common\languages.py:136
+#: addon\globalPlugins\polyglot\common\languages.py:139
 msgid "Mongolian (Cyrillic)"
 msgstr "蒙古语（西里尔字母）"
 
-#: addon\globalPlugins\polyglot\common\languages.py:137
+#: addon\globalPlugins\polyglot\common\languages.py:140
 msgid "Mongolian (Traditional)"
 msgstr "蒙古语（传统蒙古文）"
 
-#: addon\globalPlugins\polyglot\common\languages.py:138
+#: addon\globalPlugins\polyglot\common\languages.py:141
 msgid "Hmong"
 msgstr "苗语"
 
 #. --- African Languages ---
-#: addon\globalPlugins\polyglot\common\languages.py:140
+#: addon\globalPlugins\polyglot\common\languages.py:143
 msgid "Afrikaans"
 msgstr "南非荷兰语"
 
-#: addon\globalPlugins\polyglot\common\languages.py:141
+#: addon\globalPlugins\polyglot\common\languages.py:144
 msgid "Swahili"
 msgstr "斯瓦希里语"
 
-#: addon\globalPlugins\polyglot\common\languages.py:142
+#: addon\globalPlugins\polyglot\common\languages.py:145
 msgid "Somali"
 msgstr "索马里语"
 
-#: addon\globalPlugins\polyglot\common\languages.py:143
+#: addon\globalPlugins\polyglot\common\languages.py:146
 msgid "Hausa"
 msgstr "豪萨语"
 
-#: addon\globalPlugins\polyglot\common\languages.py:144
+#: addon\globalPlugins\polyglot\common\languages.py:147
 msgid "Yoruba"
 msgstr "约鲁巴语"
 
-#: addon\globalPlugins\polyglot\common\languages.py:145
+#: addon\globalPlugins\polyglot\common\languages.py:148
 msgid "Igbo"
 msgstr "伊博语"
 
-#: addon\globalPlugins\polyglot\common\languages.py:146
+#: addon\globalPlugins\polyglot\common\languages.py:149
 msgid "Zulu"
 msgstr "祖鲁语"
 
-#: addon\globalPlugins\polyglot\common\languages.py:147
+#: addon\globalPlugins\polyglot\common\languages.py:150
 msgid "Xhosa"
 msgstr "科萨语"
 
-#: addon\globalPlugins\polyglot\common\languages.py:148
+#: addon\globalPlugins\polyglot\common\languages.py:151
 msgid "Sesotho"
 msgstr "塞索托语"
 
-#: addon\globalPlugins\polyglot\common\languages.py:149
+#: addon\globalPlugins\polyglot\common\languages.py:152
 msgid "Shona"
 msgstr "修纳语"
 
-#: addon\globalPlugins\polyglot\common\languages.py:150
+#: addon\globalPlugins\polyglot\common\languages.py:153
 msgid "Malagasy"
 msgstr "马尔加什语"
 
-#: addon\globalPlugins\polyglot\common\languages.py:151
+#: addon\globalPlugins\polyglot\common\languages.py:154
 msgid "Chichewa"
 msgstr "奇切瓦语"
 
 #. --- Oceanic & Constructed Languages ---
-#: addon\globalPlugins\polyglot\common\languages.py:153
+#: addon\globalPlugins\polyglot\common\languages.py:156
 msgid "Maori"
 msgstr "毛利语"
 
-#: addon\globalPlugins\polyglot\common\languages.py:154
+#: addon\globalPlugins\polyglot\common\languages.py:157
 msgid "Samoan"
 msgstr "萨摩亚语"
 
-#: addon\globalPlugins\polyglot\common\languages.py:155
+#: addon\globalPlugins\polyglot\common\languages.py:158
 msgid "Haitian Creole"
 msgstr "海地克里奥尔语"
 
-#: addon\globalPlugins\polyglot\common\languages.py:156
+#: addon\globalPlugins\polyglot\common\languages.py:159
 msgid "Hawaiian"
 msgstr "夏威夷语"
 
-#: addon\globalPlugins\polyglot\common\languages.py:157
+#: addon\globalPlugins\polyglot\common\languages.py:160
 msgid "Corsican"
 msgstr "科西嘉语"
 
-#: addon\globalPlugins\polyglot\common\languages.py:158
+#: addon\globalPlugins\polyglot\common\languages.py:161
 msgid "Frisian"
 msgstr "弗里西语"
 
-#: addon\globalPlugins\polyglot\common\languages.py:159
+#: addon\globalPlugins\polyglot\common\languages.py:162
 msgid "Yiddish"
 msgstr "意第绪语"
 
-#: addon\globalPlugins\polyglot\common\languages.py:160
+#: addon\globalPlugins\polyglot\common\languages.py:163
 msgid "Esperanto"
 msgstr "世界语"
 
-#: addon\globalPlugins\polyglot\common\languages.py:161
+#: addon\globalPlugins\polyglot\common\languages.py:164
 msgid "Latin"
 msgstr "拉丁语"
 
@@ -867,7 +867,7 @@ msgstr "模型清单中存在重复的模型包标识：{key}"
 msgid "Catalog URL must be an HTTP or HTTPS URL."
 msgstr "清单 URL 必须使用 HTTP 或 HTTPS 协议。"
 
-#: addon\globalPlugins\polyglot\modelManager\catalog.py:285
+#: addon\globalPlugins\polyglot\modelManager\catalog.py:280
 #, python-brace-format
 msgid "{source} / {target}"
 msgstr "{source} / {target}"
@@ -1209,53 +1209,53 @@ msgstr ""
 msgid "Model installation complete."
 msgstr "模型安装完成。"
 
-#: addon\globalPlugins\polyglot\services\engine.py:65
+#: addon\globalPlugins\polyglot\services\engine.py:98
 msgid "Enable this engine"
 msgstr "启用此引擎(&N)"
 
-#: addon\globalPlugins\polyglot\services\engine.py:251
+#: addon\globalPlugins\polyglot\services\engine.py:262
 #: addon\globalPlugins\polyglot\services\engines\chromeAi.py:121
 #: addon\globalPlugins\polyglot\views\interactiveDialog.py:42
 msgid "Source language:"
 msgstr "源语言："
 
-#: addon\globalPlugins\polyglot\services\engine.py:258
+#: addon\globalPlugins\polyglot\services\engine.py:269
 #: addon\globalPlugins\polyglot\services\engines\chromeAi.py:128
 #: addon\globalPlugins\polyglot\views\interactiveDialog.py:43
 msgid "Target language:"
 msgstr "目标语言："
 
-#: addon\globalPlugins\polyglot\services\engine.py:269
+#: addon\globalPlugins\polyglot\services\engine.py:280
 msgid "Proxy mode:"
 msgstr "代理模式："
 
-#: addon\globalPlugins\polyglot\services\engine.py:272
+#: addon\globalPlugins\polyglot\services\engine.py:283
 msgid "Use system proxy settings"
 msgstr "使用系统代理设置"
 
-#: addon\globalPlugins\polyglot\services\engine.py:273
+#: addon\globalPlugins\polyglot\services\engine.py:284
 msgid "Do not use proxy"
 msgstr "不使用代理"
 
-#: addon\globalPlugins\polyglot\services\engine.py:279
+#: addon\globalPlugins\polyglot\services\engine.py:290
 msgid "Request timeout:"
 msgstr "请求超时："
 
-#: addon\globalPlugins\polyglot\services\engine.py:295
+#: addon\globalPlugins\polyglot\services\engine.py:306
 msgid ""
 "Auto-swap if detected source matches target (source must be 'Auto-detect')"
 msgstr "检测到的源语言与目标语言相同时自动交换（源语言必须为“自动检测”）"
 
-#: addon\globalPlugins\polyglot\services\engine.py:302
+#: addon\globalPlugins\polyglot\services\engine.py:313
 msgid "Swap to language:"
 msgstr "交换至语言："
 
-#: addon\globalPlugins\polyglot\services\engine.py:399
+#: addon\globalPlugins\polyglot\services\engine.py:410
 #: addon\globalPlugins\polyglot\services\engines\niutrans.py:187
 msgid "Failed to parse response from translation service."
 msgstr "无法解析翻译服务的响应。"
 
-#: addon\globalPlugins\polyglot\services\engine.py:404
+#: addon\globalPlugins\polyglot\services\engine.py:415
 #: addon\globalPlugins\polyglot\services\engines\niutrans.py:192
 msgid "An unknown error occurred during translation."
 msgstr "翻译过程中发生未知错误。"
@@ -1334,7 +1334,7 @@ msgstr "需要 App ID 和 App Secret。"
 
 #: addon\globalPlugins\polyglot\services\engines\baidu.py:144
 #: addon\globalPlugins\polyglot\services\engines\tencent.py:165
-#: addon\globalPlugins\polyglot\services\engines\vivo.py:112
+#: addon\globalPlugins\polyglot\services\engines\vivo.py:114
 #: addon\globalPlugins\polyglot\services\engines\_nvdacn.py:70
 msgid "Unknown API error"
 msgstr "未知 API 错误"
@@ -1575,7 +1575,9 @@ msgstr "API 密钥（可选）"
 msgid ""
 "LibreTranslate server URL must be a valid HTTP or HTTPS URL without a query "
 "or fragment."
-msgstr "LibreTranslate 服务器 URL 必须是有效的 HTTP 或 HTTPS URL，且不能包含查询参数或片段。"
+msgstr ""
+"LibreTranslate 服务器 URL 必须是有效的 HTTP 或 HTTPS URL，且不能包含查询参数"
+"或片段。"
 
 #. Translators: Error shown when LibreTranslate returns an unexpected JSON structure.
 #: addon\globalPlugins\polyglot\services\engines\libretranslate.py:200
@@ -1924,39 +1926,39 @@ msgstr "服务器异常"
 msgid "Invalid request parameters"
 msgstr "请求参数错误"
 
-#: addon\globalPlugins\polyglot\services\engines\vivo.py:57
+#: addon\globalPlugins\polyglot\services\engines\vivo.py:53
 #: addon\globalPlugins\polyglot\services\engines\_nvdacn.py:33
 msgid "NVDACN Username"
 msgstr "NVDA 中文站用户名"
 
-#: addon\globalPlugins\polyglot\services\engines\vivo.py:58
+#: addon\globalPlugins\polyglot\services\engines\vivo.py:54
 #: addon\globalPlugins\polyglot\services\engines\_nvdacn.py:34
 msgid "NVDACN Password"
 msgstr "NVDA 中文站密码"
 
-#: addon\globalPlugins\polyglot\services\engines\vivo.py:71
+#: addon\globalPlugins\polyglot\services\engines\vivo.py:67
 #: addon\globalPlugins\polyglot\services\engines\_nvdacn.py:44
 msgid "NVDACN username and password must be provided in settings."
 msgstr "必须在设置中提供 NVDA 中文站的用户名和密码。"
 
-#: addon\globalPlugins\polyglot\services\engines\vivo.py:80
+#: addon\globalPlugins\polyglot\services\engines\vivo.py:76
 msgid ""
 "Could not connect to the NVDACN authentication server to get a signature. "
 "Please check your network connection or try again later."
 msgstr "无法连接到 NVDACN 认证服务器以获取签名。请检查您的网络连接或稍后再试。"
 
 #. Translators: Error message when authentication with the translation service fails. {error} is the detailed error description.
-#: addon\globalPlugins\polyglot\services\engines\vivo.py:85
+#: addon\globalPlugins\polyglot\services\engines\vivo.py:81
 #: addon\globalPlugins\polyglot\services\engines\_nvdacn.py:73
 #, python-brace-format
 msgid "Authentication failed: {error}"
 msgstr "认证失败：{error}"
 
-#: addon\globalPlugins\polyglot\services\engines\vivo.py:87
+#: addon\globalPlugins\polyglot\services\engines\vivo.py:83
 msgid "An unknown error occurred while generating authentication info."
 msgstr "生成认证信息时发生未知错误。"
 
-#: addon\globalPlugins\polyglot\services\engines\vivo.py:108
+#: addon\globalPlugins\polyglot\services\engines\vivo.py:110
 #: addon\globalPlugins\polyglot\services\engines\_nvdacn.py:67
 msgid "API response successful but did not contain a translation result."
 msgstr "API 响应成功，但未包含翻译结果。"
@@ -2084,29 +2086,51 @@ msgstr "清除缓存（条目数：{}）"
 
 #. Add-on description
 #. Translators: Long description to be shown for this add-on on add-on information from add-on store
-#: buildVars.py:35
+#: buildVars.py:34
 msgid "A translation add-on for NVDA with support for multiple engines."
 msgstr "支持多种引擎的 NVDA 翻译插件。"
 
 #. Brief changelog for this version
 #. Translators: what's new content for the add-on version to be shown in the add-on store
-#: buildVars.py:40
+#: buildVars.py:39
 msgid ""
-"### 1.3.2\n"
+"### 1.4.0\n"
 "\n"
-"- Added LibreTranslate support for self-hosted servers, with a configurable "
-"server URL and optional API key.\n"
-"- Improved command-layer interaction: run commands consecutively, press "
-"`Escape` to exit, or use an unrelated gesture to return to NVDA or the "
-"active application. Braille displays now show the layer status and help "
-"hint.\n"
-"- Improved the Ukrainian localization."
+"- Default the target language to NVDA’s interface language for new "
+"installations, while preserving existing users’ language settings.\n"
+"- Automatically exit the command layer after translation, copying results, "
+"clearing the cache, or toggling auto-translation. Language and engine "
+"switching remain available for consecutive commands.\n"
+"- Update VIVO Translate to use its current API.\n"
+"- Improve Ukrainian translations."
 msgstr ""
-"### 1.3.2\n"
+"### 1.4.0\n"
 "\n"
-"- 新增 LibreTranslate 支持，可连接自托管服务器，并可配置服务器 URL 和可选 API 密钥。\n"
-"- 改进命令层交互：可连续执行命令；按 `Escape` 退出；使用其他手势时返回 NVDA 或当前应用程序。盲文点显器现在会显示命令层状态和帮助提示。\n"
-"- 改进乌克兰语本地化。"
+"- 全新安装时，默认目标语言与 NVDA 界面语言保持一致；升级用户保留原有语言设"
+"置。\n"
+"- 执行翻译、复制结果、清除缓存或切换自动翻译后，自动退出命令层。切换语言和引"
+"擎时仍可连续操作。\n"
+"- 更新 VIVO 翻译，适配当前接口。\n"
+"- 完善乌克兰语翻译。"
+
+#~ msgid ""
+#~ "### 1.3.2\n"
+#~ "\n"
+#~ "- Added LibreTranslate support for self-hosted servers, with a "
+#~ "configurable server URL and optional API key.\n"
+#~ "- Improved command-layer interaction: run commands consecutively, press "
+#~ "`Escape` to exit, or use an unrelated gesture to return to NVDA or the "
+#~ "active application. Braille displays now show the layer status and help "
+#~ "hint.\n"
+#~ "- Improved the Ukrainian localization."
+#~ msgstr ""
+#~ "### 1.3.2\n"
+#~ "\n"
+#~ "- 新增 LibreTranslate 支持，可连接自托管服务器，并可配置服务器 URL 和可选 "
+#~ "API 密钥。\n"
+#~ "- 改进命令层交互：可连续执行命令；按 `Escape` 退出；使用其他手势时返回 "
+#~ "NVDA 或当前应用程序。盲文点显器现在会显示命令层状态和帮助提示。\n"
+#~ "- 改进乌克兰语本地化。"
 
 #~ msgid ""
 #~ "### 1.3.0\n"
